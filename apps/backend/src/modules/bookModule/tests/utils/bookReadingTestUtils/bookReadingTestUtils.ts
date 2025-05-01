@@ -1,6 +1,6 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type BookReadingRawEntity } from '../../../../databaseModule/infrastructure/tables/bookReadingTable/bookReadingRawEntity.js';
-import { bookReadingTable } from '../../../../databaseModule/infrastructure/tables/bookReadingTable/bookReadingTable.js';
+import { booksReadingsTable } from '../../../../databaseModule/infrastructure/tables/bookReadingTable/bookReadingTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BookReadingTestFactory } from '../../factories/bookReadingTestFactory/bookReadingTestFactory.js';
 
@@ -14,7 +14,7 @@ interface FindByIdPayload {
 
 export class BookReadingTestUtils extends TestUtils {
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, bookReadingTable);
+    super(databaseClient, booksReadingsTable);
   }
 
   private readonly bookReadingTestFactory = new BookReadingTestFactory();
@@ -24,7 +24,7 @@ export class BookReadingTestUtils extends TestUtils {
 
     const bookReading = this.bookReadingTestFactory.create(input);
 
-    const rawEntities = await this.databaseClient<BookReadingRawEntity>(bookReadingTable).insert(
+    const rawEntities = await this.databaseClient<BookReadingRawEntity>(booksReadingsTable).insert(
       {
         id: bookReading.getId(),
         userBookId: bookReading.getUserBookId(),
@@ -44,7 +44,7 @@ export class BookReadingTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookReadingRawEntity | null> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<BookReadingRawEntity>(bookReadingTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<BookReadingRawEntity>(booksReadingsTable).where({ id }).first();
 
     if (!rawEntity) {
       return null;

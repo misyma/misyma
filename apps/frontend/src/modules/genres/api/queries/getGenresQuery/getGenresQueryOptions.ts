@@ -1,16 +1,16 @@
 import { type UseQueryOptions, queryOptions } from '@tanstack/react-query';
 
-import { type FindGenresQueryParams, type FindGenresResponseBody } from '@common/contracts';
+import { type FindCategoriesQueryParams, type FindCategoriesResponseBody } from '@common/contracts';
 
 import { BookApiError } from '../../../../book/errors/bookApiError.js';
 import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMapper/errorCodeMessageMapper.js';
 import { api } from '../../../../core/apiClient/apiClient.js';
 import { ApiPaths } from '../../../../core/apiClient/apiPaths.js';
-import { GenresApiQueryKeys } from '../genresApiQueryKeys.js';
+import { CategoriesApiQueryKeys } from '../categoriesApiQueryKeys.js';
 
 const mapper = new ErrorCodeMessageMapper({});
 
-const getGenres = async (payload: FindGenresQueryParams) => {
+const getCategories = async (payload: FindCategoriesQueryParams) => {
   const { page, pageSize = 200 } = payload;
 
   const queryParams: Record<string, string> = {};
@@ -23,7 +23,7 @@ const getGenres = async (payload: FindGenresQueryParams) => {
     queryParams.pageSize = `${pageSize}`;
   }
 
-  const response = await api.get<FindGenresResponseBody>(ApiPaths.genres.path, {
+  const response = await api.get<FindCategoriesResponseBody>(ApiPaths.categories.path, {
     params: queryParams,
   });
 
@@ -32,10 +32,10 @@ const getGenres = async (payload: FindGenresQueryParams) => {
   return response.data;
 };
 
-export const getGenresQueryOptions = (
-  payload: FindGenresQueryParams,
-): UseQueryOptions<FindGenresResponseBody, Error, FindGenresResponseBody, string[]> =>
+export const getCategoriesQueryOptions = (
+  payload: FindCategoriesQueryParams,
+): UseQueryOptions<FindCategoriesResponseBody, Error, FindCategoriesResponseBody, string[]> =>
   queryOptions({
-    queryKey: [GenresApiQueryKeys.findGenres, `${payload.page}`, `${payload.pageSize}`],
-    queryFn: () => getGenres(payload),
+    queryKey: [CategoriesApiQueryKeys.findCategories, `${payload.page}`, `${payload.pageSize}`],
+    queryFn: () => getCategories(payload),
   });

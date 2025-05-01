@@ -1,3 +1,3 @@
-export const GenresApiQueryKeys = {
-  findGenres: 'findGenres',
+export const CategoriesApiQueryKeys = {
+  findCategories: 'findCategories',
 };

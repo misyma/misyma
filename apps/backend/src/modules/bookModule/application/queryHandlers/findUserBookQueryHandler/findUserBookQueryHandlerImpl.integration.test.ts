@@ -13,7 +13,7 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
 import { type FindUserBookQueryHandler } from './findUserBookQueryHandler.js';
@@ -29,7 +29,7 @@ describe('FindUserBookQueryHandler', () => {
 
   let userTestUtils: UserTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
@@ -54,9 +54,16 @@ describe('FindUserBookQueryHandler', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
-    testUtils = [genreTestUtils, authorTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
+    testUtils = [
+      categoryTestUtils,
+      authorTestUtils,
+      bookTestUtils,
+      bookshelfTestUtils,
+      userTestUtils,
+      userBookTestUtils,
+    ];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -78,13 +85,13 @@ describe('FindUserBookQueryHandler', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
         },
       },
     });
@@ -132,13 +139,13 @@ describe('FindUserBookQueryHandler', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
         },
       },
     });

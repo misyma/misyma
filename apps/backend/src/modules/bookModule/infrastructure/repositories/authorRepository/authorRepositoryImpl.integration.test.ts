@@ -14,7 +14,7 @@ import { symbols } from '../../../symbols.js';
 import { AuthorTestFactory } from '../../../tests/factories/authorTestFactory/authorTestFactory.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
 describe('AuthorRepositoryImpl', () => {
@@ -32,7 +32,7 @@ describe('AuthorRepositoryImpl', () => {
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   const authorTestFactory = new AuthorTestFactory();
 
@@ -55,9 +55,16 @@ describe('AuthorRepositoryImpl', () => {
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
-    testUtils = [genreTestUtils, authorTestUtils, bookTestUtils, bookshelfTestUtils, userTestUtils, userBookTestUtils];
+    testUtils = [
+      categoryTestUtils,
+      authorTestUtils,
+      bookTestUtils,
+      bookshelfTestUtils,
+      userTestUtils,
+      userBookTestUtils,
+    ];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -432,13 +439,13 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
-      const genre = await genreTestUtils.createAndPersist();
+      const category = await categoryTestUtils.createAndPersist();
 
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -447,7 +454,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -456,7 +463,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -465,7 +472,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id, author4.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -549,13 +556,13 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
-      const genre = await genreTestUtils.createAndPersist();
+      const category = await categoryTestUtils.createAndPersist();
 
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -564,7 +571,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -573,7 +580,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -582,7 +589,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id, author4.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -664,13 +671,13 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
-      const genre = await genreTestUtils.createAndPersist();
+      const category = await categoryTestUtils.createAndPersist();
 
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -679,7 +686,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -688,7 +695,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -697,7 +704,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id, author4.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -897,13 +904,13 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
-      const genre = await genreTestUtils.createAndPersist();
+      const category = await categoryTestUtils.createAndPersist();
 
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -912,7 +919,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -921,7 +928,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -930,7 +937,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id, author4.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -1008,13 +1015,13 @@ describe('AuthorRepositoryImpl', () => {
 
       const author4 = await authorTestUtils.createAndPersist();
 
-      const genre = await genreTestUtils.createAndPersist();
+      const category = await categoryTestUtils.createAndPersist();
 
       const book1 = await bookTestUtils.createAndPersist({
         input: {
           authorIds: [author1.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -1023,7 +1030,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author2.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -1032,7 +1039,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });
@@ -1041,7 +1048,7 @@ describe('AuthorRepositoryImpl', () => {
         input: {
           authorIds: [author3.id, author4.id],
           book: {
-            genreId: genre.id,
+            categoryId: category.id,
           },
         },
       });

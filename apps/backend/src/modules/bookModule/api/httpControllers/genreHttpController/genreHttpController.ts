@@ -6,39 +6,39 @@ import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
 import { securityModes } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type FindGenresQueryHandler } from '../../../application/queryHandlers/findGenresQueryHandler/findGenresQueryHandler.js';
-import { mapGenreToDto } from '../common/mappers/genreDtoMapper.js';
+import { type FindCategoriesQueryHandler } from '../../../application/queryHandlers/findCategoriesQueryHandler/findCategoriesQueryHandler.js';
+import { mapCategoryToDto } from '../common/mappers/categoryDtoMapper.js';
 
 import {
-  type FindGenresResponseBodyDto,
-  findGenresResponseBodyDtoSchema,
-  type FindGenresQueryParamsDto,
-  findGenresQueryParamsDtoSchema,
-} from './schemas/findGenresSchema.js';
+  type FindCategoriesResponseBodyDto,
+  findCategoriesResponseBodyDtoSchema,
+  type FindCategoriesQueryParamsDto,
+  findCategoriesQueryParamsDtoSchema,
+} from './schemas/findCategoriesSchema.js';
 
-export class GenreHttpController implements HttpController {
-  public basePath = '/genres';
-  public tags = ['Genre'];
+export class CategoryHttpController implements HttpController {
+  public basePath = '/categories';
+  public tags = ['Category'];
 
   public constructor(
-    private readonly findGenresQueryHandler: FindGenresQueryHandler,
+    private readonly findCategoriesQueryHandler: FindCategoriesQueryHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
-        description: 'Find genres',
-        handler: this.findGenres.bind(this),
+        description: 'Find categories',
+        handler: this.findCategories.bind(this),
         method: httpMethodNames.get,
         schema: {
           request: {
-            queryParams: findGenresQueryParamsDtoSchema,
+            queryParams: findCategoriesQueryParamsDtoSchema,
           },
           response: {
             [httpStatusCodes.ok]: {
-              description: 'Genres found',
-              schema: findGenresResponseBodyDtoSchema,
+              description: 'Categories found',
+              schema: findCategoriesResponseBodyDtoSchema,
             },
           },
         },
@@ -47,23 +47,23 @@ export class GenreHttpController implements HttpController {
     ];
   }
 
-  private async findGenres(
-    request: HttpRequest<undefined, FindGenresQueryParamsDto, undefined>,
-  ): Promise<HttpOkResponse<FindGenresResponseBodyDto>> {
+  private async findCategories(
+    request: HttpRequest<undefined, FindCategoriesQueryParamsDto, undefined>,
+  ): Promise<HttpOkResponse<FindCategoriesResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
     });
 
     const { page = 1, pageSize = 10 } = request.queryParams;
 
-    const { genres, total } = await this.findGenresQueryHandler.execute({
+    const { categories, total } = await this.findCategoriesQueryHandler.execute({
       page,
       pageSize,
     });
 
     return {
       body: {
-        data: genres.map(mapGenreToDto),
+        data: categories.map(mapCategoryToDto),
         metadata: {
           page,
           pageSize,

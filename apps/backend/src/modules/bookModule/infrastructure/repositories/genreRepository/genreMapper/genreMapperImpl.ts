@@ -1,17 +1,17 @@
-import { type GenreRawEntity } from '../../../../../databaseModule/infrastructure/tables/genreTable/genreRawEntity.js';
-import { Genre } from '../../../../domain/entities/genre/genre.js';
+import { type CategoryRawEntity } from '../../../../../databaseModule/infrastructure/tables/categoriesTable/categoryRawEntity.js';
+import { Category } from '../../../../domain/entities/category/category.js';
 
-import { type GenreMapper } from './genreMapper.js';
+import { type CategoryMapper } from './categoryMapper.js';
 
-export class GenreMapperImpl implements GenreMapper {
-  public mapToDomain(raw: GenreRawEntity): Genre {
-    return new Genre({
+export class CategoryMapperImpl implements CategoryMapper {
+  public mapToDomain(raw: CategoryRawEntity): Category {
+    return new Category({
       id: raw.id,
       name: raw.name,
     });
   }
 
-  public mapToPersistence(domain: Genre): GenreRawEntity {
+  public mapToPersistence(domain: Category): CategoryRawEntity {
     return {
       id: domain.getId(),
       name: domain.getName(),

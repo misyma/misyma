@@ -1,1 +1,1 @@
-export const blacklistTokenTable = 'blacklistTokens';
+export const blacklistTokensTable = 'blacklist_tokens';

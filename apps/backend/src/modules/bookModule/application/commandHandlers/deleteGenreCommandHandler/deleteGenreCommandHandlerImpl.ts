@@ -1,38 +1,38 @@
 import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotFoundError.js';
 import { type LoggerService } from '../../../../../libs/logger/loggerService.js';
-import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
+import { type CategoryRepository } from '../../../domain/repositories/categoryRepository/categoryRepository.js';
 
-import { type DeleteGenreCommandHandler, type DeleteGenrePayload } from './deleteGenreCommandHandler.js';
+import { type DeleteCategoryCommandHandler, type DeleteCategoryPayload } from './deleteCategoryCommandHandler.js';
 
-export class DeleteGenreCommandHandlerImpl implements DeleteGenreCommandHandler {
+export class DeleteCategoryCommandHandlerImpl implements DeleteCategoryCommandHandler {
   public constructor(
-    private readonly genreRepository: GenreRepository,
+    private readonly categoryRepository: CategoryRepository,
     private readonly loggerService: LoggerService,
   ) {}
 
-  public async execute(payload: DeleteGenrePayload): Promise<void> {
+  public async execute(payload: DeleteCategoryPayload): Promise<void> {
     const { id } = payload;
 
     this.loggerService.debug({
-      message: 'Deleting Genre...',
+      message: 'Deleting Category...',
       id,
     });
 
-    const genre = await this.genreRepository.findGenre({
+    const category = await this.categoryRepository.findCategory({
       id,
     });
 
-    if (!genre) {
+    if (!category) {
       throw new ResourceNotFoundError({
-        resource: 'Genre',
+        resource: 'Category',
         id,
       });
     }
 
-    await this.genreRepository.deleteGenre({ id: genre.getId() });
+    await this.categoryRepository.deleteCategory({ id: category.getId() });
 
     this.loggerService.debug({
-      message: 'Genre deleted.',
+      message: 'Category deleted.',
       id,
     });
   }

@@ -28,7 +28,7 @@ export type UpdateBookPathParamsDto = TypeExtends<Static<typeof updateBookPathPa
 export const updateBookBodyDtoSchema = Type.Object({
   title: Type.Optional(bookTitleSchema),
   isbn: Type.Optional(bookIsbnSchema),
-  genreId: Type.Optional(Type.String({ format: 'uuid' })),
+  categoryId: Type.Optional(Type.String({ format: 'uuid' })),
   publisher: Type.Optional(bookPublisherSchema),
   releaseYear: Type.Optional(bookReleaseYearSchema),
   language: Type.Optional(Type.Union(Object.values(languages).map((language) => Type.Literal(language)))),

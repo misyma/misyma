@@ -8,8 +8,8 @@ export interface UserBookWithJoinsRawEntity {
   readonly bookshelfId: string;
   readonly createdAt: Date;
 
-  readonly genreId: string;
-  readonly genreName: string;
+  readonly categoryId: string;
+  readonly categoryName: string;
   readonly bookId: string;
   readonly title: string;
   readonly isbn: string | null;

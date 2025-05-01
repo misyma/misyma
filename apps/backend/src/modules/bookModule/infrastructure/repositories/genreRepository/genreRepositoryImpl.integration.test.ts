@@ -4,164 +4,164 @@ import { Generator } from '../../../../../../tests/generator.js';
 import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type GenreRawEntity } from '../../../../databaseModule/infrastructure/tables/genreTable/genreRawEntity.js';
+import { type CategoryRawEntity } from '../../../../databaseModule/infrastructure/tables/categoriesTable/categoryRawEntity.js';
 import { databaseSymbols } from '../../../../databaseModule/symbols.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
-import { Genre } from '../../../domain/entities/genre/genre.js';
-import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
+import { Category } from '../../../domain/entities/category/category.js';
+import { type CategoryRepository } from '../../../domain/repositories/categoryRepository/categoryRepository.js';
 import { symbols } from '../../../symbols.js';
-import { GenreTestFactory } from '../../../tests/factories/genreTestFactory/genreTestFactory.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { CategoryTestFactory } from '../../../tests/factories/categoryTestFactory/categoryTestFactory.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 
-describe('GenreRepositoryImpl', () => {
-  let genreRepository: GenreRepository;
+describe('CategoryRepositoryImpl', () => {
+  let categoryRepository: CategoryRepository;
 
   let databaseClient: DatabaseClient;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
-  const genreTestFactory = new GenreTestFactory();
+  const categoryTestFactory = new CategoryTestFactory();
 
   beforeEach(async () => {
     const container = await TestContainer.create();
 
-    genreRepository = container.get<GenreRepository>(symbols.genreRepository);
+    categoryRepository = container.get<CategoryRepository>(symbols.categoryRepository);
 
     databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
-    await genreTestUtils.truncate();
+    await categoryTestUtils.truncate();
   });
 
   afterEach(async () => {
-    await genreTestUtils.truncate();
+    await categoryTestUtils.truncate();
 
     await databaseClient.destroy();
   });
 
   describe('findById', () => {
-    it('returns null - when Genre was not found', async () => {
-      const res = await genreRepository.findGenre({ id: 'non-existing-id' });
+    it('returns null - when Category was not found', async () => {
+      const res = await categoryRepository.findCategory({ id: 'non-existing-id' });
 
       expect(res).toBeNull();
     });
 
-    it('returns Genre', async () => {
-      const createdGenre = await genreTestUtils.createAndPersist();
+    it('returns Category', async () => {
+      const createdCategory = await categoryTestUtils.createAndPersist();
 
-      const genre = await genreRepository.findGenre({ id: createdGenre.id });
+      const category = await categoryRepository.findCategory({ id: createdCategory.id });
 
-      expect(genre).toBeInstanceOf(Genre);
+      expect(category).toBeInstanceOf(Category);
 
-      expect(genre?.getId()).toEqual(createdGenre.id);
+      expect(category?.getId()).toEqual(createdCategory.id);
     });
   });
 
-  describe('findGenres', () => {
-    it('returns an empty array - given no Genres found', async () => {
+  describe('findCategories', () => {
+    it('returns an empty array - given no Categories found', async () => {
       const nonExistentIds = Array.from({ length: 5 }, () => Generator.uuid());
 
-      const genres = await genreRepository.findGenres({
+      const categories = await categoryRepository.findCategories({
         ids: nonExistentIds,
         page: 1,
         pageSize: 10,
       });
 
-      expect(genres.length).toBe(0);
+      expect(categories.length).toBe(0);
     });
 
-    it('returns Genres by ids', async () => {
-      const genre1 = await genreTestUtils.createAndPersist();
+    it('returns Categories by ids', async () => {
+      const category1 = await categoryTestUtils.createAndPersist();
 
-      const genre2 = await genreTestUtils.createAndPersist();
+      const category2 = await categoryTestUtils.createAndPersist();
 
-      const genre3 = await genreTestUtils.createAndPersist();
+      const category3 = await categoryTestUtils.createAndPersist();
 
-      const genre4 = await genreTestUtils.createAndPersist();
+      const category4 = await categoryTestUtils.createAndPersist();
 
-      const genres = await genreRepository.findGenres({
-        ids: [genre1.id, genre2.id, genre3.id, genre4.id],
+      const categories = await categoryRepository.findCategories({
+        ids: [category1.id, category2.id, category3.id, category4.id],
         page: 1,
         pageSize: 10,
       });
 
-      expect(genres.length).toBe(4);
+      expect(categories.length).toBe(4);
     });
 
-    it('returns all Genres', async () => {
-      const createdGenres: GenreRawEntity[] = [];
+    it('returns all Categories', async () => {
+      const createdCategories: CategoryRawEntity[] = [];
 
       for (let i = 0; i < 8; i++) {
-        const createdGenre = await genreTestUtils.createAndPersist();
+        const createdCategory = await categoryTestUtils.createAndPersist();
 
-        createdGenres.push(createdGenre);
+        createdCategories.push(createdCategory);
       }
 
-      const genres = await genreRepository.findGenres({
+      const categories = await categoryRepository.findCategories({
         page: 1,
         pageSize: 10,
       });
 
-      expect(genres.length).toBe(createdGenres.length);
+      expect(categories.length).toBe(createdCategories.length);
 
-      expect(genres).toBeInstanceOf(Array);
+      expect(categories).toBeInstanceOf(Array);
     });
   });
 
   describe('findByName', () => {
-    it('returns null - when Genre was not found', async () => {
-      const genre = await genreRepository.findGenre({
+    it('returns null - when Category was not found', async () => {
+      const category = await categoryRepository.findCategory({
         name: 'non-existing-name',
       });
 
-      expect(genre).toBeNull();
+      expect(category).toBeNull();
     });
 
-    it('returns Genre', async () => {
-      const genre = await genreTestUtils.createAndPersist();
+    it('returns Category', async () => {
+      const category = await categoryTestUtils.createAndPersist();
 
-      const result = await genreRepository.findGenre({
-        name: genre.name,
+      const result = await categoryRepository.findCategory({
+        name: category.name,
       });
 
-      expect(result).toBeInstanceOf(Genre);
+      expect(result).toBeInstanceOf(Category);
 
-      expect(result?.getName()).toEqual(genre.name);
+      expect(result?.getName()).toEqual(category.name);
     });
   });
 
   describe('Save', () => {
-    it('creates Genre', async () => {
+    it('creates Category', async () => {
       const name = Generator.word();
 
-      const genre = await genreRepository.saveGenre({
-        genre: {
+      const category = await categoryRepository.saveCategory({
+        category: {
           name,
         },
       });
 
-      expect(genre).toBeInstanceOf(Genre);
+      expect(category).toBeInstanceOf(Category);
 
-      expect(genre.getName()).toBe(name);
+      expect(category.getName()).toBe(name);
 
-      const createdGenre = await genreTestUtils.findById(genre.getId());
+      const createdCategory = await categoryTestUtils.findById(category.getId());
 
-      expect(createdGenre?.name).toBe(name);
+      expect(createdCategory?.name).toBe(name);
     });
 
-    it('throws an error while creating - when Genre with the same name already exists', async () => {
+    it('throws an error while creating - when Category with the same name already exists', async () => {
       const name = Generator.word();
 
-      await genreRepository.saveGenre({
-        genre: {
+      await categoryRepository.saveCategory({
+        category: {
           name,
         },
       });
 
       try {
-        await genreRepository.saveGenre({
-          genre: {
+        await categoryRepository.saveCategory({
+          category: {
             name,
           },
         });
@@ -169,7 +169,7 @@ describe('GenreRepositoryImpl', () => {
         expect(error).toBeInstanceOf(RepositoryError);
 
         expect((error as RepositoryError).context).toEqual({
-          entity: 'Genre',
+          entity: 'Category',
           operation: 'create',
           originalError: expect.any(Error),
         });
@@ -180,47 +180,47 @@ describe('GenreRepositoryImpl', () => {
       expect.fail();
     });
 
-    it('updates Genre', async () => {
-      const genreRawEntity = await genreTestUtils.createAndPersist();
+    it('updates Category', async () => {
+      const categoryRawEntity = await categoryTestUtils.createAndPersist();
 
       const newName = Generator.words(2);
 
-      const genre = genreTestFactory.create(genreRawEntity);
+      const category = categoryTestFactory.create(categoryRawEntity);
 
-      genre.setName({ name: newName });
+      category.setName({ name: newName });
 
-      const upatedGenre = await genreRepository.saveGenre({
-        genre,
+      const upatedCategory = await categoryRepository.saveCategory({
+        category,
       });
 
-      expect(upatedGenre).toBeInstanceOf(Genre);
+      expect(upatedCategory).toBeInstanceOf(Category);
 
-      expect(upatedGenre.getName()).toBe(newName);
+      expect(upatedCategory.getName()).toBe(newName);
 
-      const persistedGenre = await genreTestUtils.findById(genreRawEntity.id);
+      const persistedCategory = await categoryTestUtils.findById(categoryRawEntity.id);
 
-      expect(persistedGenre).not.toBeNull();
+      expect(persistedCategory).not.toBeNull();
 
-      expect(persistedGenre?.name).toBe(newName);
+      expect(persistedCategory?.name).toBe(newName);
     });
 
-    it('throws an error while updating - when Genre with the same name already exists', async () => {
-      const createdGenre1 = await genreTestUtils.createAndPersist();
+    it('throws an error while updating - when Category with the same name already exists', async () => {
+      const createdCategory1 = await categoryTestUtils.createAndPersist();
 
-      const createdGenre2 = await genreTestUtils.createAndPersist();
+      const createdCategory2 = await categoryTestUtils.createAndPersist();
 
       try {
-        await genreRepository.saveGenre({
-          genre: new Genre({
-            id: createdGenre1.id,
-            name: createdGenre2.name,
+        await categoryRepository.saveCategory({
+          category: new Category({
+            id: createdCategory1.id,
+            name: createdCategory2.name,
           }),
         });
       } catch (error) {
         expect(error).toBeInstanceOf(RepositoryError);
 
         expect((error as RepositoryError).context).toEqual({
-          entity: 'Genre',
+          entity: 'Category',
           operation: 'update',
           originalError: expect.any(Error),
         });
@@ -233,14 +233,14 @@ describe('GenreRepositoryImpl', () => {
   });
 
   describe('delete', () => {
-    it('deletes Genre', async () => {
-      const createdGenre = await genreTestUtils.createAndPersist();
+    it('deletes Category', async () => {
+      const createdCategory = await categoryTestUtils.createAndPersist();
 
-      await genreRepository.deleteGenre({ id: createdGenre.id });
+      await categoryRepository.deleteCategory({ id: createdCategory.id });
 
-      const deletedGenre = await genreTestUtils.findById(createdGenre.id);
+      const deletedCategory = await categoryTestUtils.findById(createdCategory.id);
 
-      expect(deletedGenre).toBeNull();
+      expect(deletedCategory).toBeNull();
     });
   });
 });

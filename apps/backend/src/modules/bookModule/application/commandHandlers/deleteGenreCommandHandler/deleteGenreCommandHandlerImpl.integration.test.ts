@@ -7,36 +7,36 @@ import { ResourceNotFoundError } from '../../../../../common/errors/resourceNotF
 import { databaseSymbols } from '../../../../databaseModule/symbols.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { symbols } from '../../../symbols.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 
-import { type DeleteGenreCommandHandler } from './deleteGenreCommandHandler.js';
+import { type DeleteCategoryCommandHandler } from './deleteCategoryCommandHandler.js';
 
-describe('DeleteGenreCommandHandler', () => {
-  let commandHandler: DeleteGenreCommandHandler;
+describe('DeleteCategoryCommandHandler', () => {
+  let commandHandler: DeleteCategoryCommandHandler;
 
   let databaseClient: DatabaseClient;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   beforeEach(async () => {
     const container = await TestContainer.create();
 
-    commandHandler = container.get<DeleteGenreCommandHandler>(symbols.deleteGenreCommandHandler);
+    commandHandler = container.get<DeleteCategoryCommandHandler>(symbols.deleteCategoryCommandHandler);
 
     databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
-    await genreTestUtils.truncate();
+    await categoryTestUtils.truncate();
   });
 
   afterEach(async () => {
-    await genreTestUtils.truncate();
+    await categoryTestUtils.truncate();
 
     await databaseClient.destroy();
   });
 
-  it('throws an error - when Genre does not exist', async () => {
+  it('throws an error - when Category does not exist', async () => {
     const invalidUuid = Generator.uuid();
 
     try {
@@ -47,7 +47,7 @@ describe('DeleteGenreCommandHandler', () => {
       expect(error).toBeInstanceOf(ResourceNotFoundError);
 
       expect((error as ResourceNotFoundError).context).toEqual({
-        resource: 'Genre',
+        resource: 'Category',
         id: invalidUuid,
       });
 
@@ -57,15 +57,15 @@ describe('DeleteGenreCommandHandler', () => {
     expect.fail();
   });
 
-  it('deletes the Genre', async () => {
-    const genre = await genreTestUtils.createAndPersist();
+  it('deletes the Category', async () => {
+    const category = await categoryTestUtils.createAndPersist();
 
     await commandHandler.execute({
-      id: genre.id,
+      id: category.id,
     });
 
-    const foundGenre = await genreTestUtils.findById(genre.id);
+    const foundCategory = await categoryTestUtils.findById(category.id);
 
-    expect(foundGenre).toBeNull();
+    expect(foundCategory).toBeNull();
   });
 });

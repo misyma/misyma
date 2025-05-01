@@ -2,8 +2,8 @@ import { type ReadingStatus } from '@common/contracts';
 
 import { type BookDraft } from '../book/book.js';
 import { type BookReading } from '../bookReading/bookReading.js';
+import { type Category } from '../category/category.js';
 import { type Collection } from '../collection/collection.js';
-import { type Genre } from '../genre/genre.js';
 
 export interface UserBookDraft {
   readonly id: string;
@@ -48,8 +48,8 @@ export interface SetBookshelfIdPayload {
   readonly bookshelfId: string;
 }
 
-export interface SetGenrePayload {
-  readonly genre: Genre;
+export interface SetCategoryPayload {
+  readonly category: Category;
 }
 
 export interface SetCollectionsPayload {
@@ -129,7 +129,7 @@ export class UserBook {
   }
 
   public set id(_) {
-    throw new Error("Cannot change UserBook id!");
+    throw new Error('Cannot change UserBook id!');
   }
 
   public get imageUrl(): string | undefined | null {
@@ -157,7 +157,7 @@ export class UserBook {
   }
 
   public get collections(): Collection[] | undefined {
-    return this.state.collections ?  [...this.state.collections] : undefined;
+    return this.state.collections ? [...this.state.collections] : undefined;
   }
 
   public get readings(): BookReading[] | undefined {

@@ -1,5 +1,5 @@
 export const testSymbols = {
-  genreTestUtils: Symbol('genreTestUtils'),
+  categoryTestUtils: Symbol('categoryTestUtils'),
   bookTestUtils: Symbol('bookTestUtils'),
   userBookTestUtils: Symbol('userBookTestUtils'),
   bookshelfTestUtils: Symbol('bookshelfTestUtils'),

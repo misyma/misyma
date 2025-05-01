@@ -1,13 +1,13 @@
 import { type Metadata } from '../metadata.js';
 
-import { type Genre } from './genre.js';
+import { type Category } from './category.js';
 
-export interface FindGenresQueryParams {
+export interface FindCategoriesQueryParams {
   readonly page?: number;
   readonly pageSize?: number;
 }
 
-export interface FindGenresResponseBody {
-  readonly data: Genre[];
+export interface FindCategoriesResponseBody {
+  readonly data: Category[];
   readonly metadata: Metadata;
 }

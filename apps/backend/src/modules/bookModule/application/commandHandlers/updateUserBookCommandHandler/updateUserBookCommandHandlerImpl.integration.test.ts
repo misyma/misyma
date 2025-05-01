@@ -14,8 +14,8 @@ import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
 import { type BorrowingTestUtils } from '../../../tests/utils/borrowingTestUtils/borrowingTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 import { type CollectionTestUtils } from '../../../tests/utils/collectionTestUtils/collectionTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
 import { type UpdateUserBookCommandHandler } from './updateUserBookCommandHandler.js';
@@ -25,7 +25,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
   let bookTestUtils: BookTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   let collectionTestUtils: CollectionTestUtils;
 
@@ -52,7 +52,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
     collectionTestUtils = container.get<CollectionTestUtils>(testSymbols.collectionTestUtils);
 
@@ -73,7 +73,7 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       bookshelfTestUtils,
       userTestUtils,
       userBookTestUtils,
-      genreTestUtils,
+      categoryTestUtils,
       borrowingTestUtils,
     ];
 
@@ -123,12 +123,12 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       },
     });
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
         },
       },
     });
@@ -179,12 +179,12 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       },
     });
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
         },
       },
     });
@@ -236,13 +236,13 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
       },
     });
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
         },
       },
     });
@@ -287,13 +287,13 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
         },
       },
     });
@@ -336,13 +336,13 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
         },
       },
     });
@@ -380,13 +380,13 @@ describe('UpdateUserBookCommandHandlerImpl', () => {
 
     const author = await authorTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
         },
       },
     });

@@ -15,7 +15,7 @@ import {
 
 export const createBookBodyDtoSchema = Type.Object({
   title: bookTitleSchema,
-  genreId: Type.String({ format: 'uuid' }),
+  categoryId: Type.String({ format: 'uuid' }),
   isbn: Type.Optional(bookIsbnSchema),
   publisher: Type.Optional(bookPublisherSchema),
   releaseYear: bookReleaseYearSchema,

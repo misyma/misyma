@@ -7,7 +7,7 @@ import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { type AuthorTestUtils } from '../../../../bookModule/tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../../bookModule/tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../../bookModule/tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../../bookModule/tests/utils/categoryTestUtils/categoryTestUtils.js';
 import { type UserBookTestUtils } from '../../../../bookModule/tests/utils/userBookTestUtils/userBookTestUtils.js';
 import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
 import { type UserBookRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookRawEntity.js';
@@ -27,7 +27,7 @@ describe('BookshelfRepositoryImpl', () => {
 
   let authorTestUtils: AuthorTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
@@ -54,7 +54,7 @@ describe('BookshelfRepositoryImpl', () => {
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
@@ -62,7 +62,14 @@ describe('BookshelfRepositoryImpl', () => {
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
-    testUtils = [authorTestUtils, bookTestUtils, genreTestUtils, userTestUtils, bookshelfTestUtils, userBookTestUtils];
+    testUtils = [
+      authorTestUtils,
+      bookTestUtils,
+      categoryTestUtils,
+      userTestUtils,
+      bookshelfTestUtils,
+      userBookTestUtils,
+    ];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -84,13 +91,16 @@ describe('BookshelfRepositoryImpl', () => {
   });
 
   async function createBook(): Promise<BookRawEntity> {
-    const [author, genre] = await Promise.all([authorTestUtils.createAndPersist(), genreTestUtils.createAndPersist()]);
+    const [author, category] = await Promise.all([
+      authorTestUtils.createAndPersist(),
+      categoryTestUtils.createAndPersist(),
+    ]);
 
     return await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
         },
       },
     });

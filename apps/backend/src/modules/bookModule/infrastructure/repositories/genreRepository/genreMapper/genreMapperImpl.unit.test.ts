@@ -1,39 +1,39 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
-import { GenreTestFactory } from '../../../../tests/factories/genreTestFactory/genreTestFactory.js';
+import { CategoryTestFactory } from '../../../../tests/factories/categoryTestFactory/categoryTestFactory.js';
 
-import { GenreMapperImpl } from './genreMapperImpl.js';
+import { CategoryMapperImpl } from './categoryMapperImpl.js';
 
-describe('GenreMapperImpl', () => {
-  let genreMapperImpl: GenreMapperImpl;
+describe('CategoryMapperImpl', () => {
+  let categoryMapperImpl: CategoryMapperImpl;
 
-  const genreTestFactory = new GenreTestFactory();
+  const categoryTestFactory = new CategoryTestFactory();
 
   beforeEach(async () => {
-    genreMapperImpl = new GenreMapperImpl();
+    categoryMapperImpl = new CategoryMapperImpl();
   });
 
-  it('maps from genre raw entity to domain genre', async () => {
-    const genreEntity = genreTestFactory.createRaw();
+  it('maps from category raw entity to domain category', async () => {
+    const categoryEntity = categoryTestFactory.createRaw();
 
-    const genre = genreMapperImpl.mapToDomain(genreEntity);
+    const category = categoryMapperImpl.mapToDomain(categoryEntity);
 
-    expect(genre).toEqual({
-      id: genreEntity.id,
+    expect(category).toEqual({
+      id: categoryEntity.id,
       state: {
-        name: genreEntity.name,
+        name: categoryEntity.name,
       },
     });
   });
 
-  it('maps from domain genre to genre raw entity', () => {
-    const genre = genreTestFactory.create();
+  it('maps from domain category to category raw entity', () => {
+    const category = categoryTestFactory.create();
 
-    const genreRawEntity = genreMapperImpl.mapToPersistence(genre);
+    const categoryRawEntity = categoryMapperImpl.mapToPersistence(category);
 
-    expect(genreRawEntity).toEqual({
-      id: genre.getId(),
-      name: genre.getName(),
+    expect(categoryRawEntity).toEqual({
+      id: category.getId(),
+      name: category.getName(),
     });
   });
 });

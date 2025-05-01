@@ -8,7 +8,7 @@ import { type DatabaseClient } from '../../../../databaseModule/types/databaseCl
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 
 import { type FindBooksQueryHandler } from './findBooksQueryHandler.js';
 
@@ -21,7 +21,7 @@ describe('FindBooksQueryHandler', () => {
 
   let bookTestUtils: BookTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   let testUtils: TestUtils[];
 
@@ -36,7 +36,7 @@ describe('FindBooksQueryHandler', () => {
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
     testUtils = [authorTestUtils, bookTestUtils];
 
@@ -56,14 +56,14 @@ describe('FindBooksQueryHandler', () => {
   it('finds books', async () => {
     const author = await authorTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
         book: {
           isApproved: true,
-          genreId: genre.id,
+          categoryId: category.id,
         },
       },
     });
@@ -83,13 +83,13 @@ describe('FindBooksQueryHandler', () => {
   it('finds books by isbn', async () => {
     const author = await authorTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
           isApproved: true,
         },
       },
@@ -111,14 +111,14 @@ describe('FindBooksQueryHandler', () => {
   it('finds books by title', async () => {
     const author = await authorTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
         book: {
           isApproved: true,
-          genreId: genre.id,
+          categoryId: category.id,
           title: 'Game of Thrones',
         },
       },
@@ -140,13 +140,13 @@ describe('FindBooksQueryHandler', () => {
   it('finds no books if they are not approved', async () => {
     const author = await authorTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         authorIds: [author.id],
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
           isApproved: false,
         },
       },

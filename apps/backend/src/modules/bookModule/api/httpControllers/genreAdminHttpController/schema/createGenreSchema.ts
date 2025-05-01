@@ -1,18 +1,18 @@
-import { type CreateGenreRequestBody, type CreateGenreResponseBody } from '@common/contracts';
+import { type CreateCategoryRequestBody, type CreateCategoryResponseBody } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { genreDtoSchema, genreNameSchema } from '../../common/genreDto.js';
+import { categoryDtoSchema, categoryNameSchema } from '../../common/categoryDto.js';
 
-export const createGenreBodyDtoSchema = Type.Object({
-  name: genreNameSchema,
+export const createCategoryBodyDtoSchema = Type.Object({
+  name: categoryNameSchema,
 });
 
-export type CreateGenreBodyDto = TypeExtends<CreateGenreRequestBody, Static<typeof createGenreBodyDtoSchema>>;
+export type CreateCategoryBodyDto = TypeExtends<CreateCategoryRequestBody, Static<typeof createCategoryBodyDtoSchema>>;
 
-export const createGenreResponseBodyDtoSchema = genreDtoSchema;
+export const createCategoryResponseBodyDtoSchema = categoryDtoSchema;
 
-export type CreateGenreResponseBodyDto = TypeExtends<
-  CreateGenreResponseBody,
-  Static<typeof createGenreResponseBodyDtoSchema>
+export type CreateCategoryResponseBodyDto = TypeExtends<
+  CreateCategoryResponseBody,
+  Static<typeof createCategoryResponseBodyDtoSchema>
 >;

@@ -10,8 +10,8 @@ import { type DatabaseClient } from '../../../../databaseModule/types/databaseCl
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Author } from '../../../domain/entities/author/author.js';
 import { BookReading } from '../../../domain/entities/bookReading/bookReading.js';
+import { Category } from '../../../domain/entities/category/category.js';
 import { Collection } from '../../../domain/entities/collection/collection.js';
-import { Genre } from '../../../domain/entities/genre/genre.js';
 import { UserBook } from '../../../domain/entities/userBook/userBook.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
 import { symbols } from '../../../symbols.js';
@@ -19,8 +19,8 @@ import { UserBookTestFactory } from '../../../tests/factories/userBookTestFactor
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookReadingTestUtils } from '../../../tests/utils/bookReadingTestUtils/bookReadingTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 import { type CollectionTestUtils } from '../../../tests/utils/collectionTestUtils/collectionTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
 import { type TestDataOrchestrator } from '../../../tests/utils/testDataOrchestrator/testDataOrchestrator.js';
 import { type UserBookTestUtils } from '../../../tests/utils/userBookTestUtils/userBookTestUtils.js';
 
@@ -37,7 +37,7 @@ describe('UserBookRepositoryImpl', () => {
 
   let bookshelfTestUtils: BookshelfTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   let userBookTestUtils: UserBookTestUtils;
 
@@ -68,7 +68,7 @@ describe('UserBookRepositoryImpl', () => {
 
     bookshelfTestUtils = container.get<BookshelfTestUtils>(testSymbols.bookshelfTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
     userBookTestUtils = container.get<UserBookTestUtils>(testSymbols.userBookTestUtils);
 
@@ -83,7 +83,7 @@ describe('UserBookRepositoryImpl', () => {
       bookTestUtils,
       bookshelfTestUtils,
       userTestUtils,
-      genreTestUtils,
+      categoryTestUtils,
       userBookTestUtils,
       bookReadingTestUtils,
       collectionTestUtils,
@@ -164,8 +164,8 @@ describe('UserBookRepositoryImpl', () => {
           isApproved: book.isApproved,
           imageUrl: book.imageUrl,
           createdAt: book.createdAt,
-          genreId: expect.any(String),
-          genre: new Genre({
+          categoryId: expect.any(String),
+          category: new Category({
             id: expect.any(String),
             name: expect.any(String),
           }),
@@ -234,11 +234,11 @@ describe('UserBookRepositoryImpl', () => {
           id: book.id,
           title: book.title,
           isbn: book.isbn,
-          genre: new Genre({
+          category: new Category({
             id: expect.any(String),
             name: expect.any(String),
           }),
-          genreId: expect.any(String),
+          categoryId: expect.any(String),
           publisher: book.publisher,
           releaseYear: book.releaseYear,
           language: book.language,
@@ -495,11 +495,11 @@ describe('UserBookRepositoryImpl', () => {
           id: book.id,
           title: book.title,
           isbn: book.isbn,
-          genre: new Genre({
+          category: new Category({
             id: expect.any(String),
             name: expect.any(String),
           }),
-          genreId: expect.any(String),
+          categoryId: expect.any(String),
           publisher: book.publisher,
           releaseYear: book.releaseYear,
           language: book.language,

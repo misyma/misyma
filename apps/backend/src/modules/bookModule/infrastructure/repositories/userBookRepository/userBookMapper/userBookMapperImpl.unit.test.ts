@@ -1,7 +1,7 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
 import { Generator } from '../../../../../../../tests/generator.js';
-import { Genre } from '../../../../domain/entities/genre/genre.js';
+import { Category } from '../../../../domain/entities/category/category.js';
 import { BookTestFactory } from '../../../../tests/factories/bookTestFactory/bookTestFactory.js';
 import { UserBookTestFactory } from '../../../../tests/factories/userBookTestFactory/userBookTestFactory.js';
 
@@ -48,8 +48,8 @@ describe('UserBookMapperImpl', () => {
       createdAt: userBook.createdAt,
       authorIds: [],
       authorNames: [],
-      genreId: '',
-      genreName: '',
+      categoryId: '',
+      categoryName: '',
       authorApprovals: [],
       authorCreatedAtDates: [],
       collectionIds: [],
@@ -76,8 +76,8 @@ describe('UserBookMapperImpl', () => {
         book: {
           id: book.id,
           title: book.title,
-          genreId: '',
-          genre: new Genre({
+          categoryId: '',
+          category: new Category({
             id: '',
             name: '',
           }),

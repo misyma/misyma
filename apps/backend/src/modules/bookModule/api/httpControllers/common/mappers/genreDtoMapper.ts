@@ -1,9 +1,9 @@
-import { type Genre } from '../../../../domain/entities/genre/genre.js';
-import { type GenreDto } from '../genreDto.js';
+import { type Category } from '../../../../domain/entities/category/category.js';
+import { type CategoryDto } from '../categoryDto.js';
 
-export function mapGenreToDto(genre: Genre): GenreDto {
+export function mapCategoryToDto(category: Category): CategoryDto {
   return {
-    id: genre.getId(),
-    name: genre.getName(),
+    id: category.getId(),
+    name: category.getName(),
   };
 }

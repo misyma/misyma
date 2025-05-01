@@ -1,4 +1,4 @@
-export const BookGenre = {
+export const BookCategory = {
   literature: 'literatura piękna',
   bellesLettres: 'beletrystyka',
   fantasy: 'fantastyka',

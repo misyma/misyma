@@ -1,9 +1,9 @@
-export interface GenreDraft {
+export interface CategoryDraft {
   readonly id: string;
   readonly name: string;
 }
 
-export interface GenreState {
+export interface CategoryState {
   name: string;
 }
 
@@ -11,11 +11,11 @@ export interface SetNamePayload {
   readonly name: string;
 }
 
-export class Genre {
+export class Category {
   private readonly id: string;
-  private readonly state: GenreState;
+  private readonly state: CategoryState;
 
-  public constructor(draft: GenreDraft) {
+  public constructor(draft: CategoryDraft) {
     const { id, name } = draft;
 
     this.id = id;
@@ -33,7 +33,7 @@ export class Genre {
     return this.state.name;
   }
 
-  public getState(): GenreState {
+  public getState(): CategoryState {
     return this.state;
   }
 

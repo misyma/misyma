@@ -1,9 +1,9 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { authorTable } from '../../../../databaseModule/infrastructure/tables/authorTable/authorTable.js';
-import { bookAuthorTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
-import { bookshelfTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
-import { bookTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
+import { authorsTable } from '../../../../databaseModule/infrastructure/tables/authorTable/authorTable.js';
+import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
+import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
+import { booksTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
 import { type QuoteRawEntity } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteRawEntity.js';
 import { quoteTable } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteTable.js';
 import { type QuoteWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteWithJoinsRawEntity.js';
@@ -63,30 +63,30 @@ export class QuoteRepositoryImpl implements QuoteRepository {
       const query = this.databaseClient<QuoteWithJoinsRawEntity>(quoteTable)
         .select([
           `${quoteTable}.*`,
-          this.databaseClient.raw(`array_agg(DISTINCT "${authorTable}"."name") as "authors"`),
-          `${bookTable}.title as bookTitle`,
+          this.databaseClient.raw(`array_agg(DISTINCT "${authorsTable}"."name") as "authors"`),
+          `${booksTable}.title as bookTitle`,
         ])
         .leftJoin(userBookTable, (join) => {
           join.on(`${userBookTable}.id`, `=`, `${quoteTable}.userBookId`);
         })
-        .leftJoin(bookAuthorTable, (join) => {
-          join.on(`${bookAuthorTable}.bookId`, '=', `${userBookTable}.bookId`);
+        .leftJoin(booksAuthorsTable, (join) => {
+          join.on(`${booksAuthorsTable}.bookId`, '=', `${userBookTable}.bookId`);
         })
-        .leftJoin(authorTable, (join) => {
-          join.on(`${authorTable}.id`, '=', `${bookAuthorTable}.authorId`);
+        .leftJoin(authorsTable, (join) => {
+          join.on(`${authorsTable}.id`, '=', `${booksAuthorsTable}.authorId`);
         })
-        .leftJoin(bookTable, (join) => {
-          join.on(`${bookTable}.id`, `=`, `${userBookTable}.bookId`);
+        .leftJoin(booksTable, (join) => {
+          join.on(`${booksTable}.id`, `=`, `${userBookTable}.bookId`);
         })
-        .leftJoin(bookshelfTable, (join) => {
-          join.on(`${bookshelfTable}.id`, `=`, `${userBookTable}.bookshelfId`);
+        .leftJoin(bookshelvesTable, (join) => {
+          join.on(`${bookshelvesTable}.id`, `=`, `${userBookTable}.bookshelfId`);
         });
 
       if (authorId) {
-        query.where(`${authorTable}.id`, authorId);
+        query.where(`${authorsTable}.id`, authorId);
       }
 
-      query.where(`${bookshelfTable}.userId`, userId);
+      query.where(`${bookshelvesTable}.userId`, userId);
 
       if (userBookId) {
         query.where(`${quoteTable}.userBookId`, userBookId);
@@ -96,7 +96,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
         query.where(`${quoteTable}.isFavorite`, isFavorite);
       }
 
-      query.groupBy([`${quoteTable}.id`, `${bookTable}.id`]);
+      query.groupBy([`${quoteTable}.id`, `${booksTable}.id`]);
 
       query.orderBy('id', sortDate ?? 'desc');
 
@@ -196,22 +196,22 @@ export class QuoteRepositoryImpl implements QuoteRepository {
         .leftJoin(userBookTable, (join) => {
           join.on(`${userBookTable}.id`, `=`, `${quoteTable}.userBookId`);
         })
-        .leftJoin(bookshelfTable, (join) => {
-          join.on(`${bookshelfTable}.id`, `=`, `${userBookTable}.bookshelfId`);
+        .leftJoin(bookshelvesTable, (join) => {
+          join.on(`${bookshelvesTable}.id`, `=`, `${userBookTable}.bookshelfId`);
         });
 
       if (authorId) {
         query
-          .leftJoin(bookAuthorTable, (join) => {
-            join.on(`${bookAuthorTable}.bookId`, `=`, `${userBookTable}.bookId`);
+          .leftJoin(booksAuthorsTable, (join) => {
+            join.on(`${booksAuthorsTable}.bookId`, `=`, `${userBookTable}.bookId`);
           })
-          .leftJoin(authorTable, (join) => {
-            join.on(`${authorTable}.id`, `=`, `${bookAuthorTable}.authorId`);
+          .leftJoin(authorsTable, (join) => {
+            join.on(`${authorsTable}.id`, `=`, `${booksAuthorsTable}.authorId`);
           })
-          .where(`${authorTable}.id`, authorId);
+          .where(`${authorsTable}.id`, authorId);
       }
 
-      query.where(`${bookshelfTable}.userId`, userId);
+      query.where(`${bookshelvesTable}.userId`, userId);
 
       if (userBookId) {
         query.where(`${quoteTable}.userBookId`, userBookId);

@@ -14,7 +14,7 @@ export interface Book {
   readonly isApproved: boolean;
   readonly imageUrl?: string | undefined;
   readonly createdAt: Date;
-  readonly genreId: string;
+  readonly categoryId: string;
 }
 
 export const bookTitleSchema = Type.String({
@@ -68,7 +68,7 @@ export const bookDraftSchema = Type.Object({
   isApproved: Type.Boolean(),
   imageUrl: Type.Optional(bookImageUrlSchema),
   authorNames: Type.Array(authorNameSchema, { minItems: 1 }),
-  genreId: Type.String({ minLength: 1 }),
+  categoryId: Type.String({ minLength: 1 }),
 });
 
 export type BookDraft = Static<typeof bookDraftSchema>;

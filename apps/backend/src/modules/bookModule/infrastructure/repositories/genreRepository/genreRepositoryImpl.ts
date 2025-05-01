@@ -1,36 +1,36 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { type GenreRawEntity } from '../../../../databaseModule/infrastructure/tables/genreTable/genreRawEntity.js';
-import { genreTable } from '../../../../databaseModule/infrastructure/tables/genreTable/genreTable.js';
+import { categoryTable } from '../../../../databaseModule/infrastructure/tables/categoriesTable/categoriesTable.js';
+import { type CategoryRawEntity } from '../../../../databaseModule/infrastructure/tables/categoriesTable/categoryRawEntity.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
-import { Genre, type GenreState } from '../../../domain/entities/genre/genre.js';
+import { Category, type CategoryState } from '../../../domain/entities/category/category.js';
 import {
-  type FindGenrePayload,
-  type GenreRepository,
-  type FindGenres,
-  type SaveGenrePayload,
-  type DeleteGenrePayload,
-} from '../../../domain/repositories/genreRepository/genreRepository.js';
+  type FindCategoryPayload,
+  type CategoryRepository,
+  type FindCategories,
+  type SaveCategoryPayload,
+  type DeleteCategoryPayload,
+} from '../../../domain/repositories/categoryRepository/categoryRepository.js';
 
-import { type GenreMapper } from './genreMapper/genreMapper.js';
+import { type CategoryMapper } from './categoryMapper/categoryMapper.js';
 
-type CreateGenrePayload = { genre: GenreState };
+type CreateCategoryPayload = { category: CategoryState };
 
-type UpdateGenrePayload = { genre: Genre };
+type UpdateCategoryPayload = { category: Category };
 
-export class GenreRepositoryImpl implements GenreRepository {
+export class CategoryRepositoryImpl implements CategoryRepository {
   public constructor(
     private readonly databaseClient: DatabaseClient,
-    private readonly genreMapper: GenreMapper,
+    private readonly categoryMapper: CategoryMapper,
     private readonly uuidService: UuidService,
   ) {}
 
-  public async findGenre(payload: FindGenrePayload): Promise<Genre | null> {
+  public async findCategory(payload: FindCategoryPayload): Promise<Category | null> {
     const { id, name } = payload;
 
-    let rawEntity: GenreRawEntity | undefined;
+    let rawEntity: CategoryRawEntity | undefined;
 
-    let whereCondition: Partial<GenreRawEntity> = {};
+    let whereCondition: Partial<CategoryRawEntity> = {};
 
     if (id) {
       whereCondition = {
@@ -47,10 +47,10 @@ export class GenreRepositoryImpl implements GenreRepository {
     }
 
     try {
-      rawEntity = await this.databaseClient<GenreRawEntity>(genreTable).select('*').where(whereCondition).first();
+      rawEntity = await this.databaseClient<CategoryRawEntity>(categoryTable).select('*').where(whereCondition).first();
     } catch (error) {
       throw new RepositoryError({
-        entity: 'Genre',
+        entity: 'Category',
         operation: 'find',
         originalError: error,
       });
@@ -60,15 +60,15 @@ export class GenreRepositoryImpl implements GenreRepository {
       return null;
     }
 
-    return this.genreMapper.mapToDomain(rawEntity);
+    return this.categoryMapper.mapToDomain(rawEntity);
   }
 
-  public async findGenres(payload: FindGenres): Promise<Genre[]> {
+  public async findCategories(payload: FindCategories): Promise<Category[]> {
     const { ids, page, pageSize } = payload;
 
-    let rawEntities: GenreRawEntity[];
+    let rawEntities: CategoryRawEntity[];
 
-    const query = this.databaseClient<GenreRawEntity>(genreTable)
+    const query = this.databaseClient<CategoryRawEntity>(categoryTable)
       .select('*')
       .limit(pageSize)
       .offset(pageSize * (page - 1));
@@ -81,34 +81,34 @@ export class GenreRepositoryImpl implements GenreRepository {
       rawEntities = await query;
     } catch (error) {
       throw new RepositoryError({
-        entity: 'Genre',
+        entity: 'Category',
         operation: 'find',
         originalError: error,
       });
     }
 
-    return rawEntities.map((rawEntity) => this.genreMapper.mapToDomain(rawEntity));
+    return rawEntities.map((rawEntity) => this.categoryMapper.mapToDomain(rawEntity));
   }
 
-  public async saveGenre(payload: SaveGenrePayload): Promise<Genre> {
-    const { genre } = payload;
+  public async saveCategory(payload: SaveCategoryPayload): Promise<Category> {
+    const { category } = payload;
 
-    if (genre instanceof Genre) {
-      return this.update({ genre });
+    if (category instanceof Category) {
+      return this.update({ category });
     }
 
-    return this.create({ genre });
+    return this.create({ category });
   }
 
-  private async create(payload: CreateGenrePayload): Promise<Genre> {
+  private async create(payload: CreateCategoryPayload): Promise<Category> {
     const {
-      genre: { name },
+      category: { name },
     } = payload;
 
-    let rawEntities: GenreRawEntity[];
+    let rawEntities: CategoryRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<GenreRawEntity>(genreTable)
+      rawEntities = await this.databaseClient<CategoryRawEntity>(categoryTable)
         .insert({
           id: this.uuidService.generateUuid(),
           name,
@@ -116,59 +116,59 @@ export class GenreRepositoryImpl implements GenreRepository {
         .returning('*');
     } catch (error) {
       throw new RepositoryError({
-        entity: 'Genre',
+        entity: 'Category',
         operation: 'create',
         originalError: error,
       });
     }
 
-    const rawEntity = rawEntities[0] as GenreRawEntity;
+    const rawEntity = rawEntities[0] as CategoryRawEntity;
 
-    return this.genreMapper.mapToDomain(rawEntity);
+    return this.categoryMapper.mapToDomain(rawEntity);
   }
 
-  private async update(payload: UpdateGenrePayload): Promise<Genre> {
-    const { genre } = payload;
+  private async update(payload: UpdateCategoryPayload): Promise<Category> {
+    const { category } = payload;
 
-    let rawEntities: GenreRawEntity[];
+    let rawEntities: CategoryRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<GenreRawEntity>(genreTable)
-        .update(genre.getState())
-        .where({ id: genre.getId() })
+      rawEntities = await this.databaseClient<CategoryRawEntity>(categoryTable)
+        .update(category.getState())
+        .where({ id: category.getId() })
         .returning('*');
     } catch (error) {
       throw new RepositoryError({
-        entity: 'Genre',
+        entity: 'Category',
         operation: 'update',
         originalError: error,
       });
     }
 
-    const rawEntity = rawEntities[0] as GenreRawEntity;
+    const rawEntity = rawEntities[0] as CategoryRawEntity;
 
-    return this.genreMapper.mapToDomain(rawEntity);
+    return this.categoryMapper.mapToDomain(rawEntity);
   }
 
-  public async deleteGenre(payload: DeleteGenrePayload): Promise<void> {
+  public async deleteCategory(payload: DeleteCategoryPayload): Promise<void> {
     const { id } = payload;
 
     try {
-      await this.databaseClient<GenreRawEntity>(genreTable).delete().where({ id });
+      await this.databaseClient<CategoryRawEntity>(categoryTable).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
-        entity: 'Genre',
+        entity: 'Category',
         operation: 'delete',
         originalError: error,
       });
     }
   }
 
-  public async countGenres(payload: FindGenres): Promise<number> {
+  public async countCategories(payload: FindCategories): Promise<number> {
     const { ids } = payload;
 
     try {
-      const query = this.databaseClient<GenreRawEntity>(genreTable);
+      const query = this.databaseClient<CategoryRawEntity>(categoryTable);
 
       if (ids) {
         query.whereIn('id', ids);
@@ -180,7 +180,7 @@ export class GenreRepositoryImpl implements GenreRepository {
 
       if (count === undefined) {
         throw new RepositoryError({
-          entity: 'Genre',
+          entity: 'Category',
           operation: 'count',
           countResult,
         });
@@ -193,7 +193,7 @@ export class GenreRepositoryImpl implements GenreRepository {
       return count;
     } catch (error) {
       throw new RepositoryError({
-        entity: 'Genre',
+        entity: 'Category',
         operation: 'count',
         originalError: error,
       });

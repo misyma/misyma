@@ -43,7 +43,7 @@
     "bucketName": "misyma-images",
     "cloudfrontUrl": "https://d35v5fqwflm78g.cloudfront.net"
   },
-  "genres": [
+  "categories": [
     "literatura piękna",
     "fantastyka i science fiction",
     "poezja i dramat",

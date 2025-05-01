@@ -1,4 +1,3 @@
- 
 export interface NationalLibraryResponseBody {
   nextPage: string;
   bibs: NationalLibraryBook[];
@@ -6,7 +5,7 @@ export interface NationalLibraryResponseBody {
 
 export interface NationalLibraryBook {
   title: string;
-  genre?: string;
+  category?: string;
   marc: Marc;
 }
 

@@ -1,13 +1,13 @@
 import { type Static, Type } from '@sinclair/typebox';
 
-export const genreNameSchema = Type.String({
+export const categoryNameSchema = Type.String({
   minLength: 1,
   maxLength: 64,
 });
 
-export const genreDtoSchema = Type.Object({
+export const categoryDtoSchema = Type.Object({
   id: Type.String({ format: 'uuid' }),
-  name: genreNameSchema,
+  name: categoryNameSchema,
 });
 
-export type GenreDto = Static<typeof genreDtoSchema>;
+export type CategoryDto = Static<typeof categoryDtoSchema>;

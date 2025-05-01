@@ -1,11 +1,11 @@
-import { type Genre } from './genre.js';
+import { type Category } from './category.js';
 
-export interface UpdateGenrePathParams {
-  readonly genreId: string;
+export interface UpdateCategoryPathParams {
+  readonly categoryId: string;
 }
 
-export interface UpdateGenreRequestBody {
+export interface UpdateCategoryRequestBody {
   readonly name: string;
 }
 
-export type UpdateGenreResponseBody = Genre;
+export type UpdateCategoryResponseBody = Category;

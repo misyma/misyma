@@ -1,7 +1,7 @@
 import { type CommandHandler } from '../../../../../common/types/commandHandler.js';
 
-export interface DeleteGenrePayload {
+export interface DeleteCategoryPayload {
   id: string;
 }
 
-export type DeleteGenreCommandHandler = CommandHandler<DeleteGenrePayload, void>;
+export type DeleteCategoryCommandHandler = CommandHandler<DeleteCategoryPayload, void>;

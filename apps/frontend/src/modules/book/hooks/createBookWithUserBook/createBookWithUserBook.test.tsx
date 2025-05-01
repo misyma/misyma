@@ -60,7 +60,7 @@ const dummyPayload = {
     authorIds: [],
   },
   bookPayload: {
-    genreId: '',
+    categoryId: '',
     language: languages.Abkhazian,
     releaseYear: 1999,
     title: 'Title',

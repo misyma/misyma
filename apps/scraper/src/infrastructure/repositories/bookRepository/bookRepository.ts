@@ -17,7 +17,7 @@ export interface CreateBookPayload {
   readonly isApproved: boolean;
   readonly imageUrl?: string | undefined;
   readonly authorIds: string[];
-  readonly genreId: string;
+  readonly categoryId: string;
 }
 
 export interface FindBookPayload {
@@ -47,7 +47,7 @@ export class BookRepository {
       isApproved,
       imageUrl,
       authorIds,
-      genreId,
+      categoryId,
     } = payload;
 
     const id = this.uuidService.generateUuid();
@@ -66,7 +66,7 @@ export class BookRepository {
           pages,
           isApproved,
           imageUrl,
-          genreId,
+          categoryId,
           createdAt: new Date(),
         });
 

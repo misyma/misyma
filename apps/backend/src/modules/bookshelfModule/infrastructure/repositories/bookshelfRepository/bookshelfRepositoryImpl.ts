@@ -1,7 +1,7 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
 import { type BookshelfRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfRawEntity.js';
-import { bookshelfTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
+import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
 import { type BookshelfWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfWithJoinsRawEntity.js';
 import { userBookTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
@@ -34,25 +34,25 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     let rawEntities: BookshelfWithJoinsRawEntity[];
 
     try {
-      const query = this.databaseClient<BookshelfWithJoinsRawEntity>(bookshelfTable)
+      const query = this.databaseClient<BookshelfWithJoinsRawEntity>(bookshelvesTable)
         .select([
-          `${bookshelfTable}.id`,
-          `${bookshelfTable}.name`,
-          `${bookshelfTable}.userId`,
-          `${bookshelfTable}.type`,
-          `${bookshelfTable}.createdAt`,
-          `${bookshelfTable}.imageUrl`,
+          `${bookshelvesTable}.id`,
+          `${bookshelvesTable}.name`,
+          `${bookshelvesTable}.userId`,
+          `${bookshelvesTable}.type`,
+          `${bookshelvesTable}.createdAt`,
+          `${bookshelvesTable}.imageUrl`,
           this.databaseClient.raw(`COUNT("bookId") as "bookCount"`),
         ])
         .leftJoin(userBookTable, (join) => {
-          join.on(`${userBookTable}.bookshelfId`, '=', `${bookshelfTable}.id`);
+          join.on(`${userBookTable}.bookshelfId`, '=', `${bookshelvesTable}.id`);
         })
-        .groupBy(`${bookshelfTable}.id`);
+        .groupBy(`${bookshelvesTable}.id`);
 
       if ('id' in where) {
-        query.where(`${bookshelfTable}.id`, where.id);
+        query.where(`${bookshelvesTable}.id`, where.id);
       } else {
-        query.where(`${bookshelfTable}.userId`, where.userId).where(`${bookshelfTable}.name`, where.name);
+        query.where(`${bookshelvesTable}.userId`, where.userId).where(`${bookshelvesTable}.name`, where.name);
       }
 
       rawEntities = await query;
@@ -74,27 +74,27 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
   public async findBookshelves(payload: FindBookshelvesPayload): Promise<Bookshelf[]> {
     const { userId, name, page, pageSize, type, sortDate } = payload;
 
-    const query = this.databaseClient<BookshelfWithJoinsRawEntity>(bookshelfTable)
+    const query = this.databaseClient<BookshelfWithJoinsRawEntity>(bookshelvesTable)
       .select([
-        `${bookshelfTable}.id`,
-        `${bookshelfTable}.name`,
-        `${bookshelfTable}.userId`,
-        `${bookshelfTable}.type`,
-        `${bookshelfTable}.createdAt`,
-        `${bookshelfTable}.imageUrl`,
+        `${bookshelvesTable}.id`,
+        `${bookshelvesTable}.name`,
+        `${bookshelvesTable}.userId`,
+        `${bookshelvesTable}.type`,
+        `${bookshelvesTable}.createdAt`,
+        `${bookshelvesTable}.imageUrl`,
         this.databaseClient.raw(`COUNT("bookId") as "bookCount"`),
       ])
       .leftJoin(userBookTable, (join) => {
-        join.on(`${userBookTable}.bookshelfId`, '=', `${bookshelfTable}.id`);
+        join.on(`${userBookTable}.bookshelfId`, '=', `${bookshelvesTable}.id`);
       })
-      .groupBy(`${bookshelfTable}.id`);
+      .groupBy(`${bookshelvesTable}.id`);
 
     if (type !== undefined) {
-      query.where(`${bookshelfTable}.type`, type);
+      query.where(`${bookshelvesTable}.type`, type);
     }
 
     if (userId) {
-      query.where(`${bookshelfTable}.userId`, userId);
+      query.where(`${bookshelvesTable}.userId`, userId);
     }
 
     if (name) {
@@ -136,7 +136,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     let rawEntity: BookshelfRawEntity;
 
     try {
-      const result = await this.databaseClient<BookshelfRawEntity>(bookshelfTable).insert(
+      const result = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable).insert(
         {
           id: this.uuidService.generateUuid(),
           name: bookshelf.name,
@@ -168,7 +168,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     let rawEntity: BookshelfRawEntity;
 
     try {
-      const result = await this.databaseClient<BookshelfRawEntity>(bookshelfTable)
+      const result = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable)
         .where({ id: bookshelf.getId() })
         .update(
           {
@@ -194,7 +194,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     const { id } = payload;
 
     try {
-      await this.databaseClient<BookshelfRawEntity>(bookshelfTable).where({ id }).delete();
+      await this.databaseClient<BookshelfRawEntity>(bookshelvesTable).where({ id }).delete();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Bookshelf',
@@ -208,7 +208,7 @@ export class BookshelfRepositoryImpl implements BookshelfRepository {
     const { userId, name } = payload;
 
     try {
-      const query = this.databaseClient<BookshelfRawEntity>(bookshelfTable).where({ userId });
+      const query = this.databaseClient<BookshelfRawEntity>(bookshelvesTable).where({ userId });
 
       if (name) {
         query.whereRaw('name ILIKE ?', `%${name}%`);

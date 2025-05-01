@@ -25,7 +25,7 @@ export enum BookCreationActionType {
   setTitle = 7,
   setAuthor = 8,
   setPublisher = 9,
-  setGenre = 10,
+  setCategory = 10,
   setLanguage = 11,
   setTranslator = 12,
   setFormat = 13,
@@ -77,9 +77,9 @@ type SetPublisher = {
   publisher: string;
 };
 
-type SetGenre = {
-  type: BookCreationActionType.setGenre;
-  genre: string;
+type SetCategory = {
+  type: BookCreationActionType.setCategory;
+  category: string;
 };
 
 type SetNonIsbnStepTwoDetails = {
@@ -120,7 +120,7 @@ type SetNonIsbnStepThreeDetails = {
   status: ReadingStatus;
   image: string;
   bookshelfId: string;
-  genre: string;
+  category: string;
 };
 
 type SetStatus = {
@@ -152,7 +152,7 @@ export type BookCreationAction =
   | SetTitle
   | SetAuthor
   | SetPublisher
-  | SetGenre
+  | SetCategory
   | SetLanguage
   | SetTranslator
   | SetFormat
@@ -185,7 +185,7 @@ export interface BookCreationNonIsbnState<T extends boolean = false> {
     status: ReadingStatus;
     image: string;
     bookshelfId: string;
-    genre: string;
+    category: string;
   };
 }
 
@@ -245,12 +245,12 @@ function bookCreationReducer<T extends boolean = true>(
         } as BookCreationNonIsbnState['stepOneDetails'],
       };
 
-    case BookCreationActionType.setGenre:
+    case BookCreationActionType.setCategory:
       return {
         ...state,
         stepThreeDetails: {
           ...(state as BookCreationNonIsbnState).stepThreeDetails,
-          genre: action.genre,
+          category: action.category,
         } as BookCreationNonIsbnState['stepThreeDetails'],
       };
 
@@ -332,7 +332,7 @@ function bookCreationReducer<T extends boolean = true>(
           image: action.image,
           status: action.status,
           bookshelfId: action.bookshelfId,
-          genre: action.genre,
+          category: action.category,
         } as Omit<SetNonIsbnStepThreeDetails, 'type'>,
       };
 

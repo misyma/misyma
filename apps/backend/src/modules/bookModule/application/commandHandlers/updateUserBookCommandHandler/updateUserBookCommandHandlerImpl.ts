@@ -23,7 +23,7 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
   ) {}
 
   public async execute(payload: UpdateUserBookPayload): Promise<UpdateUserBookResult> {
-    const { userId, userBookId, bookshelfId, imageUrl, status, isFavorite, genreId, collectionIds } = payload;
+    const { userId, userBookId, bookshelfId, imageUrl, status, isFavorite, categoryId, collectionIds } = payload;
 
     this.loggerService.debug({
       message: 'Updating UserBook...',
@@ -33,7 +33,7 @@ export class UpdateUserBookCommandHandlerImpl implements UpdateUserBookCommandHa
       imageUrl,
       status,
       isFavorite,
-      genreId,
+      categoryId,
       collectionIds,
     });
 

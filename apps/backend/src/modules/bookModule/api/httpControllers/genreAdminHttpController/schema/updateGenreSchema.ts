@@ -1,31 +1,31 @@
 import {
-  type UpdateGenrePathParams,
-  type UpdateGenreRequestBody,
-  type UpdateGenreResponseBody,
+  type UpdateCategoryPathParams,
+  type UpdateCategoryRequestBody,
+  type UpdateCategoryResponseBody,
 } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
 import { type TypeExtends } from '../../../../../../common/types/schemaExtends.js';
-import { genreDtoSchema, genreNameSchema } from '../../common/genreDto.js';
+import { categoryDtoSchema, categoryNameSchema } from '../../common/categoryDto.js';
 
-export const updateGenrePathParamsDtoSchema = Type.Object({
-  genreId: Type.String({ format: 'uuid' }),
+export const updateCategoryPathParamsDtoSchema = Type.Object({
+  categoryId: Type.String({ format: 'uuid' }),
 });
 
-export type UpdateGenrePathParamsDto = TypeExtends<
-  UpdateGenrePathParams,
-  Static<typeof updateGenrePathParamsDtoSchema>
+export type UpdateCategoryPathParamsDto = TypeExtends<
+  UpdateCategoryPathParams,
+  Static<typeof updateCategoryPathParamsDtoSchema>
 >;
 
-export const updateGenreBodyDtoSchema = Type.Object({
-  name: genreNameSchema,
+export const updateCategoryBodyDtoSchema = Type.Object({
+  name: categoryNameSchema,
 });
 
-export type UpdateGenreBodyDto = TypeExtends<UpdateGenreRequestBody, Static<typeof updateGenreBodyDtoSchema>>;
+export type UpdateCategoryBodyDto = TypeExtends<UpdateCategoryRequestBody, Static<typeof updateCategoryBodyDtoSchema>>;
 
-export const updateGenreResponseBodyDtoSchema = genreDtoSchema;
+export const updateCategoryResponseBodyDtoSchema = categoryDtoSchema;
 
-export type UpdateGenreResponseBodyDto = TypeExtends<
-  UpdateGenreResponseBody,
-  Static<typeof updateGenreResponseBodyDtoSchema>
+export type UpdateCategoryResponseBodyDto = TypeExtends<
+  UpdateCategoryResponseBody,
+  Static<typeof updateCategoryResponseBodyDtoSchema>
 >;

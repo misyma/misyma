@@ -1,29 +1,29 @@
-import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
+import { type CategoryRepository } from '../../../domain/repositories/categoryRepository/categoryRepository.js';
 
 import {
-  type FindGenresResult,
-  type FindGenresQueryHandler,
-  type FindGenresPayload,
-} from './findGenresQueryHandler.js';
+  type FindCategoriesResult,
+  type FindCategoriesQueryHandler,
+  type FindCategoriesPayload,
+} from './findCategoriesQueryHandler.js';
 
-export class FindGenresQueryHandlerImpl implements FindGenresQueryHandler {
-  public constructor(private readonly genreRepository: GenreRepository) {}
+export class FindCategoriesQueryHandlerImpl implements FindCategoriesQueryHandler {
+  public constructor(private readonly categoryRepository: CategoryRepository) {}
 
-  public async execute(payload: FindGenresPayload): Promise<FindGenresResult> {
+  public async execute(payload: FindCategoriesPayload): Promise<FindCategoriesResult> {
     const { page, pageSize } = payload;
 
-    const findGenresPayload = {
+    const findCategoriesPayload = {
       page,
       pageSize,
     };
 
-    const [genres, total] = await Promise.all([
-      this.genreRepository.findGenres(findGenresPayload),
-      this.genreRepository.countGenres(findGenresPayload),
+    const [categories, total] = await Promise.all([
+      this.categoryRepository.findCategories(findCategoriesPayload),
+      this.categoryRepository.countCategories(findCategoriesPayload),
     ]);
 
     return {
-      genres,
+      categories,
       total,
     };
   }

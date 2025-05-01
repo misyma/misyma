@@ -1,47 +1,47 @@
 import { RepositoryError } from '../../../errors/repositoryError.js';
 import { type DatabaseClient } from '../../../libs/database/databaseClient.js';
 import { type UuidService } from '../../../libs/uuid/uuidService.js';
-import { type Genre } from '../../entities/genre/genre.js';
+import { type Category } from '../../entities/category/category.js';
 
-export interface CreateGenresPayload {
+export interface CreateCategoriesPayload {
   readonly names: string[];
 }
 
-export class GenreRepository {
-  private readonly genresTable = 'genres';
+export class CategoryRepository {
+  private readonly categoriesTable = 'categories';
 
   public constructor(
     private readonly databaseClient: DatabaseClient,
     private readonly uuidService: UuidService,
   ) {}
 
-  public async createGenres(payload: CreateGenresPayload): Promise<void> {
+  public async createCategories(payload: CreateCategoriesPayload): Promise<void> {
     const { names } = payload;
 
-    const genres = names.map((name) => ({
+    const categories = names.map((name) => ({
       id: this.uuidService.generateUuid(),
       name,
     }));
 
     try {
-      await this.databaseClient(this.genresTable).insert(genres).onConflict('name').ignore();
+      await this.databaseClient(this.categoriesTable).insert(categories).onConflict('name').ignore();
     } catch (error) {
       throw new RepositoryError({
-        entity: 'Genre',
+        entity: 'Category',
         operation: 'create',
         originalError: error,
       });
     }
   }
 
-  public async findGenres(): Promise<Genre[]> {
+  public async findCategories(): Promise<Category[]> {
     try {
-      const genres = await this.databaseClient<Genre>(this.genresTable).select('*');
+      const categories = await this.databaseClient<Category>(this.categoriesTable).select('*');
 
-      return genres;
+      return categories;
     } catch (error) {
       throw new RepositoryError({
-        entity: 'Genre',
+        entity: 'Category',
         operation: 'findMany',
         originalError: error,
       });

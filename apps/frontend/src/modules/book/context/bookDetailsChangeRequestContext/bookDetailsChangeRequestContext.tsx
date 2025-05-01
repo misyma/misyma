@@ -5,7 +5,7 @@ import { type BookFormat, type Language } from '@common/contracts';
 export interface BookDetailsChangeRequestState {
   isbn: string;
   title: string;
-  genreId: string;
+  categoryId: string;
   authorIds: string[];
   releaseYear: undefined;
   publisher: string;
@@ -35,7 +35,7 @@ const defaultValues: BookDetailsChangeRequestState = {
   authorIds: [],
   format: '' as BookFormat,
   isbn: '',
-  genreId: '',
+  categoryId: '',
   language: '' as Language,
   pages: undefined,
   publisher: '',
@@ -73,7 +73,7 @@ function bookDetailsChangeRequestReducer(state: BookDetailsChangeRequestState, a
     return {
       authorIds: [],
       authorName: undefined,
-      genreId: '',
+      categoryId: '',
       format: '' as BookFormat,
       isbn: '',
       language: '' as Language,

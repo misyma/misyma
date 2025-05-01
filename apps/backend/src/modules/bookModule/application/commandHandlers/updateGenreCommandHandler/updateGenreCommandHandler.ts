@@ -1,13 +1,13 @@
 import { type CommandHandler } from '../../../../../common/types/commandHandler.js';
-import { type Genre } from '../../../domain/entities/genre/genre.js';
+import { type Category } from '../../../domain/entities/category/category.js';
 
-export interface UpdateGenrePayload {
+export interface UpdateCategoryPayload {
   readonly id: string;
   readonly name: string;
 }
 
-export interface UpdateGenreResult {
-  readonly genre: Genre;
+export interface UpdateCategoryResult {
+  readonly category: Category;
 }
 
-export type UpdateGenreCommandHandler = CommandHandler<UpdateGenrePayload, UpdateGenreResult>;
+export type UpdateCategoryCommandHandler = CommandHandler<UpdateCategoryPayload, UpdateCategoryResult>;

@@ -1,6 +1,6 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
 import { type BookshelfRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfRawEntity.js';
-import { bookshelfTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
+import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BookshelfTestFactory } from '../../factories/bookshelfTestFactory/bookshelfTestFactory.js';
 
@@ -18,7 +18,7 @@ interface FindByUserIdPayload {
 
 export class BookshelfTestUtils extends TestUtils {
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, bookshelfTable);
+    super(databaseClient, bookshelvesTable);
   }
 
   private readonly bookshelfTestFactory = new BookshelfTestFactory();
@@ -28,7 +28,7 @@ export class BookshelfTestUtils extends TestUtils {
 
     const bookshelf = this.bookshelfTestFactory.create(input);
 
-    const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelfTable).insert(
+    const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable).insert(
       {
         id: bookshelf.getId(),
         name: bookshelf.getName(),
@@ -48,7 +48,7 @@ export class BookshelfTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookshelfRawEntity | null> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<BookshelfRawEntity>(bookshelfTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable).where({ id }).first();
 
     if (!rawEntity) {
       return null;
@@ -60,7 +60,7 @@ export class BookshelfTestUtils extends TestUtils {
   public async findByUserId(payload: FindByUserIdPayload): Promise<BookshelfRawEntity[]> {
     const { userId } = payload;
 
-    const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelfTable).where({ userId });
+    const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable).where({ userId });
 
     return rawEntities;
   }

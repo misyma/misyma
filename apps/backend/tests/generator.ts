@@ -120,8 +120,8 @@ export class Generator {
     return faker.book.publisher();
   }
 
-  public static genre(): string {
-    return faker.book.genre();
+  public static category(): string {
+    return faker.book.category();
   }
 
   public static language(): Language {

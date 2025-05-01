@@ -1,7 +1,7 @@
 import { type FC, memo, useState } from 'react';
 import { type ControllerRenderProps } from 'react-hook-form';
 
-import { type Genre } from '@common/contracts';
+import { type Category } from '@common/contracts';
 
 import { FormControl } from '../../../../common/components/form/form';
 import {
@@ -13,19 +13,19 @@ import {
   SelectValue,
 } from '../../../../common/components/select/select';
 
-interface GenreSelectProps extends ControllerRenderProps {
+interface CategorySelectProps extends ControllerRenderProps {
   onValueChange: (val: string) => void;
-  genres: Genre[];
+  categories: Category[];
   dialog?: boolean;
 }
 
-const GenreSelect: FC<GenreSelectProps> = ({ onValueChange, genres, dialog = false, ...field }) => {
-  const [genreSelectOpen, setGenreSelectOpen] = useState(false);
+const CategorySelect: FC<CategorySelectProps> = ({ onValueChange, categories, dialog = false, ...field }) => {
+  const [categorySelectOpen, setCategorySelectOpen] = useState(false);
 
   return (
     <Select
-      open={genreSelectOpen}
-      onOpenChange={setGenreSelectOpen}
+      open={categorySelectOpen}
+      onOpenChange={setCategorySelectOpen}
       onValueChange={(val) => {
         onValueChange(val);
 
@@ -38,32 +38,32 @@ const GenreSelect: FC<GenreSelectProps> = ({ onValueChange, genres, dialog = fal
           <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
           {dialog && (
             <SelectContentNoPortal>
-              {Object.values(genres ?? []).map((genre) => (
+              {Object.values(categories ?? []).map((category) => (
                 <SelectItem
                   onKeyDown={(event) => {
                     if (event.key === 'Enter') {
-                      setGenreSelectOpen(false);
+                      setCategorySelectOpen(false);
                     }
                   }}
-                  value={genre.id}
+                  value={category.id}
                 >
-                  {genre.name}
+                  {category.name}
                 </SelectItem>
               ))}
             </SelectContentNoPortal>
           )}
           {!dialog && (
             <SelectContent>
-              {Object.values(genres ?? []).map((genre) => (
+              {Object.values(categories ?? []).map((category) => (
                 <SelectItem
                   onKeyDown={(event) => {
                     if (event.key === 'Enter') {
-                      setGenreSelectOpen(false);
+                      setCategorySelectOpen(false);
                     }
                   }}
-                  value={genre.id}
+                  value={category.id}
                 >
-                  {genre.name}
+                  {category.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -74,4 +74,4 @@ const GenreSelect: FC<GenreSelectProps> = ({ onValueChange, genres, dialog = fal
   );
 };
 
-export default memo(GenreSelect);
+export default memo(CategorySelect);

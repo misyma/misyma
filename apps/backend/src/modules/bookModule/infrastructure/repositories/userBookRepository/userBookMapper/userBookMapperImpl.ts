@@ -3,8 +3,8 @@ import { type BookFormat } from '@common/contracts';
 import { type UserBookWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/userBookTable/userBookWithJoinsRawEntity.js';
 import { Author } from '../../../../domain/entities/author/author.js';
 import { BookReading } from '../../../../domain/entities/bookReading/bookReading.js';
+import { Category } from '../../../../domain/entities/category/category.js';
 import { Collection } from '../../../../domain/entities/collection/collection.js';
-import { Genre } from '../../../../domain/entities/genre/genre.js';
 import { UserBook, type UserBookDraft } from '../../../../domain/entities/userBook/userBook.js';
 
 import { type UserBookMapper } from './userBookMapper.js';
@@ -19,8 +19,8 @@ export class UserBookMapperImpl implements UserBookMapper {
       bookshelfId,
       createdAt,
       bookId,
-      genreId,
-      genreName,
+      categoryId,
+      categoryName,
       title,
       isbn,
       publisher,
@@ -67,11 +67,11 @@ export class UserBookMapperImpl implements UserBookMapper {
         format: format as BookFormat,
         pages: pages ?? undefined,
         isApproved,
-        genre: new Genre({
-          id: genreId,
-          name: genreName,
+        category: new Category({
+          id: categoryId,
+          name: categoryName,
         }),
-        genreId,
+        categoryId,
         createdAt: bookCreatedAt,
         authors:
           authorIds && authorNames && authorApprovals && authorCreatedAtDates

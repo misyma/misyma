@@ -1,7 +1,7 @@
-import { type Genre } from './genre.js';
+import { type Category } from './category.js';
 
-export interface CreateGenreRequestBody {
+export interface CreateCategoryRequestBody {
   readonly name: string;
 }
 
-export type CreateGenreResponseBody = Genre;
+export type CreateCategoryResponseBody = Category;

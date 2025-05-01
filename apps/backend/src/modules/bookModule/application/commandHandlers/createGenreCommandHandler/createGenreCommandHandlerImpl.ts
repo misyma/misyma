@@ -1,52 +1,52 @@
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/loggerService.js';
-import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
+import { type CategoryRepository } from '../../../domain/repositories/categoryRepository/categoryRepository.js';
 
 import {
-  type CreateGenreCommandHandler,
-  type CreateGenrePayload,
-  type CreateGenreResult,
-} from './createGenreCommandHandler.js';
+  type CreateCategoryCommandHandler,
+  type CreateCategoryPayload,
+  type CreateCategoryResult,
+} from './createCategoryCommandHandler.js';
 
-export class CreateGenreCommandHandlerImpl implements CreateGenreCommandHandler {
+export class CreateCategoryCommandHandlerImpl implements CreateCategoryCommandHandler {
   public constructor(
-    private readonly genreRepository: GenreRepository,
+    private readonly categoryRepository: CategoryRepository,
     private readonly loggerService: LoggerService,
   ) {}
 
-  public async execute(payload: CreateGenrePayload): Promise<CreateGenreResult> {
+  public async execute(payload: CreateCategoryPayload): Promise<CreateCategoryResult> {
     const { name } = payload;
 
     const normalizedName = name.toLowerCase();
 
     this.loggerService.debug({
-      message: 'Creating Genre...',
+      message: 'Creating Category...',
       name,
     });
 
-    const genreExists = await this.genreRepository.findGenre({
+    const categoryExists = await this.categoryRepository.findCategory({
       name: normalizedName,
     });
 
-    if (genreExists) {
+    if (categoryExists) {
       throw new ResourceAlreadyExistsError({
-        resource: 'Genre',
+        resource: 'Category',
         name: normalizedName,
       });
     }
 
-    const genre = await this.genreRepository.saveGenre({
-      genre: {
+    const category = await this.categoryRepository.saveCategory({
+      category: {
         name: normalizedName,
       },
     });
 
     this.loggerService.debug({
-      message: 'Genre created.',
-      id: genre.getId(),
+      message: 'Category created.',
+      id: category.getId(),
       name: normalizedName,
     });
 
-    return { genre };
+    return { category };
   }
 }

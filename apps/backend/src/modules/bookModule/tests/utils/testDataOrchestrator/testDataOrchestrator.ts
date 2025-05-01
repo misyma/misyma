@@ -8,7 +8,7 @@ import { type BookRawEntity } from '../../../../databaseModule/infrastructure/ta
 import { type UserBookRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookRawEntity.js';
 import { type AuthorTestUtils } from '../authorTestUtils/authorTestUtils.js';
 import { type CreateAndPersistBookPayload, type BookTestUtils } from '../bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../categoryTestUtils/categoryTestUtils.js';
 import {
   type CreateAndPersistUserBookPayload,
   type UserBookTestUtils,
@@ -28,7 +28,7 @@ interface CreateUserBookPayload {
 export class TestDataOrchestrator {
   public userId: string = '';
   public constructor(
-    private readonly genreTestUtils: GenreTestUtils,
+    private readonly categoryTestUtils: CategoryTestUtils,
     private readonly bookshelfTestUtils: BookshelfTestUtils,
     private readonly authorTestUtils: AuthorTestUtils,
     private readonly bookTestUtils: BookTestUtils,
@@ -38,13 +38,13 @@ export class TestDataOrchestrator {
   public async createUserBook(payload: CreateUserBookPayload = {}): Promise<UserBookRawEntity> {
     const bookshelf = await this.findOrCreateBookshelf(payload.bookshelf);
 
-    const genre = await this.genreTestUtils.createAndPersist();
+    const category = await this.categoryTestUtils.createAndPersist();
 
     const book = await this.bookTestUtils.createAndPersist({
       input: {
         authorIds: payload.book?.authorIds,
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
           id: payload.book?.book?.id ?? Generator.uuid(),
           ...payload.book?.book,
         },
@@ -70,13 +70,13 @@ export class TestDataOrchestrator {
       authorId = authorIdOverride;
     }
 
-    const genre = await this.genreTestUtils.createAndPersist();
+    const category = await this.categoryTestUtils.createAndPersist();
 
     return await this.bookTestUtils.createAndPersist({
       input: {
         authorIds: [authorId],
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
           title: title ?? Generator.title(),
         },
       },
@@ -84,7 +84,7 @@ export class TestDataOrchestrator {
   }
 
   public async cleanup(): Promise<void> {
-    await this.genreTestUtils.truncate();
+    await this.categoryTestUtils.truncate();
     await this.bookshelfTestUtils.truncate();
     await this.bookTestUtils.truncate();
     await this.userBookTestUtils.truncate();

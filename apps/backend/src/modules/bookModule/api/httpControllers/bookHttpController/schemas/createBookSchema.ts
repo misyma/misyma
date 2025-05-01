@@ -16,7 +16,7 @@ import {
 export const createBookBodyDtoSchema = Type.Object({
   title: bookTitleSchema,
   isbn: Type.Optional(bookIsbnSchema),
-  genreId: Type.String({ format: 'uuid' }),
+  categoryId: Type.String({ format: 'uuid' }),
   publisher: Type.Optional(bookPublisherSchema),
   releaseYear: bookReleaseYearSchema,
   language: Type.Union(Object.values(languages).map((language) => Type.Literal(language))),

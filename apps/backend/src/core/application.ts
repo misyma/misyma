@@ -19,9 +19,9 @@ import { BookshelfModule } from '../modules/bookshelfModule/bookshelfModule.js';
 import { DatabaseModule } from '../modules/databaseModule/databaseModule.js';
 import { type DatabaseManager } from '../modules/databaseModule/infrastructure/databaseManager.js';
 import { type BookshelfRawEntity } from '../modules/databaseModule/infrastructure/tables/bookshelfTable/bookshelfRawEntity.js';
-import { bookshelfTable } from '../modules/databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
-import { type GenreRawEntity } from '../modules/databaseModule/infrastructure/tables/genreTable/genreRawEntity.js';
-import { genreTable } from '../modules/databaseModule/infrastructure/tables/genreTable/genreTable.js';
+import { bookshelvesTable } from '../modules/databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
+import { categoryTable } from '../modules/databaseModule/infrastructure/tables/categoriesTable/categoriesTable.js';
+import { type CategoryRawEntity } from '../modules/databaseModule/infrastructure/tables/categoriesTable/categoryRawEntity.js';
 import { type UserRawEntity } from '../modules/databaseModule/infrastructure/tables/userTable/userRawEntity.js';
 import { userTable } from '../modules/databaseModule/infrastructure/tables/userTable/userTable.js';
 import { databaseSymbols } from '../modules/databaseModule/symbols.js';
@@ -116,7 +116,7 @@ export class Application {
 
     await this.createAdminUser(container);
 
-    await this.createGenres(container);
+    await this.createCategories(container);
   }
 
   private static async createAdminUser(container: DependencyInjectionContainer): Promise<void> {
@@ -154,7 +154,7 @@ export class Application {
       role: userRoles.admin,
     });
 
-    await databaseClient<BookshelfRawEntity>(bookshelfTable).insert({
+    await databaseClient<BookshelfRawEntity>(bookshelvesTable).insert({
       id: uuidService.generateUuid(),
       name: 'Archiwum',
       userId,
@@ -162,7 +162,7 @@ export class Application {
       createdAt: new Date(),
     });
 
-    await databaseClient<BookshelfRawEntity>(bookshelfTable).insert({
+    await databaseClient<BookshelfRawEntity>(bookshelvesTable).insert({
       id: uuidService.generateUuid(),
       name: 'Wypożyczalnia',
       userId,
@@ -176,7 +176,7 @@ export class Application {
     });
   }
 
-  private static async createGenres(container: DependencyInjectionContainer): Promise<void> {
+  private static async createCategories(container: DependencyInjectionContainer): Promise<void> {
     const databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
     const config = container.get<Config>(coreSymbols.config);
@@ -185,23 +185,21 @@ export class Application {
 
     const loggerService = container.get<LoggerService>(coreSymbols.loggerService);
 
-    const existingGenres = await databaseClient<GenreRawEntity>(genreTable).select('*');
+    const existingCategories = await databaseClient<CategoryRawEntity>(categoryTable).select('*');
 
-    if (existingGenres.length > 0) {
-      loggerService.debug({ message: 'Genres already exist.' });
+    if (existingCategories.length > 0) {
+      loggerService.debug({ message: 'Categories already exist.' });
 
       return;
     }
 
-    const genreNames = config.genres;
-
-    await databaseClient<GenreRawEntity>(genreTable).insert(
-      genreNames.map((name) => ({
+    await databaseClient<CategoryRawEntity>(categoryTable).insert(
+      config.categories.map((name) => ({
         id: uuidService.generateUuid(),
         name,
       })),
     );
 
-    loggerService.debug({ message: 'Genres created.' });
+    loggerService.debug({ message: 'Categories created.' });
   }
 }

@@ -11,8 +11,8 @@ export function mapBookToDto(book: Book): BookDto {
     language,
     isApproved,
     releaseYear,
-    genreId: book.getGenreId(),
-    genreName: book.getGenreName(),
+    categoryId: book.getCategoryId(),
+    categoryName: book.getCategoryName(),
     createdAt: createdAt.toISOString(),
     authors: book.getAuthors().map((author) => ({
       id: author.getId(),

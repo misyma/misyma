@@ -195,7 +195,7 @@ export class UserBookHttpController implements HttpController {
 
     const { userBookId } = request.pathParams;
 
-    const { status, bookshelfId, imageUrl, isFavorite, genreId, collectionIds } = request.body;
+    const { status, bookshelfId, imageUrl, isFavorite, categoryId, collectionIds } = request.body;
 
     const { userBook } = await this.updateUserBookCommandHandler.execute({
       userId,
@@ -204,7 +204,7 @@ export class UserBookHttpController implements HttpController {
       isFavorite,
       bookshelfId,
       imageUrl,
-      genreId,
+      categoryId,
       collectionIds,
     });
 
@@ -300,7 +300,7 @@ export class UserBookHttpController implements HttpController {
       bookshelfId,
       collectionId,
       authorId,
-      genreId,
+      categoryId,
       isbn,
       title,
       isFavorite,
@@ -318,7 +318,7 @@ export class UserBookHttpController implements HttpController {
       collectionId,
       authorId,
       userId,
-      genreId,
+      categoryId,
       isbn,
       title,
       isFavorite,
@@ -379,8 +379,8 @@ export class UserBookHttpController implements HttpController {
       bookId,
       book: {
         title: book?.title as string,
-        genreId: book?.genreId as string,
-        genreName: book?.genre.getName() ?? '',
+        categoryId: book?.categoryId as string,
+        categoryName: book?.category.getName() ?? '',
         language: book?.language as Language,
         isApproved: book?.isApproved as boolean,
         createdAt: book?.createdAt.toISOString() as string,

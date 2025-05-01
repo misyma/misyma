@@ -1,18 +1,18 @@
 import { Generator } from '../../../../../../tests/generator.js';
 import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
 import { Book, type BookDraft } from '../../../domain/entities/book/book.js';
-import { Genre } from '../../../domain/entities/genre/genre.js';
+import { Category } from '../../../domain/entities/category/category.js';
 
 export class BookTestFactory {
   public create(input: Partial<BookDraft> = {}): Book {
-    const genre = new Genre({
+    const category = new Category({
       id: Generator.uuid(),
       name: Generator.title(),
     });
     return new Book({
       id: Generator.uuid(),
-      genreId: genre.getId(),
-      genre,
+      categoryId: category.getId(),
+      category,
       title: Generator.title(),
       isbn: Generator.isbn(),
       publisher: Generator.publisher(),
@@ -32,7 +32,7 @@ export class BookTestFactory {
   public createRaw(input: Partial<BookRawEntity> = {}): BookRawEntity {
     return {
       id: Generator.uuid(),
-      genreId: Generator.uuid(),
+      categoryId: Generator.uuid(),
       title: Generator.title(),
       isbn: Generator.isbn(),
       publisher: Generator.publisher(),

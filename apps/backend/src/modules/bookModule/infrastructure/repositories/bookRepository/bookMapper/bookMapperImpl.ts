@@ -2,7 +2,7 @@ import { type BookRawEntity } from '../../../../../databaseModule/infrastructure
 import { type BookWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/bookTable/bookWithJoinsRawEntity.js';
 import { Author } from '../../../../domain/entities/author/author.js';
 import { Book, type BookDraft } from '../../../../domain/entities/book/book.js';
-import { Genre } from '../../../../domain/entities/genre/genre.js';
+import { Category } from '../../../../domain/entities/category/category.js';
 
 import { type BookMapper } from './bookMapper.js';
 
@@ -10,7 +10,7 @@ export class BookMapperImpl implements BookMapper {
   public mapRawToDomain(entity: BookRawEntity): Book {
     const {
       id,
-      genreId,
+      categoryId,
       title,
       isbn,
       publisher,
@@ -38,9 +38,9 @@ export class BookMapperImpl implements BookMapper {
       isApproved,
       imageUrl,
       createdAt,
-      genreId,
-      genre: new Genre({
-        id: genreId,
+      categoryId,
+      category: new Category({
+        id: categoryId,
         name: '',
       }),
     });
@@ -50,8 +50,8 @@ export class BookMapperImpl implements BookMapper {
     return entities.map((entity) => {
       const {
         id: bookId,
-        genreId,
-        genreName,
+        categoryId,
+        categoryName,
         title,
         isbn,
         publisher,
@@ -71,10 +71,10 @@ export class BookMapperImpl implements BookMapper {
 
       const bookDraft: BookDraft = {
         id: bookId,
-        genreId,
-        genre: new Genre({
-          id: genreId,
-          name: genreName,
+        categoryId,
+        category: new Category({
+          id: categoryId,
+          name: categoryName,
         }),
         title,
         isbn: isbn ?? undefined,

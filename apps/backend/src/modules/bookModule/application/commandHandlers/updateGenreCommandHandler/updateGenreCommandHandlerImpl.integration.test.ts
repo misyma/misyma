@@ -8,49 +8,49 @@ import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourc
 import { databaseSymbols } from '../../../../databaseModule/symbols.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { symbols } from '../../../symbols.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 
-import { type UpdateGenreCommandHandler } from './updateGenreCommandHandler.js';
+import { type UpdateCategoryCommandHandler } from './updateCategoryCommandHandler.js';
 
-describe('UpdateGenreCommandHandler', () => {
-  let commandHandler: UpdateGenreCommandHandler;
+describe('UpdateCategoryCommandHandler', () => {
+  let commandHandler: UpdateCategoryCommandHandler;
 
   let databaseClient: DatabaseClient;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   beforeEach(async () => {
     const container = await TestContainer.create();
 
-    commandHandler = container.get<UpdateGenreCommandHandler>(symbols.updateGenreCommandHandler);
+    commandHandler = container.get<UpdateCategoryCommandHandler>(symbols.updateCategoryCommandHandler);
 
     databaseClient = container.get<DatabaseClient>(databaseSymbols.databaseClient);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
-    await genreTestUtils.truncate();
+    await categoryTestUtils.truncate();
   });
 
   afterEach(async () => {
-    await genreTestUtils.truncate();
+    await categoryTestUtils.truncate();
 
     await databaseClient.destroy();
   });
 
-  it('throws an error - when Genre does not exist', async () => {
-    const genreId = Generator.uuid();
+  it('throws an error - when Category does not exist', async () => {
+    const categoryId = Generator.uuid();
 
     try {
       await commandHandler.execute({
-        id: genreId,
+        id: categoryId,
         name: Generator.words(2),
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
 
       expect((error as OperationNotValidError).context).toEqual({
-        reason: 'Genre does not exist.',
-        id: genreId,
+        reason: 'Category does not exist.',
+        id: categoryId,
       });
 
       return;
@@ -59,22 +59,22 @@ describe('UpdateGenreCommandHandler', () => {
     expect.fail();
   });
 
-  it('throws an error - when Genre with given name already exists', async () => {
-    const preExistingGenre = await genreTestUtils.createAndPersist();
+  it('throws an error - when Category with given name already exists', async () => {
+    const preExistingCategory = await categoryTestUtils.createAndPersist();
 
-    const secondGenre = await genreTestUtils.createAndPersist();
+    const secondCategory = await categoryTestUtils.createAndPersist();
 
     try {
       await commandHandler.execute({
-        id: preExistingGenre.id,
-        name: secondGenre.name,
+        id: preExistingCategory.id,
+        name: secondCategory.name,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
 
       expect((error as ResourceAlreadyExistsError).context).toEqual({
-        resource: 'Genre',
-        name: secondGenre.name,
+        resource: 'Category',
+        name: secondCategory.name,
       });
 
       return;

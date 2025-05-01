@@ -54,7 +54,7 @@ export type CreateBookStepOne = z.infer<typeof createBookStepOneSchema>;
 
 export const createBookStepTwoSchema = z.object({
   language: z.nativeEnum(languages),
-  genreId: z.string().uuid(),
+  categoryId: z.string().uuid(),
   translator: z
     .string({
       required_error: 'Przekład jest wymagany.',

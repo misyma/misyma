@@ -25,7 +25,7 @@ export const updateUserBookBodyDtoSchema = Type.Object({
   isFavorite: Type.Optional(Type.Boolean()),
   bookshelfId: Type.Optional(Type.String({ format: 'uuid' })),
   imageUrl: Type.Optional(Type.Union([bookImageUrlSchema, Type.Null()])),
-  genreId: Type.Optional(Type.String({ format: 'uuid' })),
+  categoryId: Type.Optional(Type.String({ format: 'uuid' })),
   collectionIds: Type.Optional(Type.Array(Type.String({ format: 'uuid' }))),
 });
 

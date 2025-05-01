@@ -1,22 +1,17 @@
 import { type DatabaseClient } from '../../../types/databaseClient.js';
 import { type Migration } from '../../../types/migration.js';
 
-export class M9CreateCollectionTableMigration implements Migration {
-  public readonly name = 'M9CreateCollectionTableMigration';
+export class M8CreateCollectionsTableMigration implements Migration {
+  public readonly name = 'M8CreateCollectionsTableMigration';
 
   private readonly tableName = 'collections';
 
   public async up(databaseClient: DatabaseClient): Promise<void> {
     await databaseClient.schema.createTable(this.tableName, (table) => {
-      table.text('id').primary();
-
-      table.text('name').unique().notNullable();
-
-      table.text('userId').notNullable();
-
-      table.timestamp('createdAt').notNullable();
-
-      table.foreign('userId').references('id').inTable('users').onDelete('CASCADE');
+      table.uuid('id').primary();
+      table.uuid('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
+      table.text('name').notNullable().unique();
+      table.timestamp('created_at').notNullable();
 
       table.unique(['name', 'userId']);
     });

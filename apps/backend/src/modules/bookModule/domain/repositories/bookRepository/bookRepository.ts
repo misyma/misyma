@@ -12,7 +12,7 @@ export interface FindBookPayload {
 
 export interface FindBooksPayload {
   readonly isbn?: string;
-  readonly genreId?: string;
+  readonly categoryId?: string;
   readonly isApproved?: boolean;
   readonly title?: string;
   readonly authorIds?: string[];
@@ -27,7 +27,7 @@ export interface FindBooksPayload {
 
 export interface CountBooksPayload {
   readonly isbn?: string;
-  readonly genreId?: string;
+  readonly categoryId?: string;
   readonly isApproved?: boolean;
   readonly title?: string;
   readonly authorIds?: string[];

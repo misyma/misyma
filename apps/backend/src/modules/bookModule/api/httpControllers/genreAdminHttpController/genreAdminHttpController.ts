@@ -12,105 +12,105 @@ import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { httpStatusCodes } from '../../../../../common/types/http/httpStatusCode.js';
 import { securityModes } from '../../../../../common/types/http/securityMode.js';
 import { type AccessControlService } from '../../../../authModule/application/services/accessControlService/accessControlService.js';
-import { type CreateGenreCommandHandler } from '../../../application/commandHandlers/createGenreCommandHandler/createGenreCommandHandler.js';
-import { type DeleteGenreCommandHandler } from '../../../application/commandHandlers/deleteGenreCommandHandler/deleteGenreCommandHandler.js';
-import { type UpdateGenreCommandHandler } from '../../../application/commandHandlers/updateGenreCommandHandler/updateGenreCommandHandler.js';
-import { mapGenreToDto } from '../common/mappers/genreDtoMapper.js';
+import { type CreateCategoryCommandHandler } from '../../../application/commandHandlers/createCategoryCommandHandler/createCategoryCommandHandler.js';
+import { type DeleteCategoryCommandHandler } from '../../../application/commandHandlers/deleteCategoryCommandHandler/deleteCategoryCommandHandler.js';
+import { type UpdateCategoryCommandHandler } from '../../../application/commandHandlers/updateCategoryCommandHandler/updateCategoryCommandHandler.js';
+import { mapCategoryToDto } from '../common/mappers/categoryDtoMapper.js';
 
 import {
-  type CreateGenreBodyDto,
-  type CreateGenreResponseBodyDto,
-  createGenreBodyDtoSchema,
-  createGenreResponseBodyDtoSchema,
-} from './schema/createGenreSchema.js';
+  type CreateCategoryBodyDto,
+  type CreateCategoryResponseBodyDto,
+  createCategoryBodyDtoSchema,
+  createCategoryResponseBodyDtoSchema,
+} from './schema/createCategorySchema.js';
 import {
-  type DeleteGenrePathParamsDto,
-  deleteGenreResponseBodyDtoSchema,
-  deleteGenrePathParamsDtoSchema,
-  type DeleteGenreResponseBodyDto,
-} from './schema/deleteGenreSchema.js';
+  type DeleteCategoryPathParamsDto,
+  deleteCategoryResponseBodyDtoSchema,
+  deleteCategoryPathParamsDtoSchema,
+  type DeleteCategoryResponseBodyDto,
+} from './schema/deleteCategorySchema.js';
 import {
-  type UpdateGenreBodyDto,
-  type UpdateGenreResponseBodyDto,
-  type UpdateGenrePathParamsDto,
-  updateGenreBodyDtoSchema,
-  updateGenreResponseBodyDtoSchema,
-  updateGenrePathParamsDtoSchema,
-} from './schema/updateGenreSchema.js';
+  type UpdateCategoryBodyDto,
+  type UpdateCategoryResponseBodyDto,
+  type UpdateCategoryPathParamsDto,
+  updateCategoryBodyDtoSchema,
+  updateCategoryResponseBodyDtoSchema,
+  updateCategoryPathParamsDtoSchema,
+} from './schema/updateCategorySchema.js';
 
-export class GenreAdminHttpController implements HttpController {
-  public readonly basePath = '/admin/genres';
-  public readonly tags = ['Genre'];
+export class CategoryAdminHttpController implements HttpController {
+  public readonly basePath = '/admin/categories';
+  public readonly tags = ['Category'];
 
   public constructor(
-    private readonly createGenreCommandHandler: CreateGenreCommandHandler,
-    private readonly updateGenreCommandHandler: UpdateGenreCommandHandler,
-    private readonly deleteGenreCommandHandler: DeleteGenreCommandHandler,
+    private readonly createCategoryCommandHandler: CreateCategoryCommandHandler,
+    private readonly updateCategoryCommandHandler: UpdateCategoryCommandHandler,
+    private readonly deleteCategoryCommandHandler: DeleteCategoryCommandHandler,
     private readonly accessControlService: AccessControlService,
   ) {}
 
   public getHttpRoutes(): HttpRoute[] {
     return [
       new HttpRoute({
-        description: 'Create genre',
-        handler: this.createGenre.bind(this),
+        description: 'Create category',
+        handler: this.createCategory.bind(this),
         method: httpMethodNames.post,
         schema: {
           request: {
-            body: createGenreBodyDtoSchema,
+            body: createCategoryBodyDtoSchema,
           },
           response: {
             [httpStatusCodes.created]: {
-              description: 'Genre created',
-              schema: createGenreResponseBodyDtoSchema,
+              description: 'Category created',
+              schema: createCategoryResponseBodyDtoSchema,
             },
           },
         },
         securityMode: securityModes.bearerToken,
       }),
       new HttpRoute({
-        description: 'Update Genre',
-        handler: this.updateGenre.bind(this),
+        description: 'Update Category',
+        handler: this.updateCategory.bind(this),
         method: httpMethodNames.patch,
         schema: {
           request: {
-            pathParams: updateGenrePathParamsDtoSchema,
-            body: updateGenreBodyDtoSchema,
+            pathParams: updateCategoryPathParamsDtoSchema,
+            body: updateCategoryBodyDtoSchema,
           },
           response: {
             [httpStatusCodes.ok]: {
-              description: 'Genre updated',
-              schema: updateGenreResponseBodyDtoSchema,
+              description: 'Category updated',
+              schema: updateCategoryResponseBodyDtoSchema,
             },
           },
         },
         securityMode: securityModes.bearerToken,
-        path: ':genreId',
+        path: ':categoryId',
       }),
       new HttpRoute({
-        description: 'Delete genre',
-        handler: this.deleteGenre.bind(this),
+        description: 'Delete category',
+        handler: this.deleteCategory.bind(this),
         method: httpMethodNames.delete,
         schema: {
           request: {
-            pathParams: deleteGenrePathParamsDtoSchema,
+            pathParams: deleteCategoryPathParamsDtoSchema,
           },
           response: {
             [httpStatusCodes.noContent]: {
-              description: 'Genre deleted',
-              schema: deleteGenreResponseBodyDtoSchema,
+              description: 'Category deleted',
+              schema: deleteCategoryResponseBodyDtoSchema,
             },
           },
         },
-        path: ':genreId',
+        path: ':categoryId',
         securityMode: securityModes.bearerToken,
       }),
     ];
   }
 
-  private async createGenre(
-    request: HttpRequest<CreateGenreBodyDto>,
-  ): Promise<HttpCreatedResponse<CreateGenreResponseBodyDto>> {
+  private async createCategory(
+    request: HttpRequest<CreateCategoryBodyDto>,
+  ): Promise<HttpCreatedResponse<CreateCategoryResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
       expectedRole: userRoles.admin,
@@ -118,48 +118,48 @@ export class GenreAdminHttpController implements HttpController {
 
     const { name } = request.body;
 
-    const { genre } = await this.createGenreCommandHandler.execute({ name });
+    const { category } = await this.createCategoryCommandHandler.execute({ name });
 
     return {
-      body: mapGenreToDto(genre),
+      body: mapCategoryToDto(category),
       statusCode: httpStatusCodes.created,
     };
   }
 
-  private async updateGenre(
-    request: HttpRequest<UpdateGenreBodyDto, null, UpdateGenrePathParamsDto>,
-  ): Promise<HttpOkResponse<UpdateGenreResponseBodyDto>> {
+  private async updateCategory(
+    request: HttpRequest<UpdateCategoryBodyDto, null, UpdateCategoryPathParamsDto>,
+  ): Promise<HttpOkResponse<UpdateCategoryResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
       expectedRole: userRoles.admin,
     });
 
-    const { genreId } = request.pathParams;
+    const { categoryId } = request.pathParams;
 
     const { name } = request.body;
 
-    const { genre } = await this.updateGenreCommandHandler.execute({
-      id: genreId,
+    const { category } = await this.updateCategoryCommandHandler.execute({
+      id: categoryId,
       name,
     });
 
     return {
-      body: mapGenreToDto(genre),
+      body: mapCategoryToDto(category),
       statusCode: httpStatusCodes.ok,
     };
   }
 
-  private async deleteGenre(
-    request: HttpRequest<null, null, DeleteGenrePathParamsDto>,
-  ): Promise<HttpNoContentResponse<DeleteGenreResponseBodyDto>> {
+  private async deleteCategory(
+    request: HttpRequest<null, null, DeleteCategoryPathParamsDto>,
+  ): Promise<HttpNoContentResponse<DeleteCategoryResponseBodyDto>> {
     await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
       expectedRole: userRoles.admin,
     });
 
-    const { genreId } = request.pathParams;
+    const { categoryId } = request.pathParams;
 
-    await this.deleteGenreCommandHandler.execute({ id: genreId });
+    await this.deleteCategoryCommandHandler.execute({ id: categoryId });
 
     return {
       statusCode: httpStatusCodes.noContent,

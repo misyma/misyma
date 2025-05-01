@@ -1,65 +1,65 @@
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { ResourceAlreadyExistsError } from '../../../../../common/errors/resourceAlreadyExistsError.js';
 import { type LoggerService } from '../../../../../libs/logger/loggerService.js';
-import { type GenreRepository } from '../../../domain/repositories/genreRepository/genreRepository.js';
+import { type CategoryRepository } from '../../../domain/repositories/categoryRepository/categoryRepository.js';
 
 import {
-  type UpdateGenreCommandHandler,
-  type UpdateGenrePayload,
-  type UpdateGenreResult,
-} from './updateGenreCommandHandler.js';
+  type UpdateCategoryCommandHandler,
+  type UpdateCategoryPayload,
+  type UpdateCategoryResult,
+} from './updateCategoryCommandHandler.js';
 
-export class UpdateGenreCommandHandlerImpl implements UpdateGenreCommandHandler {
+export class UpdateCategoryCommandHandlerImpl implements UpdateCategoryCommandHandler {
   public constructor(
-    private readonly genreRepository: GenreRepository,
+    private readonly categoryRepository: CategoryRepository,
     private readonly loggerService: LoggerService,
   ) {}
 
-  public async execute(payload: UpdateGenrePayload): Promise<UpdateGenreResult> {
+  public async execute(payload: UpdateCategoryPayload): Promise<UpdateCategoryResult> {
     const { id, name } = payload;
 
     const normalizedName = name.toLowerCase();
 
     this.loggerService.debug({
-      message: 'Updating Genre...',
+      message: 'Updating Category...',
       id,
       name: normalizedName,
     });
 
-    const existingGenre = await this.genreRepository.findGenre({ id });
+    const existingCategory = await this.categoryRepository.findCategory({ id });
 
-    if (!existingGenre) {
+    if (!existingCategory) {
       throw new OperationNotValidError({
-        reason: 'Genre does not exist.',
+        reason: 'Category does not exist.',
         id,
       });
     }
 
-    const nameTaken = await this.genreRepository.findGenre({
+    const nameTaken = await this.categoryRepository.findCategory({
       name: normalizedName,
     });
 
     if (nameTaken) {
       throw new ResourceAlreadyExistsError({
-        resource: 'Genre',
+        resource: 'Category',
         name,
       });
     }
 
-    existingGenre.setName({ name: normalizedName });
+    existingCategory.setName({ name: normalizedName });
 
-    const genre = await this.genreRepository.saveGenre({
-      genre: existingGenre,
+    const category = await this.categoryRepository.saveCategory({
+      category: existingCategory,
     });
 
     this.loggerService.debug({
-      message: 'Genre updated.',
+      message: 'Category updated.',
       id,
       name: normalizedName,
     });
 
     return {
-      genre,
+      category,
     };
   }
 }

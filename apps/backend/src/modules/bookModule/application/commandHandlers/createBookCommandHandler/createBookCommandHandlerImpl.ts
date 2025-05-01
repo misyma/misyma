@@ -20,7 +20,7 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
   public async execute(payload: CreateBookCommandHandlerPayload): Promise<CreateBookCommandHandlerResult> {
     const {
       authorIds,
-      genreId,
+      categoryId,
       format,
       isApproved,
       language,
@@ -36,7 +36,7 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
     this.loggerService.debug({
       message: 'Creating Book...',
       authorIds,
-      genreId,
+      categoryId,
       format,
       isApproved,
       language,
@@ -91,7 +91,7 @@ export class CreateBookCommandHandlerImpl implements CreateBookCommandHandler {
 
     const book = await this.bookRepository.saveBook({
       book: {
-        genreId,
+        categoryId,
         format,
         isApproved,
         language,

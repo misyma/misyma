@@ -29,9 +29,9 @@ import { type BookChangeRequestHttpController } from '../modules/bookModule/api/
 import { type BookHttpController } from '../modules/bookModule/api/httpControllers/bookHttpController/bookHttpController.js';
 import { type BookReadingHttpController } from '../modules/bookModule/api/httpControllers/bookReadingHttpController/bookReadingHttpController.js';
 import { type BorrowingHttpController } from '../modules/bookModule/api/httpControllers/borrowingHttpController/borrowingHttpController.js';
+import { type CategoryAdminHttpController } from '../modules/bookModule/api/httpControllers/categoryAdminHttpController/categoryAdminHttpController.js';
+import { type CategoryHttpController } from '../modules/bookModule/api/httpControllers/categoryHttpController/categoryHttpController.js';
 import { type CollectionHttpController } from '../modules/bookModule/api/httpControllers/collectionHttpController/collectionHttpController.js';
-import { type GenreAdminHttpController } from '../modules/bookModule/api/httpControllers/genreAdminHttpController/genreAdminHttpController.js';
-import { type GenreHttpController } from '../modules/bookModule/api/httpControllers/genreHttpController/genreHttpController.js';
 import { type QuoteHttpController } from '../modules/bookModule/api/httpControllers/quoteHttpController/quoteHttpController.js';
 import { type UserBookHttpController } from '../modules/bookModule/api/httpControllers/userBookHttpController/userBookHttpController.js';
 import { bookSymbols } from '../modules/bookModule/symbols.js';
@@ -75,8 +75,8 @@ export class HttpServer {
       this.container.get<BookHttpController>(bookSymbols.bookHttpController),
       this.container.get<BookAdminHttpController>(bookSymbols.bookAdminHttpController),
       this.container.get<UserBookHttpController>(bookSymbols.userBookHttpController),
-      this.container.get<GenreHttpController>(bookSymbols.genreHttpController),
-      this.container.get<GenreAdminHttpController>(bookSymbols.genreAdminHttpController),
+      this.container.get<CategoryHttpController>(bookSymbols.categoryHttpController),
+      this.container.get<CategoryAdminHttpController>(bookSymbols.categoryAdminHttpController),
       this.container.get<BookshelfHttpController>(bookshelfSymbols.bookshelfHttpController),
       this.container.get<BookReadingHttpController>(bookSymbols.bookReadingHttpController),
       this.container.get<QuoteHttpController>(bookSymbols.quoteHttpController),

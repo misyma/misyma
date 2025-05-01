@@ -19,7 +19,7 @@ export class UpdateBookCommandHandlerImpl implements UpdateBookCommandHandler {
   public async execute(payload: UpdateBookPayload): Promise<UpdateBookResult> {
     const {
       bookId,
-      genreId,
+      categoryId,
       authorIds,
       format,
       imageUrl,
@@ -79,8 +79,8 @@ export class UpdateBookCommandHandlerImpl implements UpdateBookCommandHandler {
       book.setAuthors(authors);
     }
 
-    if (genreId) {
-      book.setGenre(genreId);
+    if (categoryId) {
+      book.setCategory(categoryId);
     }
 
     if (language) {

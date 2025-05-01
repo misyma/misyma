@@ -1,7 +1,7 @@
-import { type GenreRawEntity } from '../../../../../databaseModule/infrastructure/tables/genreTable/genreRawEntity.js';
-import { type Genre } from '../../../../domain/entities/genre/genre.js';
+import { type CategoryRawEntity } from '../../../../../databaseModule/infrastructure/tables/categoriesTable/categoryRawEntity.js';
+import { type Category } from '../../../../domain/entities/category/category.js';
 
-export interface GenreMapper {
-  mapToDomain(raw: GenreRawEntity): Genre;
-  mapToPersistence(domain: Genre): GenreRawEntity;
+export interface CategoryMapper {
+  mapToDomain(raw: CategoryRawEntity): Category;
+  mapToPersistence(domain: Category): CategoryRawEntity;
 }

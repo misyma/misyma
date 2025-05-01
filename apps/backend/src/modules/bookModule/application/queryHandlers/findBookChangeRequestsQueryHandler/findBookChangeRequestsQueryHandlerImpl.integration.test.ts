@@ -9,7 +9,7 @@ import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestU
 import { symbols } from '../../../symbols.js';
 import { type BookChangeRequestTestUtils } from '../../../tests/utils/bookChangeRequestTestUtils/bookChangeRequestTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 
 import { type FindBookChangeRequestsQueryHandler } from './findBookChangeRequestsQueryHandler.js';
 
@@ -24,7 +24,7 @@ describe('FindBookChangeRequestsQueryHandler', () => {
 
   let userTestUtils: UserTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   let testUtils: TestUtils[];
 
@@ -43,9 +43,9 @@ describe('FindBookChangeRequestsQueryHandler', () => {
 
     userTestUtils = container.get<UserTestUtils>(testSymbols.userTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
-    testUtils = [bookTestUtils, userTestUtils, bookChangeRequestTestUtils, genreTestUtils];
+    testUtils = [bookTestUtils, userTestUtils, bookChangeRequestTestUtils, categoryTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -63,12 +63,12 @@ describe('FindBookChangeRequestsQueryHandler', () => {
   it('finds bookChangeRequests', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
         },
       },
     });
@@ -95,12 +95,12 @@ describe('FindBookChangeRequestsQueryHandler', () => {
   it('finds bookChangeRequests by user', async () => {
     const user = await userTestUtils.createAndPersist();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
         },
       },
     });

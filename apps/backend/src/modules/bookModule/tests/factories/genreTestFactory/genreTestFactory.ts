@@ -1,20 +1,20 @@
 import { Generator } from '../../../../../../tests/generator.js';
-import { type GenreRawEntity } from '../../../../databaseModule/infrastructure/tables/genreTable/genreRawEntity.js';
-import { Genre, type GenreState } from '../../../domain/entities/genre/genre.js';
+import { type CategoryRawEntity } from '../../../../databaseModule/infrastructure/tables/categoriesTable/categoryRawEntity.js';
+import { Category, type CategoryState } from '../../../domain/entities/category/category.js';
 
-export class GenreTestFactory {
-  public createRaw(overrides: Partial<GenreRawEntity> = {}): GenreRawEntity {
+export class CategoryTestFactory {
+  public createRaw(overrides: Partial<CategoryRawEntity> = {}): CategoryRawEntity {
     return {
       id: Generator.uuid(),
-      name: Generator.genre().toLowerCase() + Generator.numericString(3),
+      name: Generator.category().toLowerCase() + Generator.numericString(3),
       ...overrides,
     };
   }
 
-  public create(overrides: Partial<GenreState> = {}): Genre {
-    return new Genre({
+  public create(overrides: Partial<CategoryState> = {}): Category {
+    return new Category({
       id: Generator.uuid(),
-      name: Generator.genre().toLowerCase() + Generator.numericString(3),
+      name: Generator.category().toLowerCase() + Generator.numericString(3),
       ...overrides,
     });
   }

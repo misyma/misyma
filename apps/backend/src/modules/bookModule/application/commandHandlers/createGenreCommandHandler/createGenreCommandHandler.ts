@@ -1,12 +1,12 @@
 import { type CommandHandler } from '../../../../../common/types/commandHandler.js';
-import { type Genre } from '../../../domain/entities/genre/genre.js';
+import { type Category } from '../../../domain/entities/category/category.js';
 
-export interface CreateGenrePayload {
+export interface CreateCategoryPayload {
   name: string;
 }
 
-export interface CreateGenreResult {
-  genre: Genre;
+export interface CreateCategoryResult {
+  category: Category;
 }
 
-export type CreateGenreCommandHandler = CommandHandler<CreateGenrePayload, CreateGenreResult>;
+export type CreateCategoryCommandHandler = CommandHandler<CreateCategoryPayload, CreateCategoryResult>;

@@ -10,7 +10,7 @@ import { type DatabaseClient } from '../../../../databaseModule/types/databaseCl
 import { symbols } from '../../../symbols.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 
 import { type UpdateBookCommandHandler } from './updateBookCommandHandler.js';
 
@@ -21,7 +21,7 @@ describe('UpdateBookCommandHandlerImpl', () => {
 
   let authorTestUtils: AuthorTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   let databaseClient: DatabaseClient;
 
@@ -38,9 +38,9 @@ describe('UpdateBookCommandHandlerImpl', () => {
 
     authorTestUtils = container.get<AuthorTestUtils>(testSymbols.authorTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
-    testUtils = [authorTestUtils, bookTestUtils, genreTestUtils];
+    testUtils = [authorTestUtils, bookTestUtils, categoryTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -72,12 +72,12 @@ describe('UpdateBookCommandHandlerImpl', () => {
   });
 
   it('throws an error - when updated Author does not exist', async () => {
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          genreId: genre.id,
+          categoryId: category.id,
         },
       },
     });
@@ -99,14 +99,14 @@ describe('UpdateBookCommandHandlerImpl', () => {
   });
 
   it('updates a Book', async () => {
-    const genre1 = await genreTestUtils.createAndPersist();
+    const category1 = await categoryTestUtils.createAndPersist();
 
-    const genre2 = await genreTestUtils.createAndPersist();
+    const category2 = await categoryTestUtils.createAndPersist();
 
     const book = await bookTestUtils.createAndPersist({
       input: {
         book: {
-          genreId: genre1.id,
+          categoryId: category1.id,
         },
       },
     });
@@ -135,7 +135,7 @@ describe('UpdateBookCommandHandlerImpl', () => {
 
     const { book: updatedBook } = await commandHandler.execute({
       bookId: book.id,
-      genreId: genre2.id,
+      categoryId: category2.id,
       authorIds: [updatedAuthor.id],
       format: updatedFormat,
       imageUrl: updatedImageUrl,

@@ -61,7 +61,7 @@ const configSchema = Type.Object({
     bucketName: Type.String({ minLength: 1 }),
     cloudfrontUrl: Type.String({ minLength: 1 }),
   }),
-  genres: Type.Array(Type.String({ minLength: 1 })),
+  categories: Type.Array(Type.String({ minLength: 1 })),
 });
 
 export type Config = Static<typeof configSchema>;

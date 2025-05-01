@@ -1,15 +1,14 @@
 import { type DatabaseClient } from '../../../types/databaseClient.js';
 import { type Migration } from '../../../types/migration.js';
 
-export class M2CreateGenreTableMigration implements Migration {
-  public readonly name = 'M2CreateGenresTableMigration';
+export class M2CreateCategoriesTableMigration implements Migration {
+  public readonly name = 'M2CreateCategoriesTableMigration';
 
-  private readonly tableName = 'genres';
+  private readonly tableName = 'categories';
 
   public async up(databaseClient: DatabaseClient): Promise<void> {
     await databaseClient.schema.createTable(this.tableName, (table) => {
-      table.text('id').primary();
-
+      table.uuid('id').primary();
       table.text('name').unique().notNullable();
     });
   }

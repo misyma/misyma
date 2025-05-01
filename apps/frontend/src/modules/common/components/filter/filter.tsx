@@ -3,7 +3,7 @@ import { CalendarIcon, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState, memo } from 'react';
 
 import { FilterContainer } from './filterContainer';
-import { getGenresQueryOptions } from '../../../genres/api/queries/getGenresQuery/getGenresQueryOptions';
+import { getCategoriesQueryOptions } from '../../../categories/api/queries/getCategoriesQuery/getCategoriesQueryOptions';
 import { ReadingStatus } from '../../constants/readingStatus';
 import { useErrorHandledQuery } from '../../hooks/useErrorHandledQuery';
 import { cn } from '../../lib/utils';
@@ -442,15 +442,15 @@ export const YearFilter: FC<FilterComponentProps> = ({ filter, initialValue, onR
   );
 };
 
-export const GenreSelectFilter: FC<FilterComponentProps> = ({
+export const CategorySelectFilter: FC<FilterComponentProps> = ({
   filter,
   initialValue,
   onRemoveFilter,
   setFilterAction,
 }) => {
-  const [genreSelectOpen, setGenreSelectOpen] = useState(false);
+  const [categorySelectOpen, setCategorySelectOpen] = useState(false);
 
-  const { data: genres } = useErrorHandledQuery(getGenresQueryOptions({}));
+  const { data: categories } = useErrorHandledQuery(getCategoriesQueryOptions({}));
 
   return (
     <FilterContainer
@@ -461,24 +461,24 @@ export const GenreSelectFilter: FC<FilterComponentProps> = ({
           className="w-full sm:w-full"
           key={initialValue}
           value={initialValue}
-          open={genreSelectOpen}
-          onOpenChange={setGenreSelectOpen}
+          open={categorySelectOpen}
+          onOpenChange={setCategorySelectOpen}
           onValueChange={setFilterAction}
         >
           <SelectTrigger className="w-full sm:w-full">
             <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
             <SelectContent>
-              {Object.values(genres?.data ?? []).map((genre) => (
+              {Object.values(categories?.data ?? []).map((category) => (
                 <SelectItem
-                  key={genre.id}
+                  key={category.id}
                   onKeyDown={(event) => {
                     if (event.key === 'Enter') {
-                      setGenreSelectOpen(false);
+                      setCategorySelectOpen(false);
                     }
                   }}
-                  value={genre.id}
+                  value={category.id}
                 >
-                  {genre.name}
+                  {category.name}
                 </SelectItem>
               ))}
             </SelectContent>

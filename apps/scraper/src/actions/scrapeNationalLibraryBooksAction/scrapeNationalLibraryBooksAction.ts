@@ -124,7 +124,7 @@ export class ScrapeNationalLibraryBooksAction {
       translator: bookDraft.translator,
       pages: bookDraft.pages,
       authorIds,
-      genreId: bookDraft.genreId,
+      categoryId: bookDraft.categoryId,
     });
   }
 }

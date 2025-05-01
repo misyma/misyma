@@ -1,28 +1,28 @@
-import { type GenreState, type Genre } from '../../entities/genre/genre.js';
+import { type CategoryState, type Category } from '../../entities/category/category.js';
 
-export interface FindGenrePayload {
+export interface FindCategoryPayload {
   readonly id?: string;
   readonly name?: string;
 }
 
-export interface SaveGenrePayload {
-  readonly genre: GenreState | Genre;
+export interface SaveCategoryPayload {
+  readonly category: CategoryState | Category;
 }
 
-export interface FindGenres {
+export interface FindCategories {
   readonly ids?: string[];
   readonly page: number;
   readonly pageSize: number;
 }
 
-export interface DeleteGenrePayload {
+export interface DeleteCategoryPayload {
   readonly id: string;
 }
 
-export interface GenreRepository {
-  findGenre(payload: FindGenrePayload): Promise<Genre | null>;
-  findGenres(payload: FindGenres): Promise<Genre[]>;
-  countGenres(payload: FindGenres): Promise<number>;
-  saveGenre(payload: SaveGenrePayload): Promise<Genre>;
-  deleteGenre(payload: DeleteGenrePayload): Promise<void>;
+export interface CategoryRepository {
+  findCategory(payload: FindCategoryPayload): Promise<Category | null>;
+  findCategories(payload: FindCategories): Promise<Category[]>;
+  countCategories(payload: FindCategories): Promise<number>;
+  saveCategory(payload: SaveCategoryPayload): Promise<Category>;
+  deleteCategory(payload: DeleteCategoryPayload): Promise<void>;
 }

@@ -5,8 +5,8 @@ import { type Language } from './language.js';
 
 export interface Book {
   readonly id: string;
-  readonly genreId: string;
-  readonly genreName: string;
+  readonly categoryId: string;
+  readonly categoryName: string;
   readonly title: string;
   readonly isbn?: string;
   readonly publisher?: string;

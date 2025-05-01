@@ -8,7 +8,7 @@ import { serializeError } from './errors/serializeError.js';
 import { NationalLibraryClientFactory } from './infrastructure/clients/nationalLibraryClient.js';
 import { AuthorRepository } from './infrastructure/repositories/authorRepository/authorRepository.js';
 import { BookRepository } from './infrastructure/repositories/bookRepository/bookRepository.js';
-import { GenreRepository } from './infrastructure/repositories/genreRepository/genreRepository.js';
+import { CategoryRepository } from './infrastructure/repositories/categoryRepository/categoryRepository.js';
 import { DatabaseClientFactory } from './libs/database/databaseClientFactory.js';
 import { LoggerServiceFactory } from './libs/logger/loggerServiceFactory.js';
 import { UuidService } from './libs/uuid/uuidService.js';
@@ -54,19 +54,19 @@ try {
 
   const bookRepository = new BookRepository(dbClient, uuidService);
 
-  const genreRepository = new GenreRepository(dbClient, uuidService);
+  const categoryRepository = new CategoryRepository(dbClient, uuidService);
 
   const nationalLibraryClient = NationalLibraryClientFactory.create();
 
-  const allGenres = await genreRepository.findGenres();
+  const allCategories = await categoryRepository.findCategories();
 
-  const genreNamesToIds = allGenres.reduce<Record<string, string>>((acc, genre) => {
-    acc[genre.name] = genre.id;
+  const categoryNamesToIds = allCategories.reduce<Record<string, string>>((acc, category) => {
+    acc[category.name] = category.id;
 
     return acc;
   }, {});
 
-  const nationalLibraryBookMapper = new NationalLibraryBookMapper(genreNamesToIds);
+  const nationalLibraryBookMapper = new NationalLibraryBookMapper(categoryNamesToIds);
 
   const scrapeNationalLibraryBooksAction = new ScrapeNationalLibraryBooksAction(
     authorRepository,
@@ -95,7 +95,7 @@ try {
           })
           .positional('resource', {
             type: 'string',
-            describe: 'Resource to scrape (book | genre)',
+            describe: 'Resource to scrape (book | category)',
             choices: ['book'],
           })
           .option('from', {

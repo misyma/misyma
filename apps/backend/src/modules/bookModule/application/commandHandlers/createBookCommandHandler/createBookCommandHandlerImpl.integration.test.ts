@@ -14,7 +14,7 @@ import { symbols } from '../../../symbols.js';
 import { BookTestFactory } from '../../../tests/factories/bookTestFactory/bookTestFactory.js';
 import { type AuthorTestUtils } from '../../../tests/utils/authorTestUtils/authorTestUtils.js';
 import { type BookTestUtils } from '../../../tests/utils/bookTestUtils/bookTestUtils.js';
-import { type GenreTestUtils } from '../../../tests/utils/genreTestUtils/genreTestUtils.js';
+import { type CategoryTestUtils } from '../../../tests/utils/categoryTestUtils/categoryTestUtils.js';
 
 import { type CreateBookCommandHandler } from './createBookCommandHandler.js';
 
@@ -27,7 +27,7 @@ describe('CreateBookCommandHandler', () => {
 
   let bookTestUtils: BookTestUtils;
 
-  let genreTestUtils: GenreTestUtils;
+  let categoryTestUtils: CategoryTestUtils;
 
   const bookTestFactory = new BookTestFactory();
 
@@ -44,9 +44,9 @@ describe('CreateBookCommandHandler', () => {
 
     bookTestUtils = container.get<BookTestUtils>(testSymbols.bookTestUtils);
 
-    genreTestUtils = container.get<GenreTestUtils>(testSymbols.genreTestUtils);
+    categoryTestUtils = container.get<CategoryTestUtils>(testSymbols.categoryTestUtils);
 
-    testUtils = [authorTestUtils, bookTestUtils, genreTestUtils];
+    testUtils = [authorTestUtils, bookTestUtils, categoryTestUtils];
 
     for (const testUtil of testUtils) {
       await testUtil.truncate();
@@ -75,7 +75,7 @@ describe('CreateBookCommandHandler', () => {
       ],
     });
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const { book } = await createBookCommandHandler.execute({
       title: createdBook.getTitle(),
@@ -89,7 +89,7 @@ describe('CreateBookCommandHandler', () => {
       isApproved: createdBook.getIsApproved(),
       imageUrl: createdBook.getImageUrl() as string,
       authorIds: [author.id],
-      genreId: genre.id,
+      categoryId: category.id,
     });
 
     const foundBook = await bookTestUtils.findByTitleAndAuthor({
@@ -107,7 +107,7 @@ describe('CreateBookCommandHandler', () => {
 
     const createdBook = bookTestFactory.create();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     try {
       await createBookCommandHandler.execute({
@@ -122,7 +122,7 @@ describe('CreateBookCommandHandler', () => {
         isApproved: createdBook.getIsApproved(),
         imageUrl: createdBook.getImageUrl() as string,
         authorIds: [authorId],
-        genreId: genre.id,
+        categoryId: category.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -141,7 +141,7 @@ describe('CreateBookCommandHandler', () => {
   it('throws an error - when Authors are not provided', async () => {
     const createdBook = bookTestFactory.create();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     try {
       await createBookCommandHandler.execute({
@@ -156,7 +156,7 @@ describe('CreateBookCommandHandler', () => {
         isApproved: createdBook.getIsApproved(),
         imageUrl: createdBook.getImageUrl() as string,
         authorIds: [],
-        genreId: genre.id,
+        categoryId: category.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(OperationNotValidError);
@@ -176,14 +176,14 @@ describe('CreateBookCommandHandler', () => {
 
     const isbn = Generator.isbn();
 
-    const genre = await genreTestUtils.createAndPersist();
+    const category = await categoryTestUtils.createAndPersist();
 
     const existingBook = await bookTestUtils.createAndPersist({
       input: {
         book: {
           isbn,
           isApproved: true,
-          genreId: genre.id,
+          categoryId: category.id,
         },
       },
     });
@@ -201,7 +201,7 @@ describe('CreateBookCommandHandler', () => {
         isApproved: existingBook.isApproved,
         imageUrl: existingBook.imageUrl as string,
         authorIds: [author.id],
-        genreId: genre.id,
+        categoryId: category.id,
       });
     } catch (error) {
       expect(error).toBeInstanceOf(ResourceAlreadyExistsError);
