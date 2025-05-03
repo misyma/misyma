@@ -7,6 +7,7 @@ export default mergeConfig(
   config,
   defineConfig({
     test: {
+      name: "integration",
       globalSetup: ['./tests/globalSetup.ts'],
       include: ['**/*.integration.test.ts'],
       pool: 'forks',
