@@ -1,3 +1,7 @@
+import path from 'path';
+
+process.env['NODE_CONFIG_DIR'] = path.resolve(import.meta.dirname, '../config');
+
 import { type DatabaseManager } from '../src/modules/databaseModule/infrastructure/databaseManager.js';
 import { databaseSymbols } from '../src/modules/databaseModule/symbols.js';
 

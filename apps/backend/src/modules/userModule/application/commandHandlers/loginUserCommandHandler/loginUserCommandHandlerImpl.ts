@@ -34,19 +34,12 @@ export class LoginUserCommandHandlerImpl implements LoginUserCommandHandler {
 
     const user = await this.userRepository.findUser({ email });
 
-    if (!user) {
-      throw new UnauthorizedAccessError({
-        reason: 'Invalid credentials.',
-        email,
-      });
-    }
-
     const passwordIsValid = await this.hashService.compare({
       plainData: password,
-      hashedData: user.getPassword(),
+      hashedData: user?.getPassword() ?? 'some_horrific_value',
     });
 
-    if (!passwordIsValid) {
+    if (!user || !passwordIsValid) {
       throw new UnauthorizedAccessError({
         reason: 'Invalid credentials.',
         email,

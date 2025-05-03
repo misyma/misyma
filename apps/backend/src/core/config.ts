@@ -68,7 +68,9 @@ export type Config = Static<typeof configSchema>;
 
 export function createConfig(): Config {
   try {
-    return Value.Decode(configSchema, config);
+    const configVals = config.util.loadFileConfigs();
+
+    return Value.Decode(configSchema, configVals);
   } catch (error) {
     if (error instanceof TransformDecodeCheckError) {
       throw new ConfigurationError({ originalError: error });
