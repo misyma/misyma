@@ -29,7 +29,7 @@ export type CreateBookStepOne = z.infer<typeof createBookStepOneSchema>;
 
 export const createBookStepTwoSchema = z.object({
   language: languageSchema,
-  genreId: z.string().uuid(),
+  categoryId: z.string().uuid(),
   translator: translatorSchema.or(z.literal('')),
   form: z.nativeEnum(bookFormats).optional(),
   pagesCount: pagesCountSchema.or(z.literal('')),

@@ -8,6 +8,8 @@ import { cn } from '../../../../common/lib/utils';
 import { FindUserBooksByInfiniteQueryOptions } from '../../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { BookCardRow } from '../../molecules/bookCardRow/bookCardRow';
 import { BookCardRowSkeleton } from '../../molecules/bookCardRow/bookCardRowSkeleton';
+import { useToast } from '../../../../common/components/toast/use-toast';
+import { BookApiError } from '../../../errors/bookApiError';
 
 interface VirtualizedBooksListProps {
   className?: string;
@@ -24,13 +26,22 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
 }) => {
   const parentRef = useRef<HTMLDivElement>(null);
 
-  const { data, fetchNextPage, isLoading, isFetchingNextPage, hasNextPage } = useInfiniteQuery(
-    FindUserBooksByInfiniteQueryOptions({
+  const { toast } = useToast();
+
+  const { data, isError, error, fetchNextPage, isLoading, isFetchingNextPage, hasNextPage } = useInfiniteQuery({
+    ...FindUserBooksByInfiniteQueryOptions({
       bookshelfId,
       pageSize: 18,
       ...booksQueryArgs,
     }),
-  );
+  });
+
+  if (isError && error instanceof BookApiError && error.context.statusCode === 500) {
+    toast({
+      variant: 'destructive',
+      title: 'Błąd serwera, spróbuj ponownie później.',
+    });
+  }
 
   const allBooks = data ? data.pages.flatMap((d) => d.data) : [];
 

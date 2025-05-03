@@ -39,9 +39,9 @@ export const findUserBookshelves = async (payload: Payload) => {
 
   const response = await api.get<FindBookshelvesResponseBody>(ApiPaths.bookshelves.path, {
     params: queryParams,
+    errorCtor: ShelfApiError,
+    mapper,
   });
-
-  api.validateResponse(response, ShelfApiError, mapper);
 
   return response.data;
 };
