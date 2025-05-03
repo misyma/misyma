@@ -22,9 +22,10 @@ const uploadBookshelfImage = async (payload: UploadBookshelfImagePayload) => {
   const path = ApiPaths.bookshelves.$bookshelfId.images.path;
   const resolvedPath = path.replace('{{bookshelfId}}', payload.bookshelfId);
 
-  const response = await api.patch(resolvedPath, formData);
-
-  api.validateResponse(response, ShelfApiError, mapper);
+  await api.patch(resolvedPath, formData, {
+    errorCtor: ShelfApiError,
+    mapper,
+  });
 };
 
 export const useUploadBookshelfImageMutation = (

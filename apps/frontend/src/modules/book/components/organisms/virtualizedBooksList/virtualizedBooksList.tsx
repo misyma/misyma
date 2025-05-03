@@ -24,13 +24,13 @@ export const VirtualizedBooksList: FC<VirtualizedBooksListProps> = ({
 }) => {
   const parentRef = useRef<HTMLDivElement>(null);
 
-  const { data, fetchNextPage, isLoading, isFetchingNextPage, hasNextPage } = useInfiniteQuery(
-    FindUserBooksByInfiniteQueryOptions({
+  const { data, fetchNextPage, isLoading, isFetchingNextPage, hasNextPage } = useInfiniteQuery({
+    ...FindUserBooksByInfiniteQueryOptions({
       bookshelfId,
       pageSize: 18,
       ...booksQueryArgs,
     }),
-  );
+  });
 
   const allBooks = data ? data.pages.flatMap((d) => d.data) : [];
 

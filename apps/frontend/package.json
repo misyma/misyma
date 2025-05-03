@@ -10,7 +10,7 @@
     "lint:fix": "npm run lint -- --fix",
     "preview": "vite preview",
     "test:unit": "npm run test",
-    "test": "vitest .test.tsx",
+    "test": "vitest",
     "test:unit:run": "npm run test:unit -- --run",
     "test:integration": "vitest .integration.test.tsx --pool forks --poolOptions.forks.singleFork",
     "test:integration:run": "npm run test:integration -- --run",

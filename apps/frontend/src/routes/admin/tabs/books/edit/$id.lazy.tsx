@@ -6,7 +6,7 @@ import { type FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { type FindBookResponseBody, languages, type UpdateBookRequestBody } from '@common/contracts';
+import { type FindBookResponseBody, type UpdateBookRequestBody } from '@common/contracts';
 
 import { Route } from './$id';
 import { AuthenticatedLayout } from '../../../../../modules/auth/layouts/authenticated/authenticatedLayout';
@@ -53,6 +53,13 @@ import { useErrorHandledQuery } from '../../../../../modules/common/hooks/useErr
 import { cn } from '../../../../../modules/common/lib/utils';
 import { isbnSchema } from '../../../../../modules/common/schemas/isbnSchema';
 import { RequireAdmin } from '../../../../../modules/core/components/requireAdmin/requireAdmin';
+import {
+  languageSchema,
+  publisherSchema,
+  releaseYearSchema,
+  bookTitleSchema,
+  translatorSchema,
+} from '../../../../../modules/book/schemas/bookSchemas';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -60,15 +67,7 @@ type WriteablePayload = Writeable<UpdateBookRequestBody>;
 
 const editBookFormSchema = z.object({
   isbn: isbnSchema.or(z.literal('')),
-  title: z
-    .string()
-    .min(1, {
-      message: 'Tytuł musi mieć co najmniej jeden znak.',
-    })
-    .max(256, {
-      message: 'Tytuł może mieć maksymalnie 256 znaków.',
-    })
-    .optional(),
+  title: bookTitleSchema.optional(),
   author: z
     .string({
       required_error: 'Wymagany',
@@ -87,39 +86,10 @@ const editBookFormSchema = z.object({
     })
     .regex(/\s/)
     .optional(),
-  publisher: z
-    .string()
-    .min(1, {
-      message: 'Nazwa wydawnictwa powinna mieć co namniej 1 znak.',
-    })
-    .max(128, {
-      message: 'Nazwa wydawnictwa powinna mieć co najwyżej 128 znaków.',
-    })
-    .optional(),
-  releaseYear: z
-    .number({
-      invalid_type_error: 'Rok wydania musi być liczbą.',
-      required_error: 'Rok wyadania musi być liczbą.',
-      coerce: true,
-    })
-    .min(1, {
-      message: 'Rok wydania musi być późniejszy niż 1800',
-    })
-    .max(2100, {
-      message: 'Rok wydania nie może być późniejszy niż 2100',
-    }),
-  language: z.nativeEnum(languages),
-  translator: z
-    .string({
-      required_error: 'Przekład jest wymagany.',
-    })
-    .min(1, {
-      message: 'Przekład jest zbyt krótki.',
-    })
-    .max(64, {
-      message: 'Przekład może mieć maksymalnie 64 znaki.',
-    })
-    .or(z.literal('')),
+  publisher: publisherSchema.optional(),
+  releaseYear: releaseYearSchema,
+  language: languageSchema,
+  translator: translatorSchema.or(z.literal('')),
   isApproved: z.boolean().optional(),
   // todo: validation
   // category: z.string().min(1, {
@@ -155,9 +125,7 @@ const BookEditForm: FC<FormProps> = ({ data }) => {
   const onOpenChange = (bool: boolean) => setCreateAuthorDialogVisible(bool);
 
   const [draftAuthorName, setDraftAuthorName] = useState('');
-
   const [createAuthorDialogVisible, setCreateAuthorDialogVisible] = useState(false);
-
   const [authorSelectOpen, setAuthorSelectOpen] = useState(false);
 
   const { mutateAsync: updateBook } = useUpdateBookMutation({});

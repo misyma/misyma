@@ -17,9 +17,10 @@ type Payload = DeleteQuotePathParams & {
 };
 
 const deleteQuote = async (payload: Payload) => {
-  const response = await api.delete(`/quotes/${payload.quoteId}`);
-
-  api.validateResponse(response, QuoteApiError, mapper);
+  await api.delete(`/quotes/${payload.quoteId}`, {
+    errorCtor: QuoteApiError,
+    mapper,
+  });
 };
 
 export const useDeleteQuoteMutation = (options: UseMutationOptions<void, QuoteApiError, Payload>) => {

@@ -26,9 +26,10 @@ const updateBookReading = async (payload: UpdateBookReadingMutationPayload) => {
   path = path.replace('{{userBookId}', userBookId);
   path = path.replace('{{readingId}}', readingId);
 
-  const response = await api.patch<CreateBookReadingResponseBody>(path, body);
-
-  api.validateResponse(response, BookApiError, mapper);
+  const response = await api.patch<CreateBookReadingResponseBody>(path, body, {
+    errorCtor: BookApiError,
+    mapper,
+  });
 
   return response.data;
 };

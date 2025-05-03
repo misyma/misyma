@@ -9,14 +9,10 @@ import { ApiPaths } from '../../../../core/apiClient/apiPaths';
 import { ShelfApiError } from '../../errors/shelfApiError';
 import { invalidateBookshelvesQueriesPredicate } from '../../queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { z } from 'zod';
+import { bookshelfNameSchema } from '../../schemas/bookshelfSchemas';
 
 export const createBookshelfSchema = z.object({
-  name: z
-    .string({
-      required_error: 'Nazwa jest wymagana',
-    })
-    .min(1, 'Nazwa jest za krótka.')
-    .max(64, 'Nazwa jest zbyt długa.'),
+  name: bookshelfNameSchema,
 });
 
 export type CreateBookshelfSchema = z.infer<typeof createBookshelfSchema>;

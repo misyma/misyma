@@ -3,7 +3,7 @@ import { type FC, useCallback, useState } from 'react';
 import { type ControllerRenderProps, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { bookFormats, BookFormat as ContractBookFormat, languages } from '@common/contracts';
+import { bookFormats, BookFormat as ContractBookFormat } from '@common/contracts';
 
 import {
   BookCreationActionType,
@@ -33,20 +33,11 @@ import {
 import { BookFormat } from '../../../../../../common/constants/bookFormat';
 import { type Languages } from '../../../../../../common/constants/languages';
 import LanguageSelect from '../../../../molecules/languageSelect/languageSelect';
+import { languageSchema, translatorSchema } from '../../../../../schemas/bookSchemas';
 
 const stepTwoSchema = z.object({
-  language: z.nativeEnum(languages),
-  translator: z
-    .string({
-      required_error: 'Przekład jest wymagany.',
-    })
-    .min(1, {
-      message: 'Przekład jest zbyt krótki.',
-    })
-    .max(64, {
-      message: 'Przekład może mieć maksymalnie 64 znaki.',
-    })
-    .or(z.literal('')),
+  language: languageSchema,
+  translator: translatorSchema.or(z.literal('')),
   form: z.nativeEnum(bookFormats).optional(),
   pagesCount: z
     .number({

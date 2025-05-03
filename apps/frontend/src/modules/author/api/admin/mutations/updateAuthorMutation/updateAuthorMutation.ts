@@ -23,9 +23,10 @@ const mapper = new ErrorCodeMessageMapper({
 const updateAuthor = async (payload: Payload) => {
   const { authorId, ...rest } = payload;
 
-  const response = await api.patch<UpdateAuthorResponseBody>(`/admin/authors/${authorId}`, rest);
-
-  api.validateResponse(response, AuthorApiError, mapper);
+  const response = await api.patch<UpdateAuthorResponseBody>(`/admin/authors/${authorId}`, rest, {
+    errorCtor: AuthorApiError,
+    mapper,
+  });
 
   return response.data;
 };

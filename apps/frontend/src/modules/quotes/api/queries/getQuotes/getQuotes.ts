@@ -51,9 +51,9 @@ export const getQuotes = async (payload: FindQuotesQueryParams) => {
 
   const response = await api.get<FindQuotesResponseBody>(ApiPaths.quotes.path, {
     params: queryParams,
+    errorCtor: QuoteApiError,
+    mapper,
   });
-
-  api.validateResponse(response, QuoteApiError, mapper);
 
   return response.data;
 };

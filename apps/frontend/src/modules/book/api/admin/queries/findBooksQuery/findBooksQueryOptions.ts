@@ -58,9 +58,9 @@ export const adminFindBooks = async (values: RequestPayload) => {
   const response = await api.get<FindBooksResponseBody>(ApiPaths.admin.books.path, {
     params: query,
     signal,
+    errorCtor: BookApiError,
+    mapper,
   });
-
-  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

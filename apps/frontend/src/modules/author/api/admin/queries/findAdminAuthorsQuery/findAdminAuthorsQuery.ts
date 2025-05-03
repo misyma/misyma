@@ -67,9 +67,9 @@ export const findAdminAuthors = async (values: FindAdminAuthorsQueryParams) => {
       }
       return queryString.toString();
     },
+    errorCtor: AuthorApiError,
+    mapper
   });
-
-  api.validateResponse(response, AuthorApiError, mapper);
 
   return response.data;
 };

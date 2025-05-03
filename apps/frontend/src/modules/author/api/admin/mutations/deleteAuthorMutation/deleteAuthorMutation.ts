@@ -14,11 +14,10 @@ const mapper = new ErrorCodeMessageMapper({
 });
 
 const deleteAuthor = async (payload: DeleteAuthorPathParams) => {
-  const response = await api.delete(`/admin/authors/${payload.authorId}`);
-
-  api.validateResponse(response, AuthorApiError, mapper);
-
-  return;
+  await api.delete(`/admin/authors/${payload.authorId}`, {
+    errorCtor: AuthorApiError,
+    mapper
+  });
 };
 
 export const useDeleteAuthorMutation = (options: UseMutationOptions<void, AuthorApiError, DeleteAuthorPathParams>) => {

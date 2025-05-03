@@ -1,7 +1,7 @@
 {
   "admin": {
     "email": "admin@misyma.com",
-    "password": "AdminPassword123"
+    "password": "AdminPassword123!"
   },
   "token": {
     "secret": "12321313423565365654546654121890008"

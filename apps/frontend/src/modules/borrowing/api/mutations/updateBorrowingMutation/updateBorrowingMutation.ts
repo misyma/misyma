@@ -29,9 +29,11 @@ const updateBorrowing = async (payload: UseUpdateBorrowingMutationPayload) => {
   const response = await api.patch<UpdateBorrowingResponseBody>(
     `/user-books/${userBookId}/borrowings/${borrowingId}`,
     rest,
+    {
+      errorCtor: BookApiError,
+      mapper,
+    },
   );
-
-  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

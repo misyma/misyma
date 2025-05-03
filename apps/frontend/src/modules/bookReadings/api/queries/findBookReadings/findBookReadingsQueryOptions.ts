@@ -32,11 +32,11 @@ export const findBookReadings = async (values: FindBookReadingsPayload): Promise
 
   const path = ApiPaths.userBooks.$userBookId.readings.path;
   const resolvedPath = path.replace('{{userBookId}}', userBookId);
-  const response = await api.get<FindBookReadingsResponseBody>(resolvedPath, {
+  const response = await api.get(resolvedPath, {
     params: queryParams,
+    errorCtor: BookApiError,
+    mapper,
   });
-
-  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };

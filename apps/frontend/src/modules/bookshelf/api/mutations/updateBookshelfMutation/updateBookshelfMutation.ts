@@ -13,9 +13,10 @@ import { ApiPaths } from '../../../../core/apiClient/apiPaths';
 import { ShelfApiError } from '../../errors/shelfApiError';
 import { invalidateBookshelvesQueriesPredicate } from '../../queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
 import { z } from 'zod';
+import { bookshelfNameSchema } from '../../schemas/bookshelfSchemas';
 
 export const updateBookshelfSchema = z.object({
-  name: z.string().max(64, 'Nazwa jest zbyt długa.').optional(),
+  name: bookshelfNameSchema.optional(),
 });
 
 export type UpdateBookshelfSchema = z.infer<typeof updateBookshelfSchema>;
@@ -30,9 +31,10 @@ const updateBookshelf = async (payload: Payload) => {
   const path = ApiPaths.bookshelves.$bookshelfId.path;
   const resolvedPath = path.replace('{{bookshelfId}}', payload.bookshelfId);
 
-  const response = await api.patch<UpdateBookshelfResponseBody>(resolvedPath, payload);
-
-  api.validateResponse(response, ShelfApiError, mapper);
+  const response = await api.patch<UpdateBookshelfResponseBody>(resolvedPath, payload, {
+    errorCtor: ShelfApiError,
+    mapper
+  });
 
   return response.data;
 };

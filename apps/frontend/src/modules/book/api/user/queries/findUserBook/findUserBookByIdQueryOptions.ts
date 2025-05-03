@@ -10,9 +10,10 @@ import { BookApiQueryKeys } from '../bookApiQueryKeys.js';
 const mapper = new ErrorCodeMessageMapper({});
 
 export const findUserBookById = async (payload: FindUserBookPathParams): Promise<FindUserBookResponseBody> => {
-  const response = await api.get<FindUserBookResponseBody>(`/user-books/${payload.userBookId}`);
-
-  api.validateResponse(response, BookApiError, mapper);
+  const response = await api.get<FindUserBookResponseBody>(`/user-books/${payload.userBookId}`, {
+    errorCtor: BookApiError,
+    mapper,
+  });
 
   return response.data;
 };

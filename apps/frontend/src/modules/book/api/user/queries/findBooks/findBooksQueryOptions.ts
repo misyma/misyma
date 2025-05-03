@@ -30,9 +30,9 @@ export const findBooks = async (values: FindBooksQueryParams) => {
 
   const response = await api.get<FindBooksResponseBody>(ApiPaths.books.path, {
     params: queryParams,
+    errorCtor: BookApiError,
+    mapper,
   });
-
-  api.validateResponse(response, BookApiError, mapper);
 
   return response.data;
 };
