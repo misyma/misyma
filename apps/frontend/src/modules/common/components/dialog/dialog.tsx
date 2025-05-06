@@ -108,16 +108,15 @@ const DialogDescription = React.forwardRef<
 
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
-const DialogContentScrollArea: React.FC<React.PropsWithChildren<{ className?: string }>> = ({
-  children,
-  className,
-}) => (
+const DialogContentScrollArea: React.FC<
+  React.PropsWithChildren<{ className?: string; style?: React.CSSProperties }>
+> = ({ children, style, className }) => (
   <ScrollArea
     style={{
       maxHeight: 'calc(90vh - 125px)',
+      ...style,
     }}
     className="w-full"
-    type='always'
   >
     <div className={cn('max-w-sm sm:max-w-xl py-4 flex flex-col items-center gap-8', className)}>{children}</div>
   </ScrollArea>
