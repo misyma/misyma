@@ -11,6 +11,7 @@ import {
 } from '../../../../bookshelf/context/bookCreationContext/bookCreationContext';
 import { Breadcrumbs, NumericBreadcrumb } from '../../../../common/components/ui/breadcrumbs';
 import { cn } from '../../../../common/lib/utils';
+import { DialogContentScrollArea } from '../../../../common/components/dialog/dialog';
 
 interface Props {
   onSubmit: () => void;
@@ -72,43 +73,41 @@ export const AdminCreateBookForm: FC<Props> = (props) => {
   };
 
   return (
-    <div className="flex flex-col-reverse sm:px-10 pt-4 sm:flex-row gap-10 sm:gap-20 md:gap-30 lg:gap-60 max-w-[15rem] sm:max-w-[unset]">
-      <div className="sm:min-h-[40rem]">
-        {!bookCreation.isbnPath && bookCreation.step > 0 ? (
-          <Breadcrumbs
-            crumbs={{
-              [NonIsbnCreationPathStep.inputFirstDetails]: (
-                <NumericBreadcrumb
-                  index={1}
-                  className={cn(setNthSelected(NonIsbnCreationPathStep.inputFirstDetails), 'cursor-pointer')}
-                  onClick={() => {
-                    navigateToStep(1);
-                  }}
-                >
-                  1
-                </NumericBreadcrumb>
-              ),
-              [NonIsbnCreationPathStep.inputSecondDetails]: (
-                <NumericBreadcrumb
-                  index={2}
-                  className={cn(
-                    setNthSelected(NonIsbnCreationPathStep.inputSecondDetails),
-                    canNavigateToSecond() ? 'cursor-pointer' : '',
-                  )}
-                  onClick={() => {
-                    navigateToStep(2);
-                  }}
-                >
-                  2
-                </NumericBreadcrumb>
-              ),
-            }}
-          />
-        ) : (
-          <></>
-        )}
-        {renderStep()}
-      </div>
+    <div className='grid grid-cols-1'>
+      {!bookCreation.isbnPath && bookCreation.step > 0 ? (
+        <Breadcrumbs
+          crumbs={{
+            [NonIsbnCreationPathStep.inputFirstDetails]: (
+              <NumericBreadcrumb
+                index={1}
+                className={cn(setNthSelected(NonIsbnCreationPathStep.inputFirstDetails), 'cursor-pointer')}
+                onClick={() => {
+                  navigateToStep(1);
+                }}
+              >
+                1
+              </NumericBreadcrumb>
+            ),
+            [NonIsbnCreationPathStep.inputSecondDetails]: (
+              <NumericBreadcrumb
+                index={2}
+                className={cn(
+                  setNthSelected(NonIsbnCreationPathStep.inputSecondDetails),
+                  canNavigateToSecond() ? 'cursor-pointer' : '',
+                )}
+                onClick={() => {
+                  navigateToStep(2);
+                }}
+              >
+                2
+              </NumericBreadcrumb>
+            ),
+          }}
+        />
+      ) : (
+        <></>
+      )}
+        <DialogContentScrollArea>{renderStep()}</DialogContentScrollArea>
     </div>
   );
 };

@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 import { CreateChangeRequestForm } from '../../../../bookChangeRequests/components/organisms/createChangeRequestForm/createChangeRequestForm';
 import { Button } from '../../../../common/components/button/button';
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../../common/components/dialog/dialog';
+import { Dialog, DialogContent, DialogContentScrollArea, DialogHeader, DialogTrigger } from '../../../../common/components/dialog/dialog';
 import { RadioGroup, RadioGroupItem } from '../../../../common/components/radioGroup/radio-group';
 import { useToast } from '../../../../common/components/toast/use-toast';
 import {
@@ -96,37 +96,41 @@ const InnerModal: FC<Props> = ({ bookId }) => {
           <DialogHeader className="flex justify-center items-center text-xl font-semibold">
             Zmiana danych dla mojej książki
           </DialogHeader>
-          <UpdateUserBookForm
-            bookId={bookId}
-            userBook={data}
-            onCancel={() => {
-              setActionChosen(false);
+          <DialogContentScrollArea>
+            <UpdateUserBookForm
+              bookId={bookId}
+              userBook={data}
+              onCancel={() => {
+                setActionChosen(false);
 
-              setBookEditType('myBookChange');
-            }}
-            onSubmit={onSubmitChangeMyBookDataForm}
-          />
+                setBookEditType('myBookChange');
+              }}
+              onSubmit={onSubmitChangeMyBookDataForm}
+            />
+          </DialogContentScrollArea>
         </>
       );
     } else if (actionChosen && bookEditType === 'dbChangeRequest') {
       return (
         <>
-          <DialogHeader className="flex justify-center items-center text-xl font-semibold">
+          <DialogHeader className="flex w-full bg-background justify-center items-center text-xl font-semibold">
             Prośba o zmianę danych w bazie
           </DialogHeader>
-          <CreateChangeRequestForm
-            bookId={bookId}
-            onCancel={() => {
-              setActionChosen(false);
-            }}
-            onSubmit={() => {
-              resetModalState();
-              toast({
-                variant: 'success',
-                title: 'Stworzono prośbę o zmianę danych',
-              });
-            }}
-          />
+          <DialogContentScrollArea>
+            <CreateChangeRequestForm
+              bookId={bookId}
+              onCancel={() => {
+                setActionChosen(false);
+              }}
+              onSubmit={() => {
+                resetModalState();
+                toast({
+                  variant: 'success',
+                  title: 'Stworzono prośbę o zmianę danych',
+                });
+              }}
+            />
+          </DialogContentScrollArea>
         </>
       );
     }
@@ -136,41 +140,43 @@ const InnerModal: FC<Props> = ({ bookId }) => {
         <DialogHeader className="flex justify-center items-center text-xl font-semibold">
           W jaki sposób chcesz edytować książkę?
         </DialogHeader>
-        <RadioGroup
-          defaultValue={bookEditType}
-          onValueChange={(val) => setBookEditType(val as BookEditType)}
-        >
-          <div className="flex gap-4">
-            <RadioGroupItem
-              type="button"
-              value="myBookChange"
-            ></RadioGroupItem>
-            <p>zmiana danych dla mojej książki</p>
-          </div>
-          <div className="flex gap-4">
-            <RadioGroupItem
-              type="button"
-              value="dbChangeRequest"
-            ></RadioGroupItem>
-            <p>prośba o zmianę danych w bazie </p>
-          </div>
-        </RadioGroup>
-        <div className="flex gap-4">
-          <Button
-            variant="outline"
-            onClick={() => resetModalState()}
+        <DialogContentScrollArea>
+          <RadioGroup
+            defaultValue={bookEditType}
+            onValueChange={(val) => setBookEditType(val as BookEditType)}
           >
-            Wróć
-          </Button>
-          <Button
-            type="submit"
-            onClick={() => {
-              setActionChosen(true);
-            }}
-          >
-            Przejdź dalej
-          </Button>
-        </div>{' '}
+            <div className="flex gap-4">
+              <RadioGroupItem
+                type="button"
+                value="myBookChange"
+              ></RadioGroupItem>
+              <p>zmiana danych dla mojej książki</p>
+            </div>
+            <div className="flex gap-4">
+              <RadioGroupItem
+                type="button"
+                value="dbChangeRequest"
+              ></RadioGroupItem>
+              <p>prośba o zmianę danych w bazie </p>
+            </div>
+          </RadioGroup>
+          <div className="flex gap-4">
+            <Button
+              variant="outline"
+              onClick={() => resetModalState()}
+            >
+              Wróć
+            </Button>
+            <Button
+              type="submit"
+              onClick={() => {
+                setActionChosen(true);
+              }}
+            >
+              Przejdź dalej
+            </Button>
+          </div>{' '}
+        </DialogContentScrollArea>
       </>
     );
   };
@@ -211,8 +217,8 @@ const InnerModal: FC<Props> = ({ bookId }) => {
       <DialogContent
         style={{
           borderRadius: '40px',
+          maxHeight: '95vh'
         }}
-        className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
         omitCloseButton={true}
       >
         {renderContents()}

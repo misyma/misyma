@@ -5,6 +5,7 @@ import { Button } from '../../../../common/components/button/button';
 import {
   Dialog,
   DialogContent,
+  DialogContentScrollArea,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -85,21 +86,23 @@ const InnerContainer: FC<Props> = ({ bookId }) => {
         style={{
           borderRadius: '40px',
         }}
-        className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
+        className="py-16 gap-8"
         omitCloseButton={true}
       >
         <DialogHeader className="flex justify-center items-center text-xl font-semibold">
           <DialogTitle>Edytuj książkę</DialogTitle>
         </DialogHeader>
-        <AdminEditBookForm
-          bookId={bookId}
-          onCancel={() => {
-            resetModalState();
-          }}
-          onSubmit={() => {
-            resetModalState();
-          }}
-        />
+        <DialogContentScrollArea>
+          <AdminEditBookForm
+            bookId={bookId}
+            onCancel={() => {
+              resetModalState();
+            }}
+            onSubmit={() => {
+              resetModalState();
+            }}
+          />
+        </DialogContentScrollArea>
       </DialogContent>
     </Dialog>
   );
