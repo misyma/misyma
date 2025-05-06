@@ -9,6 +9,7 @@ import { BreadcrumbKeysProvider } from './modules/common/contexts/breadcrumbKeys
 import { QueryClientProvider } from './modules/core/components/providers/queryClientProvider/queryClientProvider.tsx';
 import { StoreProvider } from './modules/core/components/providers/storeProvider/storeProvider.tsx';
 import { type AppRouter, router } from './modules/core/router/router.ts';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 declare module '@tanstack/react-router' {
   interface Register {
@@ -31,6 +32,7 @@ if (!rootElement.innerHTML) {
     <React.StrictMode>
       <StoreProvider>
         <QueryClientProvider>
+          <ReactQueryDevtools />
           <SearchCreateBookProvider>
             <BreadcrumbKeysProvider>
               <RouterProvider router={router} />

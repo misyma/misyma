@@ -11,7 +11,6 @@ import { Separator } from '../../../common/components/separator/separator';
 import { CreateQuotationModal } from '../../../quotes/components/organisms/createQuotationModal/createQuotationModal';
 import { QuotationTabTable } from '../../../quotes/components/organisms/quotationTabTable/quotationTabTable';
 import { QuotationTabTitleBar } from '../../../quotes/components/organisms/quotationTabTitleBar/quotationTabTitleBar';
-import { useFindUserQuery } from '../../../user/api/queries/findUserQuery/findUserQuery';
 import { BookApiQueryKeys } from '../../api/user/queries/bookApiQueryKeys';
 import { BookNavigationFromEnum, type BookNavigationFrom } from '../../constants';
 import { useBookBreadcrumbs } from '../../hooks/useBookBreadcrumbs';
@@ -22,7 +21,7 @@ import { BasicDataMainBody } from '../organisms/basicDataTab/basicDataMainBody';
 import { BasicDataTabActionButtons } from '../organisms/basicDataTab/basicDataTabActionButtons';
 import { BookGradesTabMainBody } from '../organisms/bookGradesTab/bookGradesTabMainBody';
 import { BookTabNavigation } from '../organisms/bookTabNavigation/bookTabNavigation';
-import { Card } from '../../../common/components/card';
+import { BookPageContentCard } from '../atoms/bookPageContentCard/bookPageContentCard';
 
 export const BookPage: FC<{ from: BookNavigationFrom }> = ({ from }) => {
   const fromUrl = from === BookNavigationFromEnum.shelves ? '/shelves/bookshelf/book/$bookId' : '/mybooks/book/$bookId';
@@ -38,15 +37,11 @@ export const BookPage: FC<{ from: BookNavigationFrom }> = ({ from }) => {
 
   const queryClient = useQueryClient();
 
-  const { data: userData } = useFindUserQuery();
-
-  const invalidateReadingsFetch = () => {
-    Promise.all([
+  const invalidateReadingsFetch = async () => {
+    await Promise.all([
       queryClient.invalidateQueries({
         predicate: (query) =>
-          query.queryKey[0] === BookReadingsApiQueryKeys.findBookReadings &&
-          query.queryKey[1] === userData?.id &&
-          query.queryKey[2] === bookId,
+          query.queryKey[0] === BookReadingsApiQueryKeys.findBookReadings && query.queryKey[2] === bookId,
       }),
       queryClient.invalidateQueries({
         predicate: (query) =>
@@ -62,18 +57,14 @@ export const BookPage: FC<{ from: BookNavigationFrom }> = ({ from }) => {
         return <BookGradesTabMainBody bookId={bookId} />;
       case 'quotations':
         return (
-          <>
-            <Card className="p-6 bg-background shadow-md">
-              <div className="flex flex-col gap-6">
-                <QuotationTabTitleBar bookId={bookId} />
-                <Separator className="h-[2px] bg-primary/20" />
-                <QuotationTabTable
-                  bookId={bookId}
-                  sortDate={sortDate}
-                />
-              </div>
-            </Card>
-          </>
+          <BookPageContentCard>
+            <QuotationTabTitleBar bookId={bookId} />
+            <Separator className="h-[2px] bg-primary/20" />
+            <QuotationTabTable
+              bookId={bookId}
+              sortDate={sortDate}
+            />
+          </BookPageContentCard>
         );
     }
   };
@@ -97,7 +88,7 @@ export const BookPage: FC<{ from: BookNavigationFrom }> = ({ from }) => {
       case 'quotations':
         return (
           <CreateQuotationModal
-            onMutated={() => {}}
+            onMutated={async () => {}}
             trigger={<Button size="xl">Dodaj cytat</Button>}
             userBookId={bookId}
           />

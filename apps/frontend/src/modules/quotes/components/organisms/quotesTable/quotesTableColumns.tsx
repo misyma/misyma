@@ -16,31 +16,27 @@ export const quoteTableColumns: ColumnDef<Quote>[] = [
 
       return (
         <div className="flex flex-wrap flex-col py-4 gap-4">
-          <div className="flex gap-2 items-center justify-between">
-            <div className="flex gap-3 justify-start items-between w-full">
-              <Blockquote
-                key={row.original.id}
-                variant="minimalist"
-                date={row.original.createdAt}
-                page={row.original.page}
-                rightButtons={
-                  <>
-                    <UpdateQuoteButton
-                      key={row.original.id}
-                      quote={row.original}
-                    />
-                    <DeleteQuoteModal
-                      userBookId={foundRow?.original.userBookId as string}
-                      quoteId={foundRow?.original.id as string}
-                    />
-                    <FavoriteQuoteButton quote={row.original} />
-                  </>
-                }
-              >
-                {row?.original.content ?? ''}
-              </Blockquote>
-            </div>
-          </div>
+          <Blockquote
+            key={row.original.id}
+            variant="minimalist"
+            date={row.original.createdAt}
+            page={row.original.page}
+            rightButtons={
+              <>
+                <UpdateQuoteButton
+                  key={row.original.id}
+                  quote={row.original}
+                />
+                <DeleteQuoteModal
+                  userBookId={foundRow?.original.userBookId as string}
+                  quoteId={foundRow?.original.id as string}
+                />
+                <FavoriteQuoteButton quote={row.original} />
+              </>
+            }
+          >
+            {row?.original.content ?? ''}
+          </Blockquote>
         </div>
       );
     },

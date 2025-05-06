@@ -11,7 +11,7 @@ import { CurrentRatingStar } from '../../atoms/currentRatingStar/currentRatingSt
 import { BookshelfChoiceDropdown } from '../../molecules/bookshelfChoiceDropdown/bookshelfChoiceDropdown';
 import { StatusChooserCards } from '../../molecules/statusChooser/statusChooserCards';
 import { Bookmark, BookOpen, Calendar, FileText, Globe, Hash, User } from 'lucide-react';
-import { Card } from '../../../../common/components/card';
+import { BookPageContentCard } from '../../atoms/bookPageContentCard/bookPageContentCard';
 
 interface BasicDataMainBodyProps {
   bookId: string;
@@ -52,8 +52,7 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
   );
 
   return (
-    <>
-      <Card className="p-6 bg-background shadow-md">
+      <BookPageContentCard>
         <div className="flex flex-col gap-6">
           <div className="flex flex-shrink-0 justify-between items-center">
             {!isLoading ? <BookTitle title={bookDetails.title ?? ''} /> : <Skeleton className="h-9 w-40" />}
@@ -170,7 +169,6 @@ export const BasicDataMainBody: FC<BasicDataMainBodyProps> = ({ bookId }) => {
             </div>
           </div>
         </div>
-      </Card>
-    </>
+      </BookPageContentCard>
   );
 };

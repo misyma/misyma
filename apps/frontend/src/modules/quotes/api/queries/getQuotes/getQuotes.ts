@@ -87,7 +87,7 @@ export const getQuotesByInfiniteQueryOptions = ({ page = 1, ...payload }: FindQu
   });
 
 export const invalidateQuotesPredicate = (queryKey: QueryKey, userBookId: string) => {
-  return queryKey[0] === QuotesApiQueryKeys.findQuotes, queryKey[1] === userBookId;
+  return queryKey.includes(QuotesApiQueryKeys.findQuotes) && queryKey[1] === userBookId;
 };
 
 export const invalidateInfiniteQuotesPredicate = (queryKey: QueryKey) => {
