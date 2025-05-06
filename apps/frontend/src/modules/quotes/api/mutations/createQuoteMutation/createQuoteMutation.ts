@@ -7,7 +7,10 @@ import { ErrorCodeMessageMapper } from '../../../../common/errorCodeMessageMappe
 import { api } from '../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../core/apiClient/apiPaths';
 import { QuoteApiError } from '../../errors/quoteApiError';
-import { invalidateAllQuotesPredicate, invalidateInfiniteQuotesPredicate } from '../../queries/getQuotes/getQuotes';
+import {
+  invalidateAllQuotesPredicate,
+  invalidateInfiniteQuotesPredicate,
+} from '../../queries/getQuotes/getQuotes';
 
 export interface CreateQuoteMutationPayload extends CreateQuoteRequestBody {
   userId: string;
@@ -63,14 +66,18 @@ export const useCreateQuoteMutation = (
   options: UseMutationOptions<CreateQuoteResponseBody, QuoteApiError, CreateQuoteMutationPayload>,
 ) => {
   const queryClient = useQueryClient();
-
+  
   return useMutation({
     mutationFn: createQuote,
     ...options,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) =>
-          invalidateInfiniteQuotesPredicate(queryKey) || invalidateAllQuotesPredicate(queryKey),
+        predicate: (query) => {
+          const queryKey = query.queryKey;
+          const shouldInvalidate =
+            invalidateInfiniteQuotesPredicate(queryKey) || invalidateAllQuotesPredicate(queryKey);
+          return shouldInvalidate;
+        },
       });
     },
   });

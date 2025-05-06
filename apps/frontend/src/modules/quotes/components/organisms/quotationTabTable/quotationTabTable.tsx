@@ -6,6 +6,7 @@ import { DataTable } from '../../../../common/components/dataTable/dataTable';
 import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 import { getQuotesOptions } from '../../../api/queries/getQuotes/getQuotes';
 import { quoteTableColumns } from '../quotesTable/quotesTableColumns';
+import { ScrollArea } from '../../../../common/components/scrollArea/scroll-area';
 
 interface QuotationTabTableProps {
   bookId: string;
@@ -37,19 +38,19 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId, sortDate
   };
 
   return (
-    <div className="flex flex-col w-full">
-      <DataTable
-        tableContainerClassName="min-h-[32rem]"
-        hideHeaders={true}
-        columns={quoteTableColumns}
-        data={[...data]}
-        onSetPage={onSetPage}
-        pageCount={pageCount}
-        pageIndex={page}
-        pageSize={pageSize}
-        itemsCount={quotationsData?.metadata.total}
-        PaginationSlot={pageCount <= 1 ? <></> : null}
-      />
-    </div>
+      <ScrollArea type='always' className='h-[22rem] w-full'>
+        <DataTable
+          tableContainerClassName='min-h-[unset] pr-2'
+          hideHeaders={true}
+          columns={quoteTableColumns}
+          data={[...data]}
+          onSetPage={onSetPage}
+          pageCount={pageCount}
+          pageIndex={page}
+          pageSize={pageSize}
+          itemsCount={quotationsData?.metadata.total}
+          PaginationSlot={pageCount <= 1 ? <></> : null}
+        />
+      </ScrollArea>
   );
 };
