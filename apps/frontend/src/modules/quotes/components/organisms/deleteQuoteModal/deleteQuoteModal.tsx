@@ -103,6 +103,7 @@ export const DeleteQuoteModal: FC<Props> = ({ quoteId, userBookId }: Props) => {
               <Button
                 className="w-40"
                 variant={isDeleting ? 'ghost' : 'default'}
+                disabled={isDeleting}
                 onClick={onDelete}
               >
                 {isDeleting && <LoadingSpinner size={40} />}

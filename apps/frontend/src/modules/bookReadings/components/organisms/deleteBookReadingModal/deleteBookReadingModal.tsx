@@ -98,6 +98,7 @@ export const DeleteBookReadingModal: FC<Props> = ({ readingId, userBookId }: Pro
               <Button
                 className="w-40"
                 variant={isDeleting ? 'ghost' : 'default'}
+                disabled={isDeleting}
                 onClick={onDelete}
               >
                 {isDeleting && <LoadingSpinner size={40} />}
