@@ -5,7 +5,6 @@ import { Loader2 } from 'lucide-react';
 import { motion, AnimatePresence, Variant } from 'framer-motion';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { Book } from '@common/contracts';
-import { useQuery } from '@tanstack/react-query';
 import { FindUserBooksByQueryOptions } from '../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { BookImageMiniature } from '../molecules/bookImageMiniature/bookImageMiniature';
 import { ReversedLanguages } from '../../../common/constants/languages';
@@ -19,6 +18,7 @@ import { determineSearchBy } from '../../utils/determineSearchBy';
 import { useInfiniteBookSearch } from '../../hooks/useInfiniteBookSearch/useInfiniteBookSearch';
 import { BookNavigationFromEnum } from '../../constants';
 import { useSearchBookContextDispatch } from '../../../bookshelf/context/searchCreateBookContext/searchCreateBookContext';
+import { useErrorHandledQuery } from '../../../common/hooks/useErrorHandledQuery';
 
 interface BookRowProps {
   book: Book;
@@ -26,7 +26,7 @@ interface BookRowProps {
   isSelected: boolean;
 }
 const BookRow: FC<BookRowProps> = ({ book, onSelect, isSelected }) => {
-  const { data, isLoading } = useQuery(
+  const { data, isLoading } = useErrorHandledQuery(
     FindUserBooksByQueryOptions({
       isbn: book.isbn as string,
     }),

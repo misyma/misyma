@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
@@ -34,6 +33,7 @@ import { type BookNavigationFrom } from '../../../constants';
 import { BookApiError } from '../../../errors/bookApiError';
 import { useCreateBookWithUserBook } from '../../../hooks/createBookWithUserBook/createBookWithUserBook';
 import { useReturnToBookSearch } from '../../../hooks/useReturnToBookSearch/useReturnToBookSearch';
+import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 
 const stepThreeFormSchema = z.object({
   status: z.nativeEnum(readingStatuses, {
@@ -85,7 +85,7 @@ export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
 
   const accessToken = useSelector(userStateSelectors.selectAccessToken);
 
-  const { data: bookResponse } = useQuery(
+  const { data: bookResponse } = useErrorHandledQuery(
     FindBookByIdQueryOptions({
       bookId: searchBookContext.bookId,
     }),

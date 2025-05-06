@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
 import { ChevronDown } from 'lucide-react';
 import { useEffect, useMemo, useState, type FC } from 'react';
 
@@ -10,6 +9,7 @@ import { type FilterComponentProps } from '../../types/filter';
 import { Button } from '../button/button';
 import { Popover, PopoverTrigger } from '../popover/popover';
 import { LoadingSpinner } from '../spinner/loading-spinner';
+import { useErrorHandledQuery } from '../../hooks/useErrorHandledQuery';
 
 export const BookSearchFilter: FC<FilterComponentProps> = ({
   filter,
@@ -41,7 +41,7 @@ export const BookSearchFilter: FC<FilterComponentProps> = ({
     setSelectedBookName(bookName);
   };
 
-  const { data: userBook, isFetching: isFetchingCurrentBook } = useQuery(
+  const { data: userBook, isFetching: isFetchingCurrentBook } = useErrorHandledQuery(
     FindUserBookByIdQueryOptions({
       userBookId: selectedBookId,
     }),

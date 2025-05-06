@@ -3,7 +3,6 @@ import {
   infiniteQueryOptions,
   keepPreviousData,
   useInfiniteQuery,
-  useQuery,
 } from '@tanstack/react-query';
 
 import { type FindAuthorsQueryParams, sortOrders, type FindAuthorsResponseBody } from '@common/contracts';
@@ -14,6 +13,7 @@ import { api } from '../../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../../core/apiClient/apiPaths';
 import { AuthorApiError } from '../../../../errors/authorApiError';
 import { AuthorsApiQueryKeys } from '../authorsApiQueryKeys';
+import { useErrorHandledQuery } from '../../../../../common/hooks/useErrorHandledQuery';
 
 type Payload = {
   name?: string;
@@ -84,7 +84,7 @@ export const useFindAuthorsQuery = ({ name, all = false, page, pageSize, ids, ..
     return name?.length >= 3;
   };
 
-  return useQuery({
+  return useErrorHandledQuery({
     queryKey: [AuthorsApiQueryKeys.findAuthorsQuery, name, `${page}`, `${ids?.join(',')}`],
     queryFn: () =>
       findAuthors({

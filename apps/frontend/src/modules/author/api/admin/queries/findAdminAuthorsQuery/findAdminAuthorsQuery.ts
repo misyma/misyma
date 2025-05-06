@@ -1,4 +1,4 @@
-import { type QueryKey, type UseQueryOptions, keepPreviousData, useQuery } from '@tanstack/react-query';
+import { type QueryKey, type UseQueryOptions, keepPreviousData } from '@tanstack/react-query';
 
 import {
   type FindAdminAuthorsQueryParams,
@@ -13,6 +13,7 @@ import { api } from '../../../../../core/apiClient/apiClient.js';
 import { ApiPaths } from '../../../../../core/apiClient/apiPaths.js';
 import { AuthorApiError } from '../../../../errors/authorApiError.js';
 import { AdminAuthorsApiQueryKeys } from '../adminAuthorsApiQueryKeys.js';
+import { useErrorHandledQuery } from '../../../../../common/hooks/useErrorHandledQuery.js';
 
 type Payload = {
   name?: string;
@@ -101,7 +102,7 @@ export const useFindAdminAuthorsQuery = ({
     return name?.length >= 3;
   };
 
-  return useQuery({
+  return useErrorHandledQuery({
     queryKey: [
       AdminAuthorsApiQueryKeys.findAdminAuthorsQuery,
       name,
