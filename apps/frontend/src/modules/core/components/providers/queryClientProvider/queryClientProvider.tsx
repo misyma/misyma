@@ -11,7 +11,6 @@ import { CookieService } from '../../../services/cookieService/cookieService';
 import { useStoreDispatch } from '../../../store/hooks/useStoreDispatch';
 import { useStoreSelector } from '../../../store/hooks/useStoreSelector';
 import { userStateActions, userStateSelectors } from '../../../store/states/userState/userStateSlice';
-import { useToast } from '../../../../common/components/toast/use-toast';
 
 interface ProviderProps {
   children: React.ReactNode;
