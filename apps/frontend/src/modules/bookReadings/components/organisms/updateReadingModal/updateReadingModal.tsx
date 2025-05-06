@@ -11,7 +11,13 @@ import { type BookReading } from '@common/contracts';
 
 import { Button } from '../../../../common/components/button/button';
 import { Calendar } from '../../../../common/components/calendar/calendar';
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../../common/components/dialog/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogContentScrollArea,
+  DialogHeader,
+  DialogTrigger,
+} from '../../../../common/components/dialog/dialog';
 import {
   Form,
   FormControl,
@@ -370,11 +376,13 @@ export const UpdateBookReadingModal: FC<Props> = ({ bookReading }: Props) => {
           </DialogHeader>
           <div className="flex flex-col gap-4 justify-center items-center">
             <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
-            <UpdateBookReadingForm
-              bookReading={bookReading}
-              setIsOpen={setIsOpen}
-              setError={setError}
-            />
+            <DialogContentScrollArea>
+              <UpdateBookReadingForm
+                bookReading={bookReading}
+                setIsOpen={setIsOpen}
+                setError={setError}
+              />
+            </DialogContentScrollArea>
           </div>
         </DialogContent>
       </Dialog>

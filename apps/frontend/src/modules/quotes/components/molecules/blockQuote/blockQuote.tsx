@@ -43,7 +43,7 @@ const Blockquote = ({
       {variant === 'paper' && (
         <div className="absolute -top-2 -right-2 h-0 w-0 border-t-[20px] border-r-[20px] border-t-primary/20 border-r-white dark:border-r-gray-800"></div>
       )}
-      <div className="absolute top-2 right-2 flex space-x-1">{rightButtons}</div>
+      <div className="z-50 absolute top-2 right-2 flex space-x-1">{rightButtons}</div>
       <div className={cn('relative z-10 w-[90%] line-clamp-3', variant === 'minimalist' && 'pl-4')}>{children}</div>
       <div className={cn('pt-4 text-sm font-light', variant === 'minimalist' && 'pl-4')}>
         {new Date(date).toLocaleDateString('pl-PL')}

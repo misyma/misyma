@@ -27,7 +27,7 @@ export const CreateChangeRequestModal: FC<Props> = ({ bookId }) => {
         <DialogContent className="p-16">
           <>
             <DialogHeader className="flex justify-center items-center text-xl font-semibold">
-              Prośba o zmianę danych w bazie XD2
+              Prośba o zmianę danych w bazie
             </DialogHeader>
             <ScrollArea className='w-full h-[300px] sm:h-[500px] md:h-[700px]'>
               <CreateChangeRequestForm

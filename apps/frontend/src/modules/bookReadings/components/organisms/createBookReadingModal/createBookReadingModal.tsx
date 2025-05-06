@@ -10,7 +10,13 @@ import { z } from 'zod';
 
 import { Button } from '../../../../common/components/button/button';
 import { Calendar } from '../../../../common/components/calendar/calendar';
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from '../../../../common/components/dialog/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogContentScrollArea,
+  DialogHeader,
+  DialogTrigger,
+} from '../../../../common/components/dialog/dialog';
 import {
   Form,
   FormControl,
@@ -347,13 +353,15 @@ export const CreateBookReadingModal: FC<Props> = ({ bookId, rating, trigger, onM
         </DialogHeader>
         <div className="flex flex-col gap-4 justify-center items-center">
           <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
-          <CreateBookReadingForm
-            bookId={bookId}
-            onMutated={onMutated}
-            rating={rating}
-            setIsOpen={setIsOpen}
-            setError={setError}
-          />
+          <DialogContentScrollArea>
+            <CreateBookReadingForm
+              bookId={bookId}
+              onMutated={onMutated}
+              rating={rating}
+              setIsOpen={setIsOpen}
+              setError={setError}
+            />
+          </DialogContentScrollArea>
         </div>
       </DialogContent>
     </Dialog>

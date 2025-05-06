@@ -6,7 +6,13 @@ import { HiPencil } from 'react-icons/hi';
 import { type Quote } from '@common/contracts';
 
 import { Button } from '../../../../common/components/button/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader } from '../../../../common/components/dialog/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogContentScrollArea,
+  DialogDescription,
+  DialogHeader,
+} from '../../../../common/components/dialog/dialog';
 import {
   Form,
   FormControl,
@@ -122,65 +128,67 @@ const UpdateQuoteModal = ({ quote, open, onClose }: Props & { onClose: () => voi
         </DialogHeader>{' '}
         <DialogDescription className="flex flex-col gap-4 justify-center items-center">
           {' '}
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4 min-w-96"
-            >
-              <FormField
-                control={form.control}
-                name="page"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Strony</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Strony cytatu"
-                        maxLength={16}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Cytat</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Cytat..."
-                        maxLength={256}
-                        className="resize-none h-44"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex justify-center gap-2 pt-8">
-                <Button
-                  variant="outline"
-                  onClick={onClose}
-                  className="w-32 sm:w-40"
-                >
-                  Wróć
-                </Button>
-                <Button
-                  type="submit"
-                  variant="default"
-                  disabled={!form.formState.isValid || !form.formState.isDirty || isUpdating}
-                  className="bg-primary w-32 sm:w-40"
-                >
-                  {isUpdating ? <LoadingSpinner size={40} /> : 'Potwierdź'}
-                </Button>
-              </div>
-            </form>
-          </Form>
+          <DialogContentScrollArea>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4 min-w-96"
+              >
+                <FormField
+                  control={form.control}
+                  name="page"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Strony</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Strony cytatu"
+                          maxLength={16}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cytat</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Cytat..."
+                          maxLength={256}
+                          className="resize-none h-44"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex justify-center gap-2 pt-8">
+                  <Button
+                    variant="outline"
+                    onClick={onClose}
+                    className="w-32 sm:w-40"
+                  >
+                    Wróć
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="default"
+                    disabled={!form.formState.isValid || !form.formState.isDirty || isUpdating}
+                    className="bg-primary w-32 sm:w-40"
+                  >
+                    {isUpdating ? <LoadingSpinner size={40} /> : 'Potwierdź'}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </DialogContentScrollArea>
         </DialogDescription>
       </DialogContent>
     </Dialog>

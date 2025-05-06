@@ -6,6 +6,7 @@ import { Button } from '../../../../common/components/button/button';
 import {
   Dialog,
   DialogContent,
+  DialogContentScrollArea,
   DialogDescription,
   DialogHeader,
   DialogTrigger,
@@ -119,70 +120,72 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
         <DialogHeader className="font-semibold text-center flex justify-center items-center">Dodaj cytat</DialogHeader>
         <DialogDescription className="flex flex-col gap-4 justify-center items-center">
           <p className={error ? 'text-red-500' : 'hidden'}>{error}</p>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4 min-w-96"
-            >
-              <FormField
-                control={form.control}
-                name="page"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Strony</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Strony cytatu"
-                        type="string"
-                        maxLength={16}
-                        inputMode="text"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="content"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Cytat</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Komentarz"
-                        maxLength={1000}
-                        className="resize-none h-44"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="pt-8 gap-2 flex sm:justify-center justify-center sm:items-center items-center">
-                <Button
-                  className="bg-transparent text-primary w-32 sm:w-40"
-                  type="reset"
-                  disabled={isCreating}
-                  onClick={() => {
-                    setIsOpen(false);
-                  }}
-                >
-                  Wróć
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={!form.formState.isValid || isCreating}
-                  className="bg-primary w-32 sm:w-40"
-                >
-                  {!isCreating && <>Potwierdź</>}
-                  {isCreating && <LoadingSpinner size={40} />}
-                </Button>
-              </div>
-            </form>
-          </Form>
+          <DialogContentScrollArea>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4 min-w-96"
+              >
+                <FormField
+                  control={form.control}
+                  name="page"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Strony</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Strony cytatu"
+                          type="string"
+                          maxLength={16}
+                          inputMode="text"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Cytat</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Komentarz"
+                          maxLength={1000}
+                          className="resize-none h-44"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="pt-8 gap-2 flex sm:justify-center justify-center sm:items-center items-center">
+                  <Button
+                    className="bg-transparent text-primary w-32 sm:w-40"
+                    type="reset"
+                    disabled={isCreating}
+                    onClick={() => {
+                      setIsOpen(false);
+                    }}
+                  >
+                    Wróć
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={!form.formState.isValid || isCreating}
+                    className="bg-primary w-32 sm:w-40"
+                  >
+                    {!isCreating && <>Potwierdź</>}
+                    {isCreating && <LoadingSpinner size={40} />}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </DialogContentScrollArea>
         </DialogDescription>
       </DialogContent>
     </Dialog>
