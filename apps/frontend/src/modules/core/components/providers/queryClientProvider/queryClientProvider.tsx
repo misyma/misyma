@@ -11,7 +11,6 @@ import { CookieService } from '../../../services/cookieService/cookieService';
 import { useStoreDispatch } from '../../../store/hooks/useStoreDispatch';
 import { useStoreSelector } from '../../../store/hooks/useStoreSelector';
 import { userStateActions, userStateSelectors } from '../../../store/states/userState/userStateSlice';
-import { useToast } from '../../../../common/components/toast/use-toast';
 
 interface ProviderProps {
   children: React.ReactNode;
@@ -19,8 +18,6 @@ interface ProviderProps {
 
 export const QueryClientProvider = ({ children }: ProviderProps) => {
   const storeDispatch = useStoreDispatch();
-
-  const { toast } = useToast();
 
   const refreshToken = useStoreSelector(userStateSelectors.selectRefreshToken);
   const [refreshingToken, setRefreshingToken] = useState<boolean>(false);
@@ -120,25 +117,8 @@ export const QueryClientProvider = ({ children }: ProviderProps) => {
           } finally {
             setRefreshingToken(false);
           }
-        } else {
-          const defaultDescription = "Wystąpił błąd, spróbuj ponownie.";
-          const descriptionMap: Record<number, string> = {
-            500: "Wewnętrzny błąd serwera",
-          };
-
-          let description = "";
-
-          if (error instanceof ApiError) {
-            description = descriptionMap[error.context.statusCode] ?? defaultDescription;
-          }
-
-          toast({
-            variant: "destructive",
-            title: "Coś poszło nie tak...",
-            description
-          })
         }
-
+        // Do not use toasts here. Anywhere. You'll break the code :)
       },
     }),
   });

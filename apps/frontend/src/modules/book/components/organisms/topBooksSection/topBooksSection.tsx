@@ -1,11 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
-
 import { Skeleton } from '../../../../common/components/skeleton/skeleton';
 import { FindUserBooksByQueryOptions } from '../../../api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
 import { BookCard } from '../../atoms/bookCard/bookCard';
+import { useErrorHandledQuery } from '../../../../common/hooks/useErrorHandledQuery';
 
 export const TopBooksSection = () => {
-  const { data, isLoading } = useQuery(
+  const { data, isLoading } = useErrorHandledQuery(
     FindUserBooksByQueryOptions({
       pageSize: 5,
       sortField: 'rating',

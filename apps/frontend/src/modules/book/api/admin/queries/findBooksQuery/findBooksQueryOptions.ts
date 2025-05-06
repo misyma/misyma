@@ -1,4 +1,4 @@
-import { type UseQueryOptions, keepPreviousData, useQuery } from '@tanstack/react-query';
+import { type UseQueryOptions, keepPreviousData } from '@tanstack/react-query';
 
 import { type FindBooksResponseBody, type FindAdminBooksQueryParams, sortOrders } from '@common/contracts';
 
@@ -8,6 +8,7 @@ import { api } from '../../../../../core/apiClient/apiClient';
 import { ApiPaths } from '../../../../../core/apiClient/apiPaths';
 import { BookApiError } from '../../../../errors/bookApiError';
 import { BookApiQueryKeys } from '../../../user/queries/bookApiQueryKeys';
+import { useErrorHandledQuery } from '../../../../../common/hooks/useErrorHandledQuery';
 
 type Payload = FindAdminBooksQueryParams & {
   all: boolean;
@@ -80,7 +81,7 @@ export const useAdminFindBooksQuery = ({
   sortOrder = sortOrders.desc,
   ...options
 }: Payload) => {
-  return useQuery({
+  return useErrorHandledQuery({
     queryKey: [
       BookApiQueryKeys.findBooksAdmin,
       title,
