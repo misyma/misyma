@@ -5,7 +5,7 @@ export class NationalLibraryPageMapper {
       const volumesText = multiVolumeMatch[1];
 
       if (!volumesText) {
-        throw new Error('No volumes found in the string: ' + rawData);
+        return 0;
       }
 
       const volumes = volumesText
@@ -17,7 +17,7 @@ export class NationalLibraryPageMapper {
         const match = vol.match(/\b(\d+)\b/);
 
         if (!match || match.length < 2) {
-          throw new Error('No page count found in the volume string: ' + rawData);
+          return 0;
         }
 
         return parseInt(match[1] as string, 10);
