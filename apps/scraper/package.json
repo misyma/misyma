@@ -6,7 +6,9 @@
     "build": "tsc --build",
     "build:dev": "tsc --build",
     "lint": "eslint .",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "test:unit": "vitest .unit.test.ts --config vitest.unit.config.js",
+    "test:unit:run": "npm run test:unit -- --run"
   },
   "dependencies": {
     "@common/contracts": "*",

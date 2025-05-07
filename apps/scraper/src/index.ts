@@ -2,6 +2,7 @@ import yargs, { type Argv } from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import { NationalLibraryBookMapper } from './actions/scrapeNationalLibraryBooksAction/nationalLibraryBookMapper.js';
+import { NationalLibraryPageMapper } from './actions/scrapeNationalLibraryBooksAction/nationalLibraryPageMapper.js';
 import { ScrapeNationalLibraryBooksAction } from './actions/scrapeNationalLibraryBooksAction/scrapeNationalLibraryBooksAction.js';
 import { createConfig } from './config.js';
 import { serializeError } from './errors/serializeError.js';
@@ -66,7 +67,9 @@ try {
     return acc;
   }, {});
 
-  const nationalLibraryBookMapper = new NationalLibraryBookMapper(categoryNamesToIds);
+  const nationalLibraryPageMapper = new NationalLibraryPageMapper();
+
+  const nationalLibraryBookMapper = new NationalLibraryBookMapper(categoryNamesToIds, nationalLibraryPageMapper);
 
   const scrapeNationalLibraryBooksAction = new ScrapeNationalLibraryBooksAction(
     authorRepository,

@@ -9,22 +9,10 @@ Options:
   -h, --help        display help for command
 ```
 
-## Scrape E-ISBN Database
-
-```bash
-npm run start -- scrape eisbn book --from 1673848
-```
-
 ## Scrape National Library API
 
 ### Books
 
 ```bash
 npm run start -- scrape nationallibrary book
-```
-
-### Categories
-
-```bash
-npm run start -- scrape nationallibrary category
 ```

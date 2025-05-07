@@ -11,12 +11,15 @@ import { Value } from '@sinclair/typebox/value';
 import { bookDraftSchema, type BookDraft } from '../../infrastructure/entities/book/book.js';
 
 import { type NationalLibraryBook } from './nationalLibraryBook.js';
+import { type NationalLibraryPageMapper } from './nationalLibraryPageMapper.js';
 
 export class NationalLibraryBookMapper {
   private readonly categoryNamesToIds: Record<string, string>;
+  private readonly nationalLibraryPageMapper: NationalLibraryPageMapper;
 
-  public constructor(categoryNamesToIds: Record<string, string>) {
+  public constructor(categoryNamesToIds: Record<string, string>, nationalLibraryPageMapper: any) {
     this.categoryNamesToIds = categoryNamesToIds;
+    this.nationalLibraryPageMapper = nationalLibraryPageMapper;
   }
 
   public mapBook(nationalLibraryBook: NationalLibraryBook): BookDraft | undefined {
@@ -30,24 +33,21 @@ export class NationalLibraryBookMapper {
     };
 
     const titleRaw = nationalLibraryBook.title;
-    const categoryRaw = nationalLibraryBook.genre;
-    const authorRaw = getSubfield('100', 'a');
+    const categoryRaw = nationalLibraryBook.genre || nationalLibraryBook.domain || nationalLibraryBook.subject;
+    const authorRaw = getSubfield('100', 'a') || nationalLibraryBook.author;
     const translatorRaw = getSubfield('700', 'a');
-    const publisherRaw = getSubfield('260', 'b');
-    const releaseYearRaw = getSubfield('260', 'c');
+    const publisherRaw = getSubfield('260', 'b') || nationalLibraryBook.publisher;
+    const releaseYearRaw = getSubfield('260', 'c') || nationalLibraryBook.publicationYear;
     const isbn = getSubfield('020', 'a');
     const pagesRaw = getSubfield('300', 'a');
 
     let pages;
-    if (pagesRaw) {
-      const pagesMatch = pagesRaw.match(/\d+/);
 
-      if (pagesMatch) {
-        pages = parseInt(pagesMatch[0], 10);
-      }
+    if (pagesRaw && pagesRaw.length > 0) {
+      pages = this.nationalLibraryPageMapper.mapPages(pagesRaw);
     }
 
-    if (!authorRaw || !titleRaw || !pages || !isbn || !categoryRaw) {
+    if (!authorRaw || !titleRaw || !categoryRaw || !pages) {
       return undefined;
     }
 
