@@ -4,8 +4,14 @@ export interface NationalLibraryResponseBody {
 }
 
 export interface NationalLibraryBook {
+  id: string;
   title: string;
   genre?: string;
+  domain?: string;
+  subject?: string;
+  author?: string;
+  publisher?: string;
+  publicationYear?: string;
   marc: Marc;
 }
 

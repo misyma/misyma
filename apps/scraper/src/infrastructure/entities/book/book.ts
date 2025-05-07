@@ -62,7 +62,7 @@ export const bookDraftSchema = Type.Object({
   release_year: bookReleaseYearSchema,
   language: Type.Union(Object.values(languages).map((language) => Type.Literal(language))),
   translator: Type.Optional(bookTranslatorSchema),
-  format: Type.Union(Object.values(bookFormats).map((bookFormat) => Type.Literal(bookFormat))),
+  format: Type.Optional(Type.Union(Object.values(bookFormats).map((bookFormat) => Type.Literal(bookFormat)))),
   pages: bookPagesSchema,
   is_approved: Type.Boolean(),
   image_url: Type.Optional(bookImageUrlSchema),

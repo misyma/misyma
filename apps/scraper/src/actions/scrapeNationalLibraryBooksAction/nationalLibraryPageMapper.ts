@@ -1,7 +1,6 @@
 export class NationalLibraryPageMapper {
   public mapPages(rawData: string): number {
-    const multiVolumeMatch = rawData.match(/\((.*?)\)/);
-
+    const multiVolumeMatch = rawData.match(/\(([^)]*\d[^)]*)\)/);
     if (multiVolumeMatch) {
       const volumesText = multiVolumeMatch[1];
 
@@ -18,7 +17,7 @@ export class NationalLibraryPageMapper {
         const match = vol.match(/\b(\d+)\b/);
 
         if (!match || match.length < 2) {
-          throw new Error('No page count found in the volume string: ' + vol);
+          throw new Error('No page count found in the volume string: ' + rawData);
         }
 
         return parseInt(match[1] as string, 10);

@@ -9,7 +9,7 @@ describe('NationalLibraryPageMapper', () => {
     mapper = new NationalLibraryPageMapper();
   });
 
-  it('maps multi volumne to total pages', () => {
+  it('maps multi volumne to total pages v1', () => {
     const rawPages = '4 t. (597, [3] ; 656, [3] ; 687, [1] ; 674, [2] s.) ;';
 
     const result = mapper.mapPages(rawPages);
@@ -119,5 +119,13 @@ describe('NationalLibraryPageMapper', () => {
     const result = mapper.mapPages(rawPages);
 
     expect(result).toBe(774);
+  });
+
+  it('maps single to total pages v14', () => {
+    const rawPages = '179, [1] s., [1] k. tabl. złoż., [20] s. fot. (w tym kolor.) :';
+
+    const result = mapper.mapPages(rawPages);
+
+    expect(result).toBe(179);
   });
 });

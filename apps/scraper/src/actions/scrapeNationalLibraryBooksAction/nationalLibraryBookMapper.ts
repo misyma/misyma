@@ -33,17 +33,21 @@ export class NationalLibraryBookMapper {
     };
 
     const titleRaw = nationalLibraryBook.title;
-    const categoryRaw = nationalLibraryBook.genre;
-    const authorRaw = getSubfield('100', 'a');
+    const categoryRaw = nationalLibraryBook.genre || nationalLibraryBook.domain || nationalLibraryBook.subject;
+    const authorRaw = getSubfield('100', 'a') || nationalLibraryBook.author;
     const translatorRaw = getSubfield('700', 'a');
-    const publisherRaw = getSubfield('260', 'b');
-    const releaseYearRaw = getSubfield('260', 'c');
+    const publisherRaw = getSubfield('260', 'b') || nationalLibraryBook.publisher;
+    const releaseYearRaw = getSubfield('260', 'c') || nationalLibraryBook.publicationYear;
     const isbn = getSubfield('020', 'a');
     const pagesRaw = getSubfield('300', 'a');
 
-    const pages = this.nationalLibraryPageMapper.mapPages(pagesRaw);
+    let pages;
 
-    if (!authorRaw || !titleRaw || !pages || !isbn || !categoryRaw) {
+    if (pagesRaw && pagesRaw.length > 0) {
+      pages = this.nationalLibraryPageMapper.mapPages(pagesRaw);
+    }
+
+    if (!authorRaw || !titleRaw || !categoryRaw || !pages) {
       return undefined;
     }
 
