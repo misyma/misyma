@@ -11,12 +11,15 @@ import { Value } from '@sinclair/typebox/value';
 import { bookDraftSchema, type BookDraft } from '../../infrastructure/entities/book/book.js';
 
 import { type NationalLibraryBook } from './nationalLibraryBook.js';
+import { type NationalLibraryPageMapper } from './nationalLibraryPageMapper.js';
 
 export class NationalLibraryBookMapper {
   private readonly categoryNamesToIds: Record<string, string>;
+  private readonly nationalLibraryPageMapper: NationalLibraryPageMapper;
 
-  public constructor(categoryNamesToIds: Record<string, string>) {
+  public constructor(categoryNamesToIds: Record<string, string>, nationalLibraryPageMapper: any) {
     this.categoryNamesToIds = categoryNamesToIds;
+    this.nationalLibraryPageMapper = nationalLibraryPageMapper;
   }
 
   public mapBook(nationalLibraryBook: NationalLibraryBook): BookDraft | undefined {
@@ -38,14 +41,7 @@ export class NationalLibraryBookMapper {
     const isbn = getSubfield('020', 'a');
     const pagesRaw = getSubfield('300', 'a');
 
-    let pages;
-    if (pagesRaw) {
-      const pagesMatch = pagesRaw.match(/\d+/);
-
-      if (pagesMatch) {
-        pages = parseInt(pagesMatch[0], 10);
-      }
-    }
+    const pages = this.nationalLibraryPageMapper.mapPages(pagesRaw);
 
     if (!authorRaw || !titleRaw || !pages || !isbn || !categoryRaw) {
       return undefined;
