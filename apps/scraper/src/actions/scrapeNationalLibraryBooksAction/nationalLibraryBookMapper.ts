@@ -34,7 +34,7 @@ export class NationalLibraryBookMapper {
 
     const titleRaw = nationalLibraryBook.title;
     const categoryRaw = nationalLibraryBook.genre || nationalLibraryBook.domain || nationalLibraryBook.subject;
-    const authorRaw = getSubfield('100', 'a') || nationalLibraryBook.author;
+    const authorRaw = getSubfield('100', 'a');
     const translatorRaw = getSubfield('700', 'a');
     const publisherRaw = getSubfield('260', 'b') || nationalLibraryBook.publisher;
     const releaseYearRaw = getSubfield('260', 'c') || nationalLibraryBook.publicationYear;

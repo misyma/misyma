@@ -1,6 +1,5 @@
 import { type NationalLibraryClient } from '../../infrastructure/clients/nationalLibraryClient.js';
 import { type Author } from '../../infrastructure/entities/author/author.js';
-import { type BookDraft } from '../../infrastructure/entities/book/book.js';
 import { type AuthorRepository } from '../../infrastructure/repositories/authorRepository/authorRepository.js';
 import { type BookRepository } from '../../infrastructure/repositories/bookRepository/bookRepository.js';
 import { type LoggerService } from '../../libs/logger/loggerService.js';
@@ -53,7 +52,17 @@ export class ScrapeNationalLibraryBooksAction {
       const uniqueAuthorNames = Array.from(new Set(authorNames));
 
       const persistedAuthors = await Promise.all(
-        uniqueAuthorNames.map(async (authorName) => this.saveAuthor(authorName)),
+        uniqueAuthorNames.map(async (authorName) => {
+          const existingAuthor = await this.authorRepository.findAuthor({ name: authorName });
+
+          if (existingAuthor) {
+            return existingAuthor;
+          }
+
+          const author = await this.authorRepository.create({ name: authorName });
+
+          return author;
+        }),
       );
 
       const authorsMapping = new Map<string, Author>();
@@ -74,7 +83,19 @@ export class ScrapeNationalLibraryBooksAction {
             return author.id;
           });
 
-          await this.saveBook(bookDraft, authorIds);
+          await this.bookRepository.createBook({
+            title: bookDraft.title,
+            isbn: bookDraft.isbn,
+            publisher: bookDraft.publisher,
+            is_approved: true,
+            language: bookDraft.language,
+            image_url: bookDraft.image_url,
+            release_year: bookDraft.release_year,
+            translator: bookDraft.translator,
+            pages: bookDraft.pages,
+            author_ids: authorIds,
+            category_id: bookDraft.category_id,
+          });
         }),
       );
 
@@ -92,39 +113,5 @@ export class ScrapeNationalLibraryBooksAction {
     }
 
     this.logger.info({ message: 'Scraping books National Library API completed.' });
-  }
-
-  private async saveAuthor(authorName: string): Promise<Author> {
-    const existingAuthor = await this.authorRepository.findAuthor({ name: authorName });
-
-    if (existingAuthor) {
-      return existingAuthor;
-    }
-
-    const author = await this.authorRepository.create({ name: authorName });
-
-    return author;
-  }
-
-  private async saveBook(bookDraft: BookDraft, authorIds: string[]): Promise<void> {
-    const existingBook = await this.bookRepository.findBook({ title: bookDraft.title });
-
-    if (existingBook) {
-      return;
-    }
-
-    await this.bookRepository.createBook({
-      title: bookDraft.title,
-      isbn: bookDraft.isbn,
-      publisher: bookDraft.publisher,
-      is_approved: true,
-      language: bookDraft.language,
-      image_url: bookDraft.image_url,
-      release_year: bookDraft.release_year,
-      translator: bookDraft.translator,
-      pages: bookDraft.pages,
-      author_ids: authorIds,
-      category_id: bookDraft.category_id,
-    });
   }
 }
