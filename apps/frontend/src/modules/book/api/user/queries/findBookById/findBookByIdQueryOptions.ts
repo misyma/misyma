@@ -31,3 +31,6 @@ export const FindBookByIdQueryOptions = (
 
 export const invalidateFindBookByIdQueryPredicate = (queryKey: QueryKey, id: string) =>
   queryKey.includes(BookApiQueryKeys.findBookById) && queryKey.includes(id);
+
+export const invalidateAllFindBookByIdQueryPredicate = (queryKey: QueryKey) =>
+  queryKey.includes(BookApiQueryKeys.findBookById);

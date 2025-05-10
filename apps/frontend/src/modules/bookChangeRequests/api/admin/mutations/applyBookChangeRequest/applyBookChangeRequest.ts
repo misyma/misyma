@@ -2,7 +2,6 @@ import { useQueryClient, type UseMutationOptions } from '@tanstack/react-query';
 
 import { type ApplyBookChangeRequestPathParams } from '@common/contracts';
 
-import { BookApiQueryKeys } from '../../../../../book/api/user/queries/bookApiQueryKeys';
 import { invalidateUserBooksByBookshelfIdQuery } from '../../../../../book/api/user/queries/findUserBooksByBookshelfId/findUserBooksByBookshelfIdQueryOptions';
 import { invalidateAllFindUserBookByIdQueryPredicate } from '../../../../../book/api/user/queries/findUserBook/findUserBookByIdQueryOptions';
 import { invalidateFindUserBooksByQuery } from '../../../../../book/api/user/queries/findUserBookBy/findUserBooksByQueryOptions';
@@ -13,6 +12,7 @@ import { useErrorHandledMutation } from '../../../../../common/hooks/useErrorHan
 import { api } from '../../../../../core/apiClient/apiClient';
 import { invalidateBookChangeRequestByIdQueryPredicate } from '../../queries/findBookChangeRequestById/findBookChangeRequestByIdQueryOptions';
 import { invalidateBookChangeRequestsQueryPredicate } from '../../queries/findBookChangeRequests/findBookChangeRequestsQueryOptions';
+import { invalidateAllFindBookByIdQueryPredicate } from '../../../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
 
 const mapper = new ErrorCodeMessageMapper({
   403: `Brak pozwolenia na zaaplikowanie prośby zmiany.`,
@@ -37,17 +37,29 @@ export const useApplyBookChangeRequestMutation = (
         await options.onSuccess(...args);
       }
 
-      await queryClient.invalidateQueries({
-        predicate: ({ queryKey }) =>
-          invalidateBookChangeRequestsQueryPredicate(queryKey) ||
-          // Todo: add new books invalidation stuff here once done.
-          invalidateBookChangeRequestByIdQueryPredicate(queryKey, args[1].bookChangeRequestId) ||
-          queryKey[0] === BookApiQueryKeys.findUserBookById ||
-          invalidateUserBooksByBookshelfIdQuery({}, queryKey) ||
-          invalidateFindUserBooksByQuery({}, queryKey) ||
-          invalidateAllFindUserBookByIdQueryPredicate(queryKey) ||
-          invalidateFindUserBooksByQuery({}, queryKey, true),
-      });
+      await Promise.all([
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) => invalidateBookChangeRequestsQueryPredicate(queryKey),
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) =>
+            // Todo: add new books invalidation stuff here once done.
+            invalidateBookChangeRequestByIdQueryPredicate(queryKey, args[1].bookChangeRequestId),
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) => invalidateUserBooksByBookshelfIdQuery({}, queryKey),
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) => invalidateFindUserBooksByQuery({}, queryKey),
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) =>
+            invalidateAllFindUserBookByIdQueryPredicate(queryKey) || invalidateFindUserBooksByQuery({}, queryKey, true),
+        }),
+        queryClient.invalidateQueries({
+          predicate: ({ queryKey }) => invalidateAllFindBookByIdQueryPredicate(queryKey),
+        }),
+      ]);
     },
   });
 };
