@@ -3,6 +3,7 @@ import { type Dispatch, type ReactNode, createContext, useContext, useReducer } 
 import { type BookFormat, type Language } from '@common/contracts';
 
 export interface BookDetailsChangeRequestState {
+  currentStep: number;
   isbn: string;
   title: string;
   categoryId: string;
@@ -18,6 +19,7 @@ export interface BookDetailsChangeRequestState {
 export enum BookDetailsChangeRequestAction {
   setValues = 1,
   resetContext = 2,
+  setCurrentStep = 3,
 }
 
 type ResetContextValues = {
@@ -29,9 +31,15 @@ type SetContextValuesAction = {
   values: Partial<BookDetailsChangeRequestState>;
 };
 
-type Actions = ResetContextValues | SetContextValuesAction;
+type ChangeCurrentStepAction = {
+  type: BookDetailsChangeRequestAction.setCurrentStep;
+  step: number;
+};
+
+type Actions = ResetContextValues | SetContextValuesAction | ChangeCurrentStepAction;
 
 const defaultValues: BookDetailsChangeRequestState = {
+  currentStep: 1,
   authorIds: [],
   format: '' as BookFormat,
   isbn: '',
@@ -71,6 +79,7 @@ export function useBookDetailsChangeRequestDispatch() {
 function bookDetailsChangeRequestReducer(state: BookDetailsChangeRequestState, action: Actions) {
   if (action.type === BookDetailsChangeRequestAction.resetContext) {
     return {
+      currentStep: 1,
       authorIds: [],
       authorName: undefined,
       categoryId: '',
@@ -82,11 +91,18 @@ function bookDetailsChangeRequestReducer(state: BookDetailsChangeRequestState, a
       title: '',
       translator: '',
       releaseYear: undefined,
-    };
+    } as BookDetailsChangeRequestState;
+  }
+
+  if (action.type === BookDetailsChangeRequestAction.setCurrentStep) {
+    return {
+      ...state,
+      currentStep: action.step,
+    } as BookDetailsChangeRequestState;
   }
 
   return {
     ...state,
     ...action.values,
-  };
+  } as BookDetailsChangeRequestState;
 }

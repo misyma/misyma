@@ -51,11 +51,11 @@ interface Props {
 }
 
 export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
-  const { data: userBookData, isFetched: isUserBookDataFetched } = useErrorHandledQuery(
-    FindUserBookByIdQueryOptions({
+  const { data: userBookData, isFetched: isUserBookDataFetched } = useErrorHandledQuery({
+    ...FindUserBookByIdQueryOptions({
       userBookId: bookId,
     }),
-  );
+  });
 
   const { isFetched: isBookDataFetched } = useErrorHandledQuery(
     FindBookByIdQueryOptions({

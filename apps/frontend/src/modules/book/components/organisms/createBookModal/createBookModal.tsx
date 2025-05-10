@@ -15,7 +15,6 @@ import {
   TooltipTrigger,
 } from '../../../../common/components/tooltip/tooltip';
 import { BookApiQueryKeys } from '../../../api/user/queries/bookApiQueryKeys';
-import { BookDetailsChangeRequestProvider } from '../../../context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import { AdminCreateBookForm } from '../adminCreateBookForm/adminCreateBookForm';
 
 export const CreateBookModal: FC = () => {
@@ -43,44 +42,42 @@ export const CreateBookModal: FC = () => {
   };
 
   return (
-    <BookDetailsChangeRequestProvider>
-      <Dialog
-        open={isOpen}
-        onOpenChange={(val) => {
-          if (val === false) {
-            resetModalState();
-          }
+    <Dialog
+      open={isOpen}
+      onOpenChange={(val) => {
+        if (val === false) {
+          resetModalState();
+        }
 
-          setIsOpen(val);
+        setIsOpen(val);
+      }}
+    >
+      <DialogTrigger asChild>
+        <TooltipProvider delayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => setIsOpen(true)}
+                size="big-icon"
+              >
+                <HiPlus className="w-8 h-8"></HiPlus>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Stwórz książkę</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </DialogTrigger>
+      <DialogContent
+        style={{
+          borderRadius: '40px',
         }}
+        omitCloseButton={true}
       >
-        <DialogTrigger asChild>
-          <TooltipProvider delayDuration={300}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  onClick={() => setIsOpen(true)}
-                  size="big-icon"
-                >
-                  <HiPlus className="w-8 h-8"></HiPlus>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Stwórz książkę</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </DialogTrigger>
-        <DialogContent
-          style={{
-            borderRadius: '40px',
-          }}
-          omitCloseButton={true}
-        >
-          <DialogTitle className="text-center py-2">Stwórz książkę</DialogTitle>
-          <AdminCreateBookForm onSubmit={onSubmit}></AdminCreateBookForm>
-        </DialogContent>
-      </Dialog>
-    </BookDetailsChangeRequestProvider>
+        <DialogTitle className="text-center py-2">Stwórz książkę</DialogTitle>
+        <AdminCreateBookForm onSubmit={onSubmit}></AdminCreateBookForm>
+      </DialogContent>
+    </Dialog>
   );
 };
