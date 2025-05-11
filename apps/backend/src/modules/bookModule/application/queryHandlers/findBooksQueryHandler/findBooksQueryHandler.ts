@@ -11,6 +11,8 @@ export interface FindBooksQueryHandlerPayload {
   readonly releaseYearBefore?: number | undefined;
   readonly releaseYearAfter?: number | undefined;
   readonly isApproved?: boolean | undefined;
+  readonly excludeOwned?: boolean | undefined;
+  readonly userId?: string | undefined;
   readonly page: number;
   readonly pageSize: number;
   readonly sortField?: 'createdAt' | 'releaseYear' | 'title' | undefined;

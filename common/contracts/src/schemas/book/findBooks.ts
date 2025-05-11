@@ -6,6 +6,7 @@ import { type Book } from './book.js';
 export interface FindBooksQueryParams {
   readonly isbn?: string;
   readonly title?: string;
+  readonly excludeOwned?: boolean;
   readonly page?: number;
   readonly pageSize?: number;
   readonly sortField?: 'releaseYear' | 'createdAt';
