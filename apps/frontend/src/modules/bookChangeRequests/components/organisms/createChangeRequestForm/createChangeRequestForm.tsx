@@ -263,11 +263,22 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
 
   const difference = getDiffBetweenObjects(combinedPayload, comparableBookData);
 
-  if (comparableBookData.translator == null) {
-    delete difference['translator'];
-  } else {
-    difference['translator'] = null;
+  const areDifferentAuthorsPresent = diff(combinedPayload.authorIds, comparableBookData?.authorIds ?? []);
+
+  if (areDifferentAuthorsPresent.length !== 0) {
+    difference['authorIds'] = context.authorIds;
   }
+
+  prepareBookChangeRequestPayload({
+    bookData: bookData as unknown as Book,
+    changeRequestPayload: difference,
+  });
+
+  Object.keys(difference).forEach((key) => {
+    if (difference[key] === '') {
+      delete difference[key];
+    }
+  });
 
   const hasChanges = Object.keys(difference).length > 0;
 

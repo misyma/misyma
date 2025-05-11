@@ -2,7 +2,7 @@ import { FC, PropsWithChildren } from 'react';
 import { BookDetailsChangeRequestProvider } from '../../../../book/context/bookDetailsChangeRequestContext/bookDetailsChangeRequestContext';
 import { QueryClientProvider } from '../../../../core/components/providers/queryClientProvider/queryClientProvider';
 import { Toaster } from '../../../../common/components/toast/toaster';
-import { afterAll, afterEach, beforeAll, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { StepOneFormDataTestIds } from './stepOneForm/stepOneForm';
 import { StoreProvider } from '../../../../core/components/providers/storeProvider/storeProvider';
@@ -102,7 +102,9 @@ const newAuthors = [
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-const bookChangeRequestResponseMock = vi.fn().mockResolvedValue(HttpResponse.json({ success: true }, { status: 200 }));
+const bookChangeRequestResponseMock = vi
+  .fn()
+  .mockImplementation(() => HttpResponse.json({ success: true }, { status: 200 }));
 
 const server = setupServer(
   http.get(API_URL + '/authors', () => {
@@ -140,6 +142,7 @@ Element.prototype.getBoundingClientRect = vi.fn(() => ({
 }));
 
 beforeAll(() => server.listen());
+beforeEach(() => vi.clearAllMocks());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
@@ -214,7 +217,11 @@ const TestComponent: FC<PropsWithChildren> = ({ children }) => {
   );
 };
 
-it('sends only isbn removal', async () => {
+it.each([
+  ['isbn', StepOneFormDataTestIds.isbn.input],
+  ['publisher', StepOneFormDataTestIds.publisher.input],
+  ['releaseYear', StepOneFormDataTestIds.releaseYear.input],
+])('step 1: sends only given input removal - %s', async (key, testId) => {
   const element = render(
     <TestComponent>
       <CreateChangeRequestForm
@@ -234,12 +241,10 @@ it('sends only isbn removal', async () => {
     }),
   );
 
-  const isbnInput: HTMLInputElement = (await element.findByTestId(
-    StepOneFormDataTestIds.isbn.input,
-  )) as HTMLInputElement;
+  const input: HTMLInputElement = (await element.findByTestId(testId)) as HTMLInputElement;
 
-  fireEvent.click(isbnInput);
-  fireEvent.change(isbnInput, { target: { value: '' } });
+  fireEvent.click(input);
+  fireEvent.change(input, { target: { value: '' } });
 
   const continueButton = await element.findByTestId(StepOneFormDataTestIds.continueButton);
   fireEvent.click(continueButton);
@@ -256,11 +261,37 @@ it('sends only isbn removal', async () => {
 
   expect(capturedRequestBody).toEqual({
     bookId: testBookId,
-    isbn: null,
+    [key]: null,
   });
 });
 
-it.only('sends only changed authors', async () => {
+it('given no changes from step 1 - create button is disabled', async () => {
+  const element = render(
+    <TestComponent>
+      <CreateChangeRequestForm
+        bookId="mein-book"
+        onCancel={() => {}}
+        onSubmit={() => {}}
+      ></CreateChangeRequestForm>
+    </TestComponent>,
+  );
+
+  server.use(
+    http.post(API_URL + '/book-change-requests', async (...args) => {
+      return bookChangeRequestResponseMock(...args);
+    }),
+  );
+
+  const continueButton = await element.findByTestId(StepOneFormDataTestIds.continueButton);
+  fireEvent.click(continueButton);
+
+  const createButton = (await element.findByTestId(StepTwoFormDataTestIds.createButton)) as HTMLButtonElement;
+
+  expect(createButton.disabled).toBe(true);
+});
+
+// very weird and not giving much certainty
+it('#Advisable to test manually for now# sends only changed authors', async () => {
   const element = render(
     <TestComponent>
       <CreateChangeRequestForm

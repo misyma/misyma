@@ -26,7 +26,7 @@ import { bookTitleSchema, publisherSchema, releaseYearSchema } from '../../../..
 
 const stepOneSchema = z.object({
   isbn: isbnSchema.optional().or(z.literal('')),
-  title: bookTitleSchema.or(z.literal('')),
+  title: bookTitleSchema,
   authorIds: z
     .array(
       z
@@ -198,7 +198,9 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
 
                           setCreateAuthorDialogVisible(false);
                         }}
-                        defaultValue={bookData?.authors.map((a) => a.id)}
+                        defaultValue={
+                          context?.authorIds.length > 0 ? context?.authorIds : bookData?.authors.map((a) => a.id)
+                        }
                         setAuthorSelectOpen={setCreateAuthorDialogVisible}
                       />
                     </FormControl>
