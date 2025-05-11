@@ -3,7 +3,7 @@ import { type FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { bookFormats, CreateBookChangeRequestRequestBody, languages } from '@common/contracts';
+import { Book, bookFormats, CreateBookChangeRequestRequestBody, languages } from '@common/contracts';
 
 import { StepOneForm } from './stepOneForm/stepOneForm';
 import { FindBookByIdQueryOptions } from '../../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
@@ -34,6 +34,8 @@ import { useCreateBookChangeRequestMutation } from '../../../api/user/mutations/
 import CategorySelect from '../../../../book/components/molecules/categorySelect/categorySelect';
 import { getCategoriesQueryOptions } from '../../../../categories/api/queries/getCategoriesQuery/getCategoriesQueryOptions';
 import { getDiffBetweenObjects } from '../../../../common/utils/getDiffBetweenObjects';
+import { prepareBookChangeRequestPayload } from '../../../utils/prepareBookChangeRequestPayload';
+import { diff } from 'radash';
 
 interface Props {
   bookId: string;
@@ -137,6 +139,29 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
   );
 };
 
+export const StepTwoFormDataTestIds = {
+  language: {
+    label: 'change-request-language-label',
+  },
+  translator: {
+    label: 'change-request-translator-label',
+    input: 'change-request-translator-input',
+  },
+  format: {
+    label: 'change-request-format-label',
+    input: 'change-request-format-input',
+  },
+  pages: {
+    label: 'change-request-pages-label',
+    input: 'change-request-pages-input',
+  },
+  category: {
+    label: 'change-request-category-label',
+  },
+  backButton: 'change-request-back-button',
+  createButton: 'change-request-create-button',
+} as const;
+
 const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onBack }) => {
   const { toast } = useToast();
   const context = useBookDetailsChangeRequestContext();
@@ -183,6 +208,17 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
 
     const difference = getDiffBetweenObjects(payload, comparableBookData);
 
+    const areDifferentAuthorsPresent = diff(payload.authorIds, comparableBookData?.authorIds ?? []);
+
+    if (areDifferentAuthorsPresent.length !== 0) {
+      difference['authorIds'] = context.authorIds;
+    }
+
+    prepareBookChangeRequestPayload({
+      bookData: bookData as unknown as Book,
+      changeRequestPayload: difference,
+    });
+
     try {
       await createBookChangeRequest(difference as unknown as CreateBookChangeRequestRequestBody);
 
@@ -227,9 +263,22 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
 
   const difference = getDiffBetweenObjects(combinedPayload, comparableBookData);
 
-  if (comparableBookData.translator === undefined) {
-    delete difference['translator'];
+  const areDifferentAuthorsPresent = diff(combinedPayload.authorIds, comparableBookData?.authorIds ?? []);
+
+  if (areDifferentAuthorsPresent.length !== 0) {
+    difference['authorIds'] = context.authorIds;
   }
+
+  prepareBookChangeRequestPayload({
+    bookData: bookData as unknown as Book,
+    changeRequestPayload: difference,
+  });
+
+  Object.keys(difference).forEach((key) => {
+    if (difference[key] === '') {
+      delete difference[key];
+    }
+  });
 
   const hasChanges = Object.keys(difference).length > 0;
 
@@ -245,7 +294,7 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
           name="language"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Język</FormLabel>
+              <FormLabel data-testid={StepTwoFormDataTestIds.language.label}>Język</FormLabel>
               <LanguageSelect
                 dialog={true}
                 onValueChange={field.onChange}
@@ -260,9 +309,10 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
           name="translator"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Przekład</FormLabel>
+              <FormLabel data-testid={StepTwoFormDataTestIds.translator.label}>Przekład</FormLabel>
               <FormControl>
                 <Input
+                  data-testid={StepTwoFormDataTestIds.translator.input}
                   placeholder="Przekład"
                   type="text"
                   includeQuill={false}
@@ -278,7 +328,7 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
           name="format"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Format</FormLabel>
+              <FormLabel data-testid={StepTwoFormDataTestIds.format.label}>Format</FormLabel>
               <BookFormatSelect
                 dialog={true}
                 onValueChange={field.onChange}
@@ -293,9 +343,10 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
           name="pages"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Ilość stron</FormLabel>
+              <FormLabel data-testid={StepTwoFormDataTestIds.pages.label}>Ilość stron</FormLabel>
               <FormControl>
                 <Input
+                  data-testid={StepTwoFormDataTestIds.pages.input}
                   placeholder="Ilość stron"
                   type="number"
                   includeQuill={false}
@@ -311,7 +362,7 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
           name="categoryId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Kategoria</FormLabel>
+              <FormLabel data-testid={StepTwoFormDataTestIds.category.label}>Kategoria</FormLabel>
               <CategorySelect
                 categories={categories?.data ?? []}
                 onValueChange={field.onChange}
@@ -323,6 +374,7 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
         />
         <div className="flex justify-between w-full gap-4">
           <Button
+            data-testid={StepTwoFormDataTestIds.backButton}
             size="lg"
             variant="outline"
             onClick={onBack}
@@ -331,6 +383,7 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
             Wróć
           </Button>
           <Button
+            data-testid={StepTwoFormDataTestIds.createButton}
             size="lg"
             disabled={(!form.formState.isValid && form.formState.isDirty) || !hasChanges || isCreatingBookChangeRequest}
             type="submit"

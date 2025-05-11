@@ -179,6 +179,7 @@ export const AuthorMultiCombobox = forwardRef<HTMLButtonElement, MultiSelectProp
       >
         <PopoverTrigger asChild={asChild}>
           <Button
+            data-testid="author-multi-combobox-trigger-button"
             ref={ref}
             {...props}
             variant="none"
@@ -220,7 +221,7 @@ export const AuthorMultiCombobox = forwardRef<HTMLButtonElement, MultiSelectProp
                         onRemoveValue={toggleOption}
                         variant={variant}
                       >
-                        <p>{`+ ${selectedValues.length - maxCount} więcej`}</p>
+                        <p data-testid="author-multi-combobox-more-authors-hover-trigger">{`+ ${selectedValues.length - maxCount} więcej`}</p>
                       </TruncatedAuthorsTooltip>
                       <XCircle
                         className="ml-2 h-4 w-4 cursor-pointer"
@@ -429,6 +430,7 @@ const AuthorMultiSelectCommandGroup = ({
 
                 return (
                   <CommandItem
+                    data-testid={`author-multi-combobox-option-${author.value}`}
                     style={{
                       position: 'absolute',
                       top: 0,

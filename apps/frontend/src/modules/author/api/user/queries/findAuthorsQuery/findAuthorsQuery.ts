@@ -107,7 +107,7 @@ type InfinitePayload = {
   pageSize?: number;
 };
 
-const getAuthorsInfiniteQueryOptions = ({ name, page, ids, pageSize }: InfinitePayload) =>
+export const getAuthorsInfiniteQueryOptions = ({ name, page, ids, pageSize }: InfinitePayload) =>
   infiniteQueryOptions({
     queryKey: [
       AuthorsApiQueryKeys.findAuthorsQuery,

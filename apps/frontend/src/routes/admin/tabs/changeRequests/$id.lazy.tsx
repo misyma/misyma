@@ -23,7 +23,7 @@ import { ReversedLanguages } from '../../../../modules/common/constants/language
 import { useErrorHandledQuery } from '../../../../modules/common/hooks/useErrorHandledQuery';
 import { RequireAdmin } from '../../../../modules/core/components/requireAdmin/requireAdmin';
 
-type ChangeKeys =
+type ChangeKeysNoAuthorIds =
   | 'format'
   | 'isbn'
   | 'language'
@@ -31,8 +31,8 @@ type ChangeKeys =
   | 'title'
   | 'translator'
   | 'publisher'
-  | 'pages'
-  | 'authorIds';
+  | 'pages';
+type ChangeKeys = ChangeKeysNoAuthorIds | 'authorIds';
 
 const schema = z.object({
   format: z.boolean().default(false),
@@ -135,7 +135,7 @@ export const ChangeRequestView: FC = () => {
         return rows.push({
           key: changeTranslatedKey,
           currentValue: bookData ? `${bookData[key] ?? '-'}` : '',
-          proposedValue: `${value}`,
+          proposedValue: `${value ?? '-'}`,
         });
       }
 
@@ -144,6 +144,24 @@ export const ChangeRequestView: FC = () => {
           key: changeTranslatedKey,
           currentValue: bookData ? bookData['authors'].map((val) => val.name).join(',') : '',
           proposedValue: desiredAuthors ?? '',
+        });
+      }
+    });
+
+    (
+      (changeRequestData?.data?.changedFields as Array<ChangeKeysNoAuthorIds>) ?? ([] as Array<ChangeKeysNoAuthorIds>)
+    ).forEach((key) => {
+      const changeTranslatedKey = changeTranslatedKeysMap[key];
+
+      if (!changeTranslatedKey) {
+        return;
+      }
+
+      if (changeRequestData?.data?.[key] == null) {
+        rows.push({
+          key: changeTranslatedKey,
+          currentValue: bookData ? `${bookData[key] ?? '-'}` : '',
+          proposedValue: '-',
         });
       }
     });

@@ -19,6 +19,11 @@ interface CategorySelectProps extends ControllerRenderProps {
   dialog?: boolean;
 }
 
+export const CategorySelectDataTestIds = {
+  trigger: 'category-select-trigger',
+  content: 'category-select-content',
+} as const;
+
 const CategorySelect: FC<CategorySelectProps> = ({ onValueChange, categories, dialog = false, ...field }) => {
   const [categorySelectOpen, setCategorySelectOpen] = useState(false);
 
@@ -34,10 +39,10 @@ const CategorySelect: FC<CategorySelectProps> = ({ onValueChange, categories, di
       defaultValue={field.value}
     >
       <FormControl>
-        <SelectTrigger>
+        <SelectTrigger data-testid={CategorySelectDataTestIds.trigger}>
           <SelectValue placeholder={<span className="text-muted-foreground">Kategoria</span>} />
           {dialog && (
-            <SelectContentNoPortal>
+            <SelectContentNoPortal data-testid={CategorySelectDataTestIds.content}>
               {Object.values(categories ?? []).map((category) => (
                 <SelectItem
                   onKeyDown={(event) => {
@@ -53,7 +58,7 @@ const CategorySelect: FC<CategorySelectProps> = ({ onValueChange, categories, di
             </SelectContentNoPortal>
           )}
           {!dialog && (
-            <SelectContent>
+            <SelectContent data-testid={CategorySelectDataTestIds.content}>
               {Object.values(categories ?? []).map((category) => (
                 <SelectItem
                   onKeyDown={(event) => {
