@@ -309,7 +309,9 @@ export class BookRepositoryImpl implements BookRepository {
           .where('bookshelves.user_id', excludeOwnedByUserId)
           .as('owned_books');
 
-        query.whereNotIn(`${booksTable}.id`, ownedBooksSubquery);
+        query
+          .leftJoin(ownedBooksSubquery, 'owned_books.book_id', '=', `${booksTable}.id`)
+          .whereNull('owned_books.book_id');
       }
 
       if (isbn) {
@@ -393,13 +395,15 @@ export class BookRepositoryImpl implements BookRepository {
 
       if (excludeOwnedByUserId) {
         const ownedBooksSubquery = this.databaseClient
-          .select('book_id')
+          .select('book_id as book_id')
           .from(usersBooksTable)
           .join(bookshelvesTable, 'bookshelves.id', '=', 'users_books.bookshelf_id')
           .where('bookshelves.user_id', excludeOwnedByUserId)
           .as('owned_books');
 
-        query.whereNotIn(`${booksTable}.id`, ownedBooksSubquery);
+        query
+          .leftJoin(ownedBooksSubquery, 'owned_books.book_id', '=', `${booksTable}.id`)
+          .whereNull('owned_books.book_id');
       }
 
       if (isbn) {
