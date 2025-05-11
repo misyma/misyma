@@ -139,17 +139,19 @@ export class BookHttpController implements HttpController {
   private async findBooks(
     request: HttpRequest<undefined, FindBooksQueryParamsDto, undefined>,
   ): Promise<HttpOkResponse<FindBooksResponseBodyDto>> {
-    await this.accessControlService.verifyBearerToken({
+    const { userId } = await this.accessControlService.verifyBearerToken({
       requestHeaders: request.headers,
     });
 
-    const { isbn, title, page = 1, pageSize = 10, sortField, sortOrder } = request.queryParams;
+    const { isbn, title, excludeOwned, page = 1, pageSize = 10, sortField, sortOrder } = request.queryParams;
 
     const { books, total } = await this.findBooksQueryHandler.execute({
       isbn,
       title,
       page,
       pageSize,
+      excludeOwned,
+      userId,
       isApproved: true,
       sortField,
       sortOrder,

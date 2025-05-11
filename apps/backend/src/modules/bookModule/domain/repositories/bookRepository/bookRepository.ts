@@ -14,6 +14,8 @@ export interface FindBooksPayload {
   readonly isbn?: string;
   readonly categoryId?: string;
   readonly isApproved?: boolean;
+  readonly excludeOwnedByUserId?: string;
+  readonly ownerId?: string;
   readonly title?: string;
   readonly authorIds?: string[];
   readonly language?: Language;
@@ -29,6 +31,7 @@ export interface CountBooksPayload {
   readonly isbn?: string;
   readonly categoryId?: string;
   readonly isApproved?: boolean;
+  readonly excludeOwnedByUserId?: string;
   readonly title?: string;
   readonly authorIds?: string[];
   readonly language?: Language;

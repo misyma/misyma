@@ -7,6 +7,7 @@ import { bookDtoSchema, bookIsbnSchema, bookTitleSchema } from '../../common/boo
 export const findBooksQueryParamsDtoSchema = Type.Object({
   isbn: Type.Optional(bookIsbnSchema),
   title: Type.Optional(bookTitleSchema),
+  excludeOwned: Type.Optional(Type.Boolean()),
   page: Type.Optional(Type.Integer({ minimum: 1 })),
   pageSize: Type.Optional(Type.Integer({ minimum: 1 })),
   sortField: Type.Optional(Type.Union([Type.Literal('releaseYear'), Type.Literal('createdAt')])),

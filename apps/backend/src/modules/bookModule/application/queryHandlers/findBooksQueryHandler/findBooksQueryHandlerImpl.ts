@@ -13,7 +13,21 @@ export class FindBooksQueryHandlerImpl implements FindBooksQueryHandler {
   public constructor(private readonly bookRepository: BookRepository) {}
 
   public async execute(payload: FindBooksQueryHandlerPayload): Promise<FindBooksQueryHandlerResult> {
-    const { page, pageSize, sortField, sortOrder, ...rest } = payload;
+    const {
+      page,
+      pageSize,
+      sortField,
+      sortOrder,
+      authorIds,
+      excludeOwned,
+      isApproved,
+      isbn,
+      language,
+      releaseYearAfter,
+      releaseYearBefore,
+      title,
+      userId,
+    } = payload;
 
     let findBooksPayload: FindBooksPayload = {
       page,
@@ -22,14 +36,61 @@ export class FindBooksQueryHandlerImpl implements FindBooksQueryHandler {
       sortOrder,
     };
 
-    Object.entries(rest).forEach(([key, val]) => {
-      if (val !== undefined && val !== '') {
-        findBooksPayload = {
-          ...findBooksPayload,
-          [key]: val,
-        };
-      }
-    });
+    if (isbn) {
+      findBooksPayload = {
+        ...findBooksPayload,
+        isbn,
+      };
+    }
+
+    if (title) {
+      findBooksPayload = {
+        ...findBooksPayload,
+        title,
+      };
+    }
+
+    if (isApproved !== undefined) {
+      findBooksPayload = {
+        ...findBooksPayload,
+        isApproved,
+      };
+    }
+
+    if (excludeOwned && userId) {
+      findBooksPayload = {
+        ...findBooksPayload,
+        excludeOwnedByUserId: userId,
+      };
+    }
+
+    if (authorIds && authorIds.length > 0) {
+      findBooksPayload = {
+        ...findBooksPayload,
+        authorIds,
+      };
+    }
+
+    if (language) {
+      findBooksPayload = {
+        ...findBooksPayload,
+        language,
+      };
+    }
+
+    if (releaseYearAfter) {
+      findBooksPayload = {
+        ...findBooksPayload,
+        releaseYearAfter,
+      };
+    }
+
+    if (releaseYearBefore) {
+      findBooksPayload = {
+        ...findBooksPayload,
+        releaseYearBefore,
+      };
+    }
 
     const [books, total] = await Promise.all([
       this.bookRepository.findBooks(findBooksPayload),

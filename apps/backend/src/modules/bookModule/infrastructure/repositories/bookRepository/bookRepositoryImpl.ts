@@ -3,10 +3,12 @@ import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
 import { authorsTable } from '../../../../databaseModule/infrastructure/tables/authorTable/authorTable.js';
 import { type BookAuthorRawEntity } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorRawEntity.js';
 import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
+import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
 import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
 import { booksTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
 import { type BookWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookWithJoinsRawEntity.js';
 import { categoriesTable } from '../../../../databaseModule/infrastructure/tables/categoriesTable/categoriesTable.js';
+import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type BookState, Book } from '../../../domain/entities/book/book.js';
 import {
@@ -260,6 +262,7 @@ export class BookRepositoryImpl implements BookRepository {
       releaseYearBefore,
       releaseYearAfter,
       authorIds,
+      excludeOwnedByUserId,
       page,
       pageSize,
       sortField,
@@ -296,39 +299,46 @@ export class BookRepositoryImpl implements BookRepository {
         })
         .leftJoin(categoriesTable, (join) => {
           join.on(`${booksTable}.category_id`, '=', `${categoriesTable}.id`);
-        })
-        .where((builder) => {
-          if (isbn) {
-            builder.where({ isbn });
-          }
+        });
 
-          if (isApproved !== undefined) {
-            builder.where(`${booksTable}.is_approved`, isApproved);
-          }
+      if (excludeOwnedByUserId) {
+        const ownedBooksSubquery = this.databaseClient
+          .select('book_id')
+          .from(usersBooksTable)
+          .join(bookshelvesTable, 'bookshelves.id', '=', 'users_books.bookshelf_id')
+          .where('bookshelves.user_id', excludeOwnedByUserId)
+          .as('owned_books');
 
-          if (language) {
-            builder.where(`${booksTable}.language`, language);
-          }
+        query.whereNotIn(`${booksTable}.id`, ownedBooksSubquery);
+      }
 
-          if (releaseYearBefore) {
-            builder.where(`${booksTable}.release_year`, '<=', releaseYearBefore);
-          }
+      if (isbn) {
+        query.where({ isbn });
+      }
 
-          if (releaseYearAfter) {
-            builder.where(`${booksTable}.release_year`, '>=', releaseYearAfter);
-          }
+      if (isApproved !== undefined) {
+        query.where(`${booksTable}.is_approved`, isApproved);
+      }
 
-          if (title) {
-            builder.whereRaw('title ILIKE ?', `%${title}%`);
-          }
+      if (language) {
+        query.where(`${booksTable}.language`, language);
+      }
 
-          if (authorIds) {
-            builder.whereIn(`${authorsTable}.id`, authorIds);
-          }
-        })
-        .groupBy(`${booksTable}.id`, `${categoriesTable}.name`)
-        .limit(pageSize)
-        .offset(pageSize * (page - 1));
+      if (releaseYearBefore) {
+        query.where(`${booksTable}.release_year`, '<=', releaseYearBefore);
+      }
+
+      if (releaseYearAfter) {
+        query.where(`${booksTable}.release_year`, '>=', releaseYearAfter);
+      }
+
+      if (title) {
+        query.whereRaw('title ILIKE ?', `%${title}%`);
+      }
+
+      if (authorIds) {
+        query.whereIn(`${authorsTable}.id`, authorIds);
+      }
 
       if (sortField === 'releaseYear') {
         query.orderBy(`${booksTable}.release_year`, sortOrder ?? 'desc');
@@ -338,7 +348,10 @@ export class BookRepositoryImpl implements BookRepository {
         query.orderBy('id', sortOrder ?? 'desc');
       }
 
-      rawEntities = await query;
+      rawEntities = await query
+        .groupBy(`${booksTable}.id`, `${categoriesTable}.name`)
+        .limit(pageSize)
+        .offset(pageSize * (page - 1));
     } catch (error) {
       throw new RepositoryError({
         entity: 'Book',
@@ -365,47 +378,59 @@ export class BookRepositoryImpl implements BookRepository {
   }
 
   public async countBooks(payload: FindBooksPayload): Promise<number> {
-    const { isbn, isApproved, title, authorIds, language, releaseYearAfter, releaseYearBefore } = payload;
+    const { isbn, isApproved, title, excludeOwnedByUserId, authorIds, language, releaseYearAfter, releaseYearBefore } =
+      payload;
 
     try {
-      const countResult = await this.databaseClient<BookRawEntity>(booksTable)
+      const query = this.databaseClient<BookRawEntity>(booksTable)
         .countDistinct({ count: `${booksTable}.id` })
         .leftJoin(booksAuthorsTable, (join) => {
           join.on(`${booksAuthorsTable}.book_id`, '=', `${booksTable}.id`);
         })
         .leftJoin(authorsTable, (join) => {
           join.on(`${authorsTable}.id`, '=', `${booksAuthorsTable}.author_id`);
-        })
-        .where((builder) => {
-          if (isbn) {
-            builder.where({ isbn });
-          }
+        });
 
-          if (isApproved !== undefined) {
-            builder.where(`${booksTable}.is_approved`, isApproved);
-          }
+      if (excludeOwnedByUserId) {
+        const ownedBooksSubquery = this.databaseClient
+          .select('book_id')
+          .from(usersBooksTable)
+          .join(bookshelvesTable, 'bookshelves.id', '=', 'users_books.bookshelf_id')
+          .where('bookshelves.user_id', excludeOwnedByUserId)
+          .as('owned_books');
 
-          if (language) {
-            builder.where(`${booksTable}.language`, language);
-          }
+        query.whereNotIn(`${booksTable}.id`, ownedBooksSubquery);
+      }
 
-          if (releaseYearBefore) {
-            builder.where(`${booksTable}.release_year`, '<=', releaseYearBefore);
-          }
+      if (isbn) {
+        query.where({ isbn });
+      }
 
-          if (releaseYearAfter) {
-            builder.where(`${booksTable}.release_year`, '>=', releaseYearAfter);
-          }
+      if (isApproved !== undefined) {
+        query.where(`${booksTable}.is_approved`, isApproved);
+      }
 
-          if (title) {
-            builder.whereRaw('title ILIKE ?', `%${title}%`);
-          }
+      if (language) {
+        query.where(`${booksTable}.language`, language);
+      }
 
-          if (authorIds) {
-            builder.whereIn(`${authorsTable}.id`, authorIds);
-          }
-        })
-        .first();
+      if (releaseYearBefore) {
+        query.where(`${booksTable}.release_year`, '<=', releaseYearBefore);
+      }
+
+      if (releaseYearAfter) {
+        query.where(`${booksTable}.release_year`, '>=', releaseYearAfter);
+      }
+
+      if (title) {
+        query.whereRaw('title ILIKE ?', `%${title}%`);
+      }
+
+      if (authorIds) {
+        query.whereIn(`${authorsTable}.id`, authorIds);
+      }
+
+      const countResult = await query.first();
 
       const count = countResult?.['count'];
 
