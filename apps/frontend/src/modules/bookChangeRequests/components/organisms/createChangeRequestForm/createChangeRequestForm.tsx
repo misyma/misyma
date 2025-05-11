@@ -113,7 +113,6 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
         bookId={bookId}
         onCancel={onCancel}
         onSubmit={(values) => {
-          console.log(values);
           dispatch({
             type: BookDetailsChangeRequestAction.setValues,
             values: {

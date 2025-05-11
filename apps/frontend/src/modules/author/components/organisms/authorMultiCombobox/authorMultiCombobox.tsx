@@ -430,6 +430,7 @@ const AuthorMultiSelectCommandGroup = ({
 
                 return (
                   <CommandItem
+                    data-testid={`author-multi-combobox-option-${author.value}`}
                     style={{
                       position: 'absolute',
                       top: 0,
