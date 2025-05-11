@@ -50,6 +50,30 @@ interface Props {
   bookId: string;
 }
 
+export const StepOneFormDataTestIds = {
+  isbn: {
+    label: 'change-request-isbn-label',
+    input: 'change-request-isbn-input',
+  },
+  title: {
+    label: 'change-request-title-label',
+    input: 'change-request-title-input',
+  },
+  authors: {
+    label: 'change-request-author-label',
+  },
+  releaseYear: {
+    label: 'change-request-release-year-label',
+    input: 'change-request-release-year-input',
+  },
+  publisher: {
+    label: 'change-request-publisher-label',
+    input: 'change-request-publisher-input',
+  },
+  backButton: 'create-change-request-back-button',
+  continueButton: 'create-change-request-continue-button',
+} as const;
+
 export const StepOneForm: FC<Props> = ({ bookId, onCancel, onSubmit }) => {
   const { data: userBookData, isFetched: isUserBookDataFetched } = useErrorHandledQuery({
     ...FindUserBookByIdQueryOptions({
@@ -117,10 +141,10 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           control={stepOneForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel data-testid="change-request-isbn-label">ISBN</FormLabel>
+              <FormLabel data-testid={StepOneFormDataTestIds.isbn.label}>ISBN</FormLabel>
               <FormControl>
                 <Input
-                  data-testid="change-request-isbn-input"
+                  data-testid={StepOneFormDataTestIds.isbn.input}
                   placeholder="111-11-1111-111-1"
                   type="text"
                   {...field}
@@ -135,10 +159,10 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           control={stepOneForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel data-testid="change-request-title-label">Tytuł</FormLabel>
+              <FormLabel data-testid={StepOneFormDataTestIds.title.label}>Tytuł</FormLabel>
               <FormControl>
                 <Input
-                  data-testid="change-request-title-input"
+                  data-testid={StepOneFormDataTestIds.title.input}
                   placeholder="Tytuł"
                   type="text"
                   includeQuill={false}
@@ -155,7 +179,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           render={() => (
             <FormItem className="flex flex-col">
               <div className="flex gap-2 items-center">
-                <FormLabel data-testid="change-request-author-label">Autorzy</FormLabel>
+                <FormLabel data-testid={StepOneFormDataTestIds.authors.label}>Autorzy</FormLabel>
                 <AuthorFieldTooltip />
               </div>
               <FormControl>
@@ -190,10 +214,10 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           control={stepOneForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel data-testid="change-request-release-year-label">Rok wydania</FormLabel>
+              <FormLabel data-testid={StepOneFormDataTestIds.releaseYear.label}>Rok wydania</FormLabel>
               <FormControl>
                 <Input
-                  data-testid="change-request-release-year-input"
+                  data-testid={StepOneFormDataTestIds.releaseYear.input}
                   placeholder="1939"
                   type="text"
                   includeQuill={false}
@@ -209,10 +233,10 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           control={stepOneForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel data-testid="change-request-publisher-label">Wydawnictwo</FormLabel>
+              <FormLabel data-testid={StepOneFormDataTestIds.publisher.label}>Wydawnictwo</FormLabel>
               <FormControl>
                 <Input
-                  data-testid="change-request-publisher-input"
+                  data-testid={StepOneFormDataTestIds.publisher.input}
                   placeholder="Wydawnictwo"
                   type="text"
                   maxLength={128}
@@ -226,6 +250,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
         />
         <div className="flex flex-row w-full justify-between gap-4">
           <Button
+            data-testid={StepOneFormDataTestIds.backButton}
             size="lg"
             variant="outline"
             onClick={() => {
@@ -237,6 +262,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
             Wróć
           </Button>
           <Button
+            data-testid={StepOneFormDataTestIds.continueButton}
             type="submit"
             size="lg"
             className="border border-primary w-full"

@@ -35,6 +35,7 @@ import CategorySelect from '../../../../book/components/molecules/categorySelect
 import { getCategoriesQueryOptions } from '../../../../categories/api/queries/getCategoriesQuery/getCategoriesQueryOptions';
 import { getDiffBetweenObjects } from '../../../../common/utils/getDiffBetweenObjects';
 import { prepareBookChangeRequestPayload } from '../../../utils/prepareBookChangeRequestPayload';
+import { diff } from 'radash';
 
 interface Props {
   bookId: string;
@@ -112,6 +113,7 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
         bookId={bookId}
         onCancel={onCancel}
         onSubmit={(values) => {
+          console.log(values);
           dispatch({
             type: BookDetailsChangeRequestAction.setValues,
             values: {
@@ -138,7 +140,7 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
   );
 };
 
-const StepTwoFormDataTestIds = {
+export const StepTwoFormDataTestIds = {
   language: {
     label: 'change-request-language-label',
   },
@@ -157,6 +159,8 @@ const StepTwoFormDataTestIds = {
   category: {
     label: 'change-request-category-label',
   },
+  backButton: 'change-request-back-button',
+  createButton: 'change-request-create-button',
 } as const;
 
 const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onBack }) => {
@@ -205,7 +209,11 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
 
     const difference = getDiffBetweenObjects(payload, comparableBookData);
 
-    difference['authorIds'] = context.authorIds;
+    const areDifferentAuthorsPresent = diff(payload.authorIds, comparableBookData?.authorIds ?? []);
+
+    if (areDifferentAuthorsPresent.length !== 0) {
+      difference['authorIds'] = context.authorIds;
+    }
 
     prepareBookChangeRequestPayload({
       bookData: bookData as unknown as Book,
@@ -356,6 +364,7 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
         />
         <div className="flex justify-between w-full gap-4">
           <Button
+            data-testid={StepTwoFormDataTestIds.backButton}
             size="lg"
             variant="outline"
             onClick={onBack}
@@ -364,6 +373,7 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
             Wróć
           </Button>
           <Button
+            data-testid={StepTwoFormDataTestIds.createButton}
             size="lg"
             disabled={(!form.formState.isValid && form.formState.isDirty) || !hasChanges || isCreatingBookChangeRequest}
             type="submit"

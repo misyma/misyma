@@ -1,4 +1,4 @@
-import { type QueryKey, type UseQueryOptions, queryOptions } from '@tanstack/react-query';
+import { type QueryKey, queryOptions } from '@tanstack/react-query';
 
 import { type FindBookPathParams, type FindBookResponseBody } from '@common/contracts';
 
@@ -22,7 +22,7 @@ export const findBookById = async (payload: FindBookPathParams): Promise<FindBoo
 
 export const FindBookByIdQueryOptions = (
   payload: FindBookPathParams,
-): UseQueryOptions<FindBookResponseBody, Error, FindBookResponseBody, string[]> =>
+) =>
   queryOptions({
     queryKey: [BookApiQueryKeys.findBookById, payload.bookId],
     queryFn: () => findBookById(payload),
