@@ -1,6 +1,6 @@
 import { construct, crush, diff, isObject } from 'radash';
 
-type AnyValidObject = Record<string | number | symbol, unknown>;
+export type AnyValidObject = Record<string | number | symbol, unknown>;
 
 export const getDiffBetweenObjects = (obj1: AnyValidObject, obj2: AnyValidObject) => {
   if (!isObject(obj1) || !isObject(obj2)) {

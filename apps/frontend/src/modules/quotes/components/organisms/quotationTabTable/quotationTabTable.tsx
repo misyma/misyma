@@ -38,7 +38,7 @@ export const QuotationTabTable: FC<QuotationTabTableProps> = ({ bookId, sortDate
   };
 
   return (
-      <ScrollArea type='always' className='h-[22rem] w-full'>
+      <ScrollArea className='h-[22rem] w-full'>
         <DataTable
           tableContainerClassName='min-h-[unset] pr-2'
           hideHeaders={true}

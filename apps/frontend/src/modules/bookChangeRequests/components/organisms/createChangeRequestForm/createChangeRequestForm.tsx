@@ -3,7 +3,7 @@ import { type FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { bookFormats, CreateBookChangeRequestRequestBody, languages } from '@common/contracts';
+import { Book, bookFormats, CreateBookChangeRequestRequestBody, languages } from '@common/contracts';
 
 import { StepOneForm } from './stepOneForm/stepOneForm';
 import { FindBookByIdQueryOptions } from '../../../../book/api/user/queries/findBookById/findBookByIdQueryOptions';
@@ -34,6 +34,7 @@ import { useCreateBookChangeRequestMutation } from '../../../api/user/mutations/
 import CategorySelect from '../../../../book/components/molecules/categorySelect/categorySelect';
 import { getCategoriesQueryOptions } from '../../../../categories/api/queries/getCategoriesQuery/getCategoriesQueryOptions';
 import { getDiffBetweenObjects } from '../../../../common/utils/getDiffBetweenObjects';
+import { prepareBookChangeRequestPayload } from '../../../utils/prepareBookChangeRequestPayload';
 
 interface Props {
   bookId: string;
@@ -183,6 +184,13 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
 
     const difference = getDiffBetweenObjects(payload, comparableBookData);
 
+    difference['authorIds'] = context.authorIds;
+
+    prepareBookChangeRequestPayload({
+      bookData: bookData as unknown as Book,
+      changeRequestPayload: difference,
+    });
+
     try {
       await createBookChangeRequest(difference as unknown as CreateBookChangeRequestRequestBody);
 
@@ -227,8 +235,10 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
 
   const difference = getDiffBetweenObjects(combinedPayload, comparableBookData);
 
-  if (comparableBookData.translator === undefined) {
+  if (comparableBookData.translator == null) {
     delete difference['translator'];
+  } else {
+    difference['translator'] = null;
   }
 
   const hasChanges = Object.keys(difference).length > 0;
