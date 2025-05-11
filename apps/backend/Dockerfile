@@ -1,4 +1,4 @@
-FROM node:23.8.0-alpine AS base
+FROM node:24.0.1-alpine AS base
 
 RUN apk update
 RUN apk add --no-cache libc6-compat bash
