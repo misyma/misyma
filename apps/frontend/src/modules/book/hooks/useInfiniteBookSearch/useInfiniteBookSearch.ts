@@ -10,6 +10,7 @@ export const useInfiniteBookSearch = ({ search, searchBy }: Props) => {
     ...FindBooksInfiniteQueryOptions({
       title: searchBy === 'title' ? search : undefined,
       isbn: searchBy === 'isbn' ? search : undefined,
+      excludeOwned: true,
       pageSize: 20,
     }),
     enabled: searchBy && search.length > 0,

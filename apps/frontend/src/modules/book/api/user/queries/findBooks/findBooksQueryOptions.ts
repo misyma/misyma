@@ -11,7 +11,7 @@ import { BookApiQueryKeys } from '../bookApiQueryKeys';
 const mapper = new ErrorCodeMessageMapper({});
 
 export const findBooks = async (values: FindBooksQueryParams) => {
-  const { isbn, title, page, pageSize } = values;
+  const { isbn, title, excludeOwned, page, pageSize } = values;
 
   const queryParams: Record<string, string> = {};
 
@@ -27,6 +27,9 @@ export const findBooks = async (values: FindBooksQueryParams) => {
   if (pageSize) {
     queryParams['pageSize'] = `${pageSize}`;
   }
+  if (excludeOwned) {
+    queryParams['excludeOwned'] = `${excludeOwned}`;
+  }
 
   const response = await api.get<FindBooksResponseBody>(ApiPaths.books.path, {
     params: queryParams,
@@ -37,25 +40,33 @@ export const findBooks = async (values: FindBooksQueryParams) => {
   return response.data;
 };
 
-export const FindBooksQueryOptions = ({ isbn, title, page, pageSize }: FindBooksQueryParams) =>
+export const FindBooksQueryOptions = ({ isbn, title, excludeOwned, page, pageSize }: FindBooksQueryParams) =>
   queryOptions({
-    queryKey: [BookApiQueryKeys.findBooks, isbn, title, page, pageSize],
+    queryKey: [BookApiQueryKeys.findBooks, isbn, title, excludeOwned, page, pageSize],
     queryFn: () =>
       findBooks({
         isbn,
         title,
+        excludeOwned,
         page,
         pageSize,
       }),
   });
 
-export const FindBooksInfiniteQueryOptions = ({ isbn, page = 1, pageSize, title }: FindBooksQueryParams) =>
+export const FindBooksInfiniteQueryOptions = ({
+  isbn,
+  page = 1,
+  excludeOwned,
+  pageSize,
+  title,
+}: FindBooksQueryParams) =>
   infiniteQueryOptions({
-    queryKey: [BookApiQueryKeys.findBooks, isbn, title, page, pageSize],
+    queryKey: [BookApiQueryKeys.findBooks, isbn, title, excludeOwned, page, pageSize],
     initialPageParam: page,
     queryFn: ({ pageParam }) =>
       findBooks({
         page: pageParam,
+        excludeOwned,
         title,
         isbn,
         pageSize,
