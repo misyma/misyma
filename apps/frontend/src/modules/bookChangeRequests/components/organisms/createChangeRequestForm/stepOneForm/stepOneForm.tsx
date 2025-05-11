@@ -117,9 +117,10 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           control={stepOneForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>ISBN</FormLabel>
+              <FormLabel data-testid="change-request-isbn-label">ISBN</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="change-request-isbn-input"
                   placeholder="111-11-1111-111-1"
                   type="text"
                   {...field}
@@ -134,9 +135,10 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           control={stepOneForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Tytuł</FormLabel>
+              <FormLabel data-testid="change-request-title-label">Tytuł</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="change-request-title-input"
                   placeholder="Tytuł"
                   type="text"
                   includeQuill={false}
@@ -153,7 +155,7 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           render={() => (
             <FormItem className="flex flex-col">
               <div className="flex gap-2 items-center">
-                <FormLabel>Autor</FormLabel>
+                <FormLabel data-testid="change-request-author-label">Autorzy</FormLabel>
                 <AuthorFieldTooltip />
               </div>
               <FormControl>
@@ -188,9 +190,10 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           control={stepOneForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Rok wydania</FormLabel>
+              <FormLabel data-testid="change-request-release-year-label">Rok wydania</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="change-request-release-year-input"
                   placeholder="1939"
                   type="text"
                   includeQuill={false}
@@ -206,9 +209,10 @@ const ModalForm: FC<Props> = ({ bookId, onSubmit, onCancel }) => {
           control={stepOneForm.control}
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Wydawnictwo</FormLabel>
+              <FormLabel data-testid="change-request-publisher-label">Wydawnictwo</FormLabel>
               <FormControl>
                 <Input
+                  data-testid="change-request-publisher-input"
                   placeholder="Wydawnictwo"
                   type="text"
                   maxLength={128}

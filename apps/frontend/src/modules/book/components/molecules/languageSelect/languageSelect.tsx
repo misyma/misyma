@@ -65,6 +65,11 @@ interface FormLanguageSelectProps extends ControllerRenderProps, BaseLanguageSel
 
 type LanguageSelectProps = BaseLanguageSelectProps | FormLanguageSelectProps;
 
+export const LanguageSelectDataTestIds = {
+  trigger: 'language-select-trigger',
+  content: 'language-select-content',
+} as const;
+
 const LanguageSelect: FC<LanguageSelectProps> = ({
   onValueChange,
   dialog = false,
@@ -72,13 +77,15 @@ const LanguageSelect: FC<LanguageSelectProps> = ({
   selectorValue,
   className,
   fullWidthAll,
-
   ...field
 }) => {
   const [languageSelectOpen, setLanguageSelectOpen] = useState(false);
 
   const selectContent = (
-    <SelectTrigger className={cn(className, fullWidthAll ? 'w-full sm:w-full' : '')}>
+    <SelectTrigger
+      data-testid={LanguageSelectDataTestIds.trigger}
+      className={cn(className, fullWidthAll ? 'w-full sm:w-full' : '')}
+    >
       {ReversedLanguages[selectorValue as keyof typeof ReversedLanguages] ||
         ReversedLanguages[
           // eslint-disable-next-line
@@ -92,12 +99,15 @@ const LanguageSelect: FC<LanguageSelectProps> = ({
         className={className}
       ></SelectValue>
       {!dialog && (
-        <SelectContent className={className}>
+        <SelectContent
+          data-testid={LanguageSelectDataTestIds.content}
+          className={className}
+        >
           {<MemoizedLanguagesList setLanguageSelectOpen={setLanguageSelectOpen} />}
         </SelectContent>
       )}
       {dialog && (
-        <SelectContentNoPortal>
+        <SelectContentNoPortal data-testid={LanguageSelectDataTestIds.content}>
           {<MemoizedLanguagesList setLanguageSelectOpen={setLanguageSelectOpen} />}
         </SelectContentNoPortal>
       )}

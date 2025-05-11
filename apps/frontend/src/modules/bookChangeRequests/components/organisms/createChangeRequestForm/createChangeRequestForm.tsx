@@ -138,6 +138,27 @@ export const CreateChangeRequestForm: FC<Props> = ({ onCancel, bookId, onSubmit 
   );
 };
 
+const StepTwoFormDataTestIds = {
+  language: {
+    label: 'change-request-language-label',
+  },
+  translator: {
+    label: 'change-request-translator-label',
+    input: 'change-request-translator-input',
+  },
+  format: {
+    label: 'change-request-format-label',
+    input: 'change-request-format-input',
+  },
+  pages: {
+    label: 'change-request-pages-label',
+    input: 'change-request-pages-input',
+  },
+  category: {
+    label: 'change-request-category-label',
+  },
+} as const;
+
 const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onBack }) => {
   const { toast } = useToast();
   const context = useBookDetailsChangeRequestContext();
@@ -255,7 +276,7 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
           name="language"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Język</FormLabel>
+              <FormLabel data-testid={StepTwoFormDataTestIds.language.label}>Język</FormLabel>
               <LanguageSelect
                 dialog={true}
                 onValueChange={field.onChange}
@@ -270,9 +291,10 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
           name="translator"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Przekład</FormLabel>
+              <FormLabel data-testid={StepTwoFormDataTestIds.translator.label}>Przekład</FormLabel>
               <FormControl>
                 <Input
+                  data-testid={StepTwoFormDataTestIds.translator.input}
                   placeholder="Przekład"
                   type="text"
                   includeQuill={false}
@@ -288,7 +310,7 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
           name="format"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Format</FormLabel>
+              <FormLabel data-testid={StepTwoFormDataTestIds.format.label}>Format</FormLabel>
               <BookFormatSelect
                 dialog={true}
                 onValueChange={field.onChange}
@@ -303,9 +325,10 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
           name="pages"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Ilość stron</FormLabel>
+              <FormLabel data-testid={StepTwoFormDataTestIds.pages.label}>Ilość stron</FormLabel>
               <FormControl>
                 <Input
+                  data-testid={StepTwoFormDataTestIds.pages.input}
                   placeholder="Ilość stron"
                   type="number"
                   includeQuill={false}
@@ -321,7 +344,7 @@ const StepTwoForm: FC<Props & { onBack: () => void }> = ({ bookId, onSubmit, onB
           name="categoryId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Kategoria</FormLabel>
+              <FormLabel data-testid={StepTwoFormDataTestIds.category.label}>Kategoria</FormLabel>
               <CategorySelect
                 categories={categories?.data ?? []}
                 onValueChange={field.onChange}

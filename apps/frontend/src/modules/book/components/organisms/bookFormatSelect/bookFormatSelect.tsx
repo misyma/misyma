@@ -19,6 +19,11 @@ interface BookFormatSelectProps extends ControllerRenderProps {
   dialog?: boolean;
 }
 
+export const BookFormatSelectDataTestIds = {
+  selectContent: 'format-select-content',
+  trigger: 'format-select-trigger',
+} as const;
+
 const BookFormatSelect: FC<BookFormatSelectProps> = ({ onValueChange, dialog = false, ...field }) => {
   const [formatSelectOpen, setFormatSelectOpen] = useState(false);
 
@@ -52,10 +57,18 @@ const BookFormatSelect: FC<BookFormatSelectProps> = ({ onValueChange, dialog = f
       defaultValue={field.value}
     >
       <FormControl>
-        <SelectTrigger>
+        <SelectTrigger data-testid={BookFormatSelectDataTestIds.trigger}>
           <SelectValue placeholder={<span className="text-muted-foreground">Format</span>} />
-          {dialog && <SelectContentNoPortal>{renderBookFormatSelectItems()}</SelectContentNoPortal>}
-          {!dialog && <SelectContent>{renderBookFormatSelectItems()}</SelectContent>}
+          {dialog && (
+            <SelectContentNoPortal data-testid={BookFormatSelectDataTestIds.selectContent}>
+              {renderBookFormatSelectItems()}
+            </SelectContentNoPortal>
+          )}
+          {!dialog && (
+            <SelectContent data-testid={BookFormatSelectDataTestIds.selectContent}>
+              {renderBookFormatSelectItems()}
+            </SelectContent>
+          )}
         </SelectTrigger>
       </FormControl>
     </Select>
