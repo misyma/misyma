@@ -26,7 +26,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
     let rawEntities: EmailEventRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<EmailEventRawEntity>(emailEventsTable)
+      rawEntities = await this.databaseClient<EmailEventRawEntity>(emailEventsTable.name)
         .where('created_at', '>=', after)
         .select('*');
     } catch (error) {
@@ -44,7 +44,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
     let rawEntities: EmailEventRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<EmailEventRawEntity>(emailEventsTable)
+      rawEntities = await this.databaseClient<EmailEventRawEntity>(emailEventsTable.name)
         .where({ status: emailEventStatuses.pending })
         .select('*');
     } catch (error) {
@@ -62,7 +62,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
     const { id, status } = payload;
 
     try {
-      await this.databaseClient<EmailEventRawEntity>(emailEventsTable).where({ id }).update({
+      await this.databaseClient<EmailEventRawEntity>(emailEventsTable.name).where({ id }).update({
         status,
       });
     } catch (error) {
@@ -76,7 +76,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
 
   public async create(entity: EmailEventDraft): Promise<void> {
     try {
-      await this.databaseClient<EmailEventRawEntity>(emailEventsTable).insert({
+      await this.databaseClient<EmailEventRawEntity>(emailEventsTable.name).insert({
         created_at: new Date(),
         id: this.uuidService.generateUuid(),
         payload: JSON.stringify(entity.getPayload()),
@@ -94,7 +94,7 @@ export class EmailEventRepositoryImpl implements EmailEventRepository {
 
   public async deleteProcessed(): Promise<void> {
     try {
-      await this.databaseClient<EmailEventRawEntity>(emailEventsTable)
+      await this.databaseClient<EmailEventRawEntity>(emailEventsTable.name)
         .where({ status: emailEventStatuses.processed })
         .delete();
     } catch (error) {

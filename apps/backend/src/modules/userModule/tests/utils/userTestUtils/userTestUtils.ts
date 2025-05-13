@@ -24,7 +24,7 @@ export class UserTestUtils extends TestUtils {
   private readonly userTestFactory = new UserTestFactory();
 
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, usersTable);
+    super(databaseClient, usersTable.name);
   }
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<UserRawEntity> {
@@ -32,7 +32,7 @@ export class UserTestUtils extends TestUtils {
 
     const user = this.userTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<UserRawEntity>(usersTable).insert(user, '*');
+    const rawEntities = await this.databaseClient<UserRawEntity>(usersTable.name).insert(user, '*');
 
     const rawEntity = rawEntities[0] as UserRawEntity;
 
@@ -42,7 +42,7 @@ export class UserTestUtils extends TestUtils {
   public async persist(payload: PersistPayload): Promise<void> {
     const { user } = payload;
 
-    await this.databaseClient<UserRawEntity>(usersTable).insert(user, '*');
+    await this.databaseClient<UserRawEntity>(usersTable.name).insert(user, '*');
   }
 
   public async findByEmail(payload: FindByEmailPayload): Promise<UserRawEntity | undefined> {
@@ -50,7 +50,7 @@ export class UserTestUtils extends TestUtils {
 
     const email = emailInput.toLowerCase();
 
-    const rawEntity = await this.databaseClient<UserRawEntity>(usersTable).select('*').where({ email }).first();
+    const rawEntity = await this.databaseClient<UserRawEntity>(usersTable.name).select('*').where({ email }).first();
 
     if (!rawEntity) {
       return undefined;
@@ -62,7 +62,7 @@ export class UserTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<UserRawEntity | undefined> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<UserRawEntity>(usersTable).select('*').where({ id }).first();
+    const rawEntity = await this.databaseClient<UserRawEntity>(usersTable.name).select('*').where({ id }).first();
 
     if (!rawEntity) {
       return undefined;

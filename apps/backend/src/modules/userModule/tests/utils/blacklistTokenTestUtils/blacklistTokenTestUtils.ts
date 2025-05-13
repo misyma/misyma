@@ -20,7 +20,7 @@ export class BlacklistTokenTestUtils extends TestUtils {
   private readonly blacklistTokenTestFactory = new BlacklistTokenTestFactory();
 
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, blacklistTokensTable);
+    super(databaseClient, blacklistTokensTable.name);
   }
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<BlacklistTokenRawEntity> {
@@ -28,7 +28,7 @@ export class BlacklistTokenTestUtils extends TestUtils {
 
     const blacklistToken = this.blacklistTokenTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokensTable).insert(
+    const rawEntities = await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokensTable.name).insert(
       blacklistToken,
       '*',
     );
@@ -41,13 +41,13 @@ export class BlacklistTokenTestUtils extends TestUtils {
   public async persist(payload: PersistPayload): Promise<void> {
     const { blacklistToken } = payload;
 
-    await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokensTable).insert(blacklistToken, '*');
+    await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokensTable.name).insert(blacklistToken, '*');
   }
 
   public async findByToken(payload: FindByTokenPayload): Promise<BlacklistTokenRawEntity> {
     const { token } = payload;
 
-    const rawEntity = await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokensTable)
+    const rawEntity = await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokensTable.name)
       .select('*')
       .where({ token })
       .first();

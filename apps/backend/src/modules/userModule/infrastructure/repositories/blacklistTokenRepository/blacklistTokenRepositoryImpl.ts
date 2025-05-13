@@ -25,7 +25,7 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
     let rawEntities: BlacklistTokenRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokensTable).insert(
+      rawEntities = await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokensTable.name).insert(
         {
           id: this.uuidService.generateUuid(),
           token,
@@ -52,7 +52,7 @@ export class BlacklistTokenRepositoryImpl implements BlacklistTokenRepository {
     let rawEntity: BlacklistTokenRawEntity | undefined;
 
     try {
-      rawEntity = await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokensTable)
+      rawEntity = await this.databaseClient<BlacklistTokenRawEntity>(blacklistTokensTable.name)
         .select('*')
         .where({ token })
         .first();
