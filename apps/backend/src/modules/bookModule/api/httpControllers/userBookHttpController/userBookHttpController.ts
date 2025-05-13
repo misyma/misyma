@@ -20,7 +20,6 @@ import { type UploadUserBookImageCommandHandler } from '../../../application/com
 import { type FindUserBookQueryHandler } from '../../../application/queryHandlers/findUserBookQueryHandler/findUserBookQueryHandler.js';
 import { type FindUserBooksQueryHandler } from '../../../application/queryHandlers/findUserBooksQueryHandler/findUserBooksQueryHandler.js';
 import { type UserBook } from '../../../domain/entities/userBook/userBook.js';
-import { type BookReadingDto } from '../bookReadingHttpController/schemas/bookReadingDto.js';
 
 import {
   createUserBookBodyDtoSchema,
@@ -367,7 +366,7 @@ export class UserBookHttpController implements HttpController {
   }
 
   private mapUserBookToDto(userBook: UserBook): UserBookDto {
-    const { status, isFavorite, bookshelfId, imageUrl, bookId, book, readings, collections, createdAt, latestRating } =
+    const { status, isFavorite, bookshelfId, imageUrl, bookId, book, collections, createdAt, latestRating } =
       userBook.getState();
 
     const userBookDto: UserBookDto = {
@@ -398,27 +397,6 @@ export class UserBookHttpController implements HttpController {
           userId: collection.getUserId(),
           createdAt: collection.getCreatedAt().toISOString(),
         })) || [],
-      readings:
-        readings?.map((reading) => {
-          const { userBookId, comment, rating, startedAt, endedAt } = reading.getState();
-
-          let readingDto: BookReadingDto = {
-            id: reading.getId(),
-            startedAt: startedAt.toISOString(),
-            endedAt: endedAt.toISOString(),
-            rating,
-            userBookId,
-          };
-
-          if (comment) {
-            readingDto = {
-              ...readingDto,
-              comment,
-            };
-          }
-
-          return readingDto;
-        }) || [],
     };
 
     if (imageUrl) {

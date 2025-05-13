@@ -48,11 +48,6 @@ describe('UserBookMapperImpl', () => {
       category_id: '',
       category_name: '',
       author_approvals: [],
-      reading_ids: [],
-      reading_started_at_dates: [],
-      reading_ended_at_dates: [],
-      reading_ratings: [],
-      reading_comments: [],
       latest_rating: latestRating,
     });
 
@@ -84,7 +79,6 @@ describe('UserBookMapperImpl', () => {
           imageUrl: book.image_url,
           authors: [],
         },
-        readings: [],
         latestRating,
       },
     });

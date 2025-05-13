@@ -12,7 +12,6 @@ export class UserBookTestFactory {
       bookshelfId: Generator.uuid(),
       createdAt: Generator.pastDate(),
       bookId: Generator.uuid(),
-      readings: [],
       collections: [],
       ...input,
     });

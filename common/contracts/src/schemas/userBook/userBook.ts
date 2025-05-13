@@ -1,7 +1,6 @@
 import { type Author } from '../author/author.js';
 import { type BookFormat } from '../book/bookFormat.js';
 import { type Language } from '../book/language.js';
-import { type BookReading } from '../bookReading/bookReading.js';
 import { type Collection } from '../collection/collection.js';
 
 import { type ReadingStatus } from './readingStatus.js';
@@ -30,6 +29,5 @@ export interface UserBook {
   readonly bookshelfId: string;
   readonly createdAt: string;
   readonly collections: Collection[];
-  readonly readings: BookReading[];
   readonly latestRating?: number;
 }

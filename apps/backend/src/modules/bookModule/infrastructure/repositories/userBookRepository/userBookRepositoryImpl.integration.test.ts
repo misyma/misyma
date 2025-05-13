@@ -126,7 +126,6 @@ describe('UserBookRepositoryImpl', () => {
           isFavorite: userBookRawEntity.is_favorite,
           imageUrl: userBookRawEntity.image_url as string,
           createdAt: userBookRawEntity.created_at,
-          readings: [],
         },
       });
 
@@ -141,7 +140,6 @@ describe('UserBookRepositoryImpl', () => {
         imageUrl: userBookRawEntity.image_url,
         isFavorite: userBookRawEntity.is_favorite,
         createdAt: userBookRawEntity.created_at,
-        readings: [],
         book: {
           id: book.id,
           title: book.title,
@@ -215,7 +213,6 @@ describe('UserBookRepositoryImpl', () => {
         isFavorite: userBook.isFavorite,
         imageUrl: userBook.imageUrl,
         createdAt: userBook.createdAt,
-        readings: [],
         book: {
           id: book.id,
           title: book.title,
@@ -453,7 +450,6 @@ describe('UserBookRepositoryImpl', () => {
         isFavorite: userBookRawEntity1.is_favorite,
         status: userBookRawEntity1.status,
         imageUrl: userBookRawEntity1.image_url,
-        readings: [],
       });
 
       const userBook2 = new UserBook({
@@ -464,7 +460,6 @@ describe('UserBookRepositoryImpl', () => {
         isFavorite: userBookRawEntity2.is_favorite,
         status: userBookRawEntity2.status,
         imageUrl: userBookRawEntity2.image_url,
-        readings: [],
       });
 
       userBook1.bookshelfId = { bookshelfId: bookshelf2.id };
@@ -527,16 +522,6 @@ describe('UserBookRepositoryImpl', () => {
         isFavorite: userBook.isFavorite,
         imageUrl: userBook.imageUrl,
         createdAt: userBook.createdAt,
-        readings: [
-          new BookReading({
-            id: bookReading.id,
-            startedAt: bookReading.started_at,
-            endedAt: bookReading.ended_at,
-            rating: bookReading.rating,
-            comment: bookReading.comment,
-            userBookId: bookReading.user_book_id,
-          }),
-        ],
         book: {
           id: book.id,
           title: book.title,

@@ -1,7 +1,6 @@
 import { languages, bookFormats, readingStatuses } from '@common/contracts';
 import { type Static, Type } from '@sinclair/typebox';
 
-import { bookReadingDtoSchema } from '../../bookReadingHttpController/schemas/bookReadingDto.js';
 import { authorDtoSchema } from '../../common/authorDto.js';
 import {
   bookImageUrlSchema,
@@ -22,7 +21,6 @@ export const userBookDtoSchema = Type.Object({
   bookshelfId: Type.String({ format: 'uuid' }),
   createdAt: Type.String({ format: 'date-time' }),
   collections: Type.Array(collectionDtoSchema),
-  readings: Type.Array(bookReadingDtoSchema),
   bookId: Type.String({ format: 'uuid' }),
   book: Type.Object({
     title: bookTitleSchema,
