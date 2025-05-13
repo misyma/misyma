@@ -1,16 +1,16 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { authorsTable } from '../../../../databaseModule/infrastructure/tables/authorTable/authorTable.js';
-import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
-import { booksReadingsTable } from '../../../../databaseModule/infrastructure/tables/bookReadingTable/bookReadingTable.js';
-import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
-import { booksTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
+import { authorsTable } from '../../../../databaseModule/infrastructure/tables/authorsTable/authorsTable.js';
+import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tables/booksAuthorsTable/booksAuthorsTable.js';
+import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelvesTable/bookshelvesTable.js';
+import { booksReadingsTable } from '../../../../databaseModule/infrastructure/tables/booksReadingsTable/booksReadingsTable.js';
+import { booksTable } from '../../../../databaseModule/infrastructure/tables/booksTable/booksTable.js';
 import { categoriesTable } from '../../../../databaseModule/infrastructure/tables/categoriesTable/categoriesTable.js';
-import { type UserBookCollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookCollectionsTable/userBookCollectionsRawEntity.js';
-import { usersBooksCollectionsTable } from '../../../../databaseModule/infrastructure/tables/userBookCollectionsTable/userBookCollectionsTable.js';
-import { type UserBookRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookRawEntity.js';
-import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
-import { type UserBookWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookWithJoinsRawEntity.js';
+import { type UserBookCollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/usersBooksCollectionsTable/userBookCollectionsRawEntity.js';
+import { usersBooksCollectionsTable } from '../../../../databaseModule/infrastructure/tables/usersBooksCollectionsTable/usersBooksCollectionsTable.js';
+import { type UserBookRawEntity } from '../../../../databaseModule/infrastructure/tables/usersBooksTable/userBookRawEntity.js';
+import { type UserBookWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/usersBooksTable/userBookWithJoinsRawEntity.js';
+import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/usersBooksTable/usersBooksTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { UserBook, type UserBookState } from '../../../domain/entities/userBook/userBook.js';
 import {
@@ -237,13 +237,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       ) as "latest_rating"`);
 
       rawEntity = await this.databaseClient<UserBookRawEntity>(usersBooksTable)
-        .select([
-          ...userBookSelect,
-          ...bookSelect,
-          ...authorsSelect,
-          ...categorySelect,
-          latestRatingSelect,
-        ])
+        .select([...userBookSelect, ...bookSelect, ...authorsSelect, ...categorySelect, latestRatingSelect])
         .leftJoin(booksAuthorsTable, (join) => {
           join.on(`${booksAuthorsTable}.book_id`, '=', `${usersBooksTable}.book_id`);
         })

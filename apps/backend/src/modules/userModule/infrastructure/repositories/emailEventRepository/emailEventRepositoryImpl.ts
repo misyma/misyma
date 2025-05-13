@@ -1,7 +1,7 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { type EmailEventRawEntity } from '../../../../databaseModule/infrastructure/tables/emailEventTable/emailEventRawEntity.js';
-import { emailEventsTable } from '../../../../databaseModule/infrastructure/tables/emailEventTable/emailEventTable.js';
+import { type EmailEventRawEntity } from '../../../../databaseModule/infrastructure/tables/emailEventsTable/emailEventRawEntity.js';
+import { emailEventsTable } from '../../../../databaseModule/infrastructure/tables/emailEventsTable/emailEventsTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type EmailEventDraft, type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
 import { emailEventStatuses } from '../../../domain/entities/emailEvent/types/emailEventStatus.js';

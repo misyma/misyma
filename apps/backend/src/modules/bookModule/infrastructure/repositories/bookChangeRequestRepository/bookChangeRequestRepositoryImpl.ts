@@ -1,9 +1,9 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { type BookChangeRequestRawEntity } from '../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestRawEntity.js';
-import { booksChangeRequestsTable } from '../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestTable.js';
-import { type BookChangeRequestWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestWithJoinsRawEntity.js';
-import { booksTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
+import { type BookChangeRequestRawEntity } from '../../../../databaseModule/infrastructure/tables/booksChangeRequestsTable/bookChangeRequestRawEntity.js';
+import { type BookChangeRequestWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/booksChangeRequestsTable/bookChangeRequestWithJoinsRawEntity.js';
+import { booksChangeRequestsTable } from '../../../../databaseModule/infrastructure/tables/booksChangeRequestsTable/booksChangeRequestsTable.js';
+import { booksTable } from '../../../../databaseModule/infrastructure/tables/booksTable/booksTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type BookChangeRequest } from '../../../domain/entities/bookChangeRequest/bookChangeRequest.js';
 import {

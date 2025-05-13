@@ -1,6 +1,6 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type CollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionRawEntity.js';
-import { collectionsTable } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionTable.js';
+import { type CollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/collectionsTable/collectionRawEntity.js';
+import { collectionsTable } from '../../../../databaseModule/infrastructure/tables/collectionsTable/collectionsTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { CollectionTestFactory } from '../../factories/collectionTestFactory/collectionTestFactory.js';
 

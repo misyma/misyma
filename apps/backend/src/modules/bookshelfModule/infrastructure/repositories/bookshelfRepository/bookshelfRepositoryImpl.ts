@@ -1,9 +1,9 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { type BookshelfRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfRawEntity.js';
-import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
-import { type BookshelfWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfWithJoinsRawEntity.js';
-import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
+import { type BookshelfRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelvesTable/bookshelfRawEntity.js';
+import { type BookshelfWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelvesTable/bookshelfWithJoinsRawEntity.js';
+import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelvesTable/bookshelvesTable.js';
+import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/usersBooksTable/usersBooksTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { Bookshelf, type BookshelfState } from '../../../domain/entities/bookshelf/bookshelf.js';
 import {

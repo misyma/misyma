@@ -1,8 +1,8 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type BookAuthorRawEntity } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorRawEntity.js';
-import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
-import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
-import { booksTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
+import { type BookAuthorRawEntity } from '../../../../databaseModule/infrastructure/tables/booksAuthorsTable/bookAuthorRawEntity.js';
+import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tables/booksAuthorsTable/booksAuthorsTable.js';
+import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/booksTable/bookRawEntity.js';
+import { booksTable } from '../../../../databaseModule/infrastructure/tables/booksTable/booksTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type Transaction } from '../../../../databaseModule/types/transaction.js';
 import { BookTestFactory } from '../../factories/bookTestFactory/bookTestFactory.js';

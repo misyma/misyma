@@ -1,5 +1,5 @@
 import { Generator } from '../../../../../../tests/generator.js';
-import { type CollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionRawEntity.js';
+import { type CollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/collectionsTable/collectionRawEntity.js';
 import { type CollectionState, Collection } from '../../../domain/entities/collection/collection.js';
 
 export class CollectionTestFactory {

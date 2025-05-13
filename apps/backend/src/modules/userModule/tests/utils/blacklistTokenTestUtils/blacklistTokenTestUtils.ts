@@ -1,6 +1,6 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type BlacklistTokenRawEntity } from '../../../../databaseModule/infrastructure/tables/blacklistTokenTable/blacklistTokenRawEntity.js';
-import { blacklistTokensTable } from '../../../../databaseModule/infrastructure/tables/blacklistTokenTable/blacklistTokenTable.js';
+import { type BlacklistTokenRawEntity } from '../../../../databaseModule/infrastructure/tables/blacklistTokensTable/blacklistTokenRawEntity.js';
+import { blacklistTokensTable } from '../../../../databaseModule/infrastructure/tables/blacklistTokensTable/blacklistTokensTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BlacklistTokenTestFactory } from '../../factories/blacklistTokenTestFactory/blacklistTokenTestFactory.js';
 

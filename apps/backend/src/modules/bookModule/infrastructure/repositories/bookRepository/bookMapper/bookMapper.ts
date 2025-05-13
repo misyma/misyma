@@ -1,5 +1,5 @@
-import { type BookRawEntity } from '../../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
-import { type BookWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/bookTable/bookWithJoinsRawEntity.js';
+import { type BookRawEntity } from '../../../../../databaseModule/infrastructure/tables/booksTable/bookRawEntity.js';
+import { type BookWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/booksTable/bookWithJoinsRawEntity.js';
 import { type Book } from '../../../../domain/entities/book/book.js';
 
 export interface BookMapper {

@@ -1,7 +1,7 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { type BlacklistTokenRawEntity } from '../../../../databaseModule/infrastructure/tables/blacklistTokenTable/blacklistTokenRawEntity.js';
-import { blacklistTokensTable } from '../../../../databaseModule/infrastructure/tables/blacklistTokenTable/blacklistTokenTable.js';
+import { type BlacklistTokenRawEntity } from '../../../../databaseModule/infrastructure/tables/blacklistTokensTable/blacklistTokenRawEntity.js';
+import { blacklistTokensTable } from '../../../../databaseModule/infrastructure/tables/blacklistTokensTable/blacklistTokensTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type BlacklistToken } from '../../../domain/entities/blacklistToken/blacklistToken.js';
 import {

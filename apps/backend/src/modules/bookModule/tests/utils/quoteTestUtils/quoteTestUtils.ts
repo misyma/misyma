@@ -1,6 +1,6 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type QuoteRawEntity } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteRawEntity.js';
-import { quotesTable } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteTable.js';
+import { type QuoteRawEntity } from '../../../../databaseModule/infrastructure/tables/quotesTable/quoteRawEntity.js';
+import { quotesTable } from '../../../../databaseModule/infrastructure/tables/quotesTable/quotesTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { QuoteTestFactory } from '../../factories/quoteTestFactory/quoteTestFactory.js';
 

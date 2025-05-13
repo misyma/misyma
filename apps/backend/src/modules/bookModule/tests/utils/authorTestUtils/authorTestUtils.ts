@@ -1,6 +1,6 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type AuthorRawEntity } from '../../../../databaseModule/infrastructure/tables/authorTable/authorRawEntity.js';
-import { authorsTable } from '../../../../databaseModule/infrastructure/tables/authorTable/authorTable.js';
+import { type AuthorRawEntity } from '../../../../databaseModule/infrastructure/tables/authorsTable/authorRawEntity.js';
+import { authorsTable } from '../../../../databaseModule/infrastructure/tables/authorsTable/authorsTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { AuthorTestFactory } from '../../factories/authorTestFactory/authorTestFactory.js';
 

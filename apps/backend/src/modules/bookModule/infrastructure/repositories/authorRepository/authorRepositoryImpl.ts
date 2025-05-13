@@ -1,11 +1,11 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
 import { type AuthorState, Author } from '../../../../bookModule/domain/entities/author/author.js';
-import { type AuthorRawEntity } from '../../../../databaseModule/infrastructure/tables/authorTable/authorRawEntity.js';
-import { authorsTable } from '../../../../databaseModule/infrastructure/tables/authorTable/authorTable.js';
-import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
-import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
-import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
+import { type AuthorRawEntity } from '../../../../databaseModule/infrastructure/tables/authorsTable/authorRawEntity.js';
+import { authorsTable } from '../../../../databaseModule/infrastructure/tables/authorsTable/authorsTable.js';
+import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tables/booksAuthorsTable/booksAuthorsTable.js';
+import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelvesTable/bookshelvesTable.js';
+import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/usersBooksTable/usersBooksTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import {
   type AuthorRepository,

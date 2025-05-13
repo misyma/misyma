@@ -1,6 +1,6 @@
 import { type BookFormat } from '@common/contracts';
 
-import { type UserBookWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/userBookTable/userBookWithJoinsRawEntity.js';
+import { type UserBookWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/usersBooksTable/userBookWithJoinsRawEntity.js';
 import { Author } from '../../../../domain/entities/author/author.js';
 import { Category } from '../../../../domain/entities/category/category.js';
 import { UserBook, type UserBookDraft } from '../../../../domain/entities/userBook/userBook.js';

@@ -1,8 +1,8 @@
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { type UserRawEntity } from '../../../../databaseModule/infrastructure/tables/userTable/userRawEntity.js';
-import { usersTable } from '../../../../databaseModule/infrastructure/tables/userTable/userTable.js';
+import { type UserRawEntity } from '../../../../databaseModule/infrastructure/tables/usersTable/userRawEntity.js';
+import { usersTable } from '../../../../databaseModule/infrastructure/tables/usersTable/usersTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { User, type UserState } from '../../../domain/entities/user/user.js';
 import {

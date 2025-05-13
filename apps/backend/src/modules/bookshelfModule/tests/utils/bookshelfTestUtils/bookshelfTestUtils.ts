@@ -1,6 +1,6 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type BookshelfRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfRawEntity.js';
-import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
+import { type BookshelfRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelvesTable/bookshelfRawEntity.js';
+import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelvesTable/bookshelvesTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BookshelfTestFactory } from '../../factories/bookshelfTestFactory/bookshelfTestFactory.js';
 

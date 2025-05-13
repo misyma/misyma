@@ -1,7 +1,7 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { type BorrowingRawEntity } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingRawEntity.js';
-import { borrowingsTable } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingTable.js';
+import { type BorrowingRawEntity } from '../../../../databaseModule/infrastructure/tables/borrowingsTable/borrowingRawEntity.js';
+import { borrowingsTable } from '../../../../databaseModule/infrastructure/tables/borrowingsTable/borrowingsTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { Borrowing, type BorrowingState } from '../../../domain/entities/borrowing/borrowing.js';
 import {

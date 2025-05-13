@@ -1,6 +1,6 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type EmailEventRawEntity } from '../../../../databaseModule/infrastructure/tables/emailEventTable/emailEventRawEntity.js';
-import { emailEventsTable } from '../../../../databaseModule/infrastructure/tables/emailEventTable/emailEventTable.js';
+import { type EmailEventRawEntity } from '../../../../databaseModule/infrastructure/tables/emailEventsTable/emailEventRawEntity.js';
+import { emailEventsTable } from '../../../../databaseModule/infrastructure/tables/emailEventsTable/emailEventsTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type EmailEvent } from '../../../domain/entities/emailEvent/emailEvent.js';
 

@@ -1,5 +1,5 @@
 import { type EmailType } from '../../../../../../common/types/emailType.js';
-import { type EmailEventRawEntity } from '../../../../../databaseModule/infrastructure/tables/emailEventTable/emailEventRawEntity.js';
+import { type EmailEventRawEntity } from '../../../../../databaseModule/infrastructure/tables/emailEventsTable/emailEventRawEntity.js';
 import { EmailEvent } from '../../../../domain/entities/emailEvent/emailEvent.js';
 import { type EmailEventStatus } from '../../../../domain/entities/emailEvent/types/emailEventStatus.js';
 

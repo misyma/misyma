@@ -1,7 +1,7 @@
 import { bookshelfTypes } from '@common/contracts';
 
 import { Generator } from '../../../../../../tests/generator.js';
-import { type BookshelfRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfRawEntity.js';
+import { type BookshelfRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelvesTable/bookshelfRawEntity.js';
 import { Bookshelf, type BookshelfState } from '../../../domain/entities/bookshelf/bookshelf.js';
 
 export class BookshelfTestFactory {

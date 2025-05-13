@@ -1,5 +1,5 @@
 import { Generator } from '../../../../../../tests/generator.js';
-import { type UserBookRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookRawEntity.js';
+import { type UserBookRawEntity } from '../../../../databaseModule/infrastructure/tables/usersBooksTable/userBookRawEntity.js';
 import { UserBook, type UserBookDraft } from '../../../domain/entities/userBook/userBook.js';
 
 export class UserBookTestFactory {

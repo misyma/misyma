@@ -1,4 +1,4 @@
-import { type CollectionRawEntity } from '../../../../../databaseModule/infrastructure/tables/collectionTable/collectionRawEntity.js';
+import { type CollectionRawEntity } from '../../../../../databaseModule/infrastructure/tables/collectionsTable/collectionRawEntity.js';
 import { Collection } from '../../../../domain/entities/collection/collection.js';
 
 import { type CollectionMapper } from './collectionMapper.js';

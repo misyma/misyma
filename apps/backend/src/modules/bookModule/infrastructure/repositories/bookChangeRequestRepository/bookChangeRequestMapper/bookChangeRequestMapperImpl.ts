@@ -1,4 +1,4 @@
-import { type BookChangeRequestWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestWithJoinsRawEntity.js';
+import { type BookChangeRequestWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/booksChangeRequestsTable/bookChangeRequestWithJoinsRawEntity.js';
 import { BookChangeRequest } from '../../../../domain/entities/bookChangeRequest/bookChangeRequest.js';
 
 import { type BookChangeRequestMapper } from './bookChangeRequestMapper.js';

@@ -1,7 +1,7 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { type CollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionRawEntity.js';
-import { collectionsTable } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionTable.js';
+import { type CollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/collectionsTable/collectionRawEntity.js';
+import { collectionsTable } from '../../../../databaseModule/infrastructure/tables/collectionsTable/collectionsTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type CollectionState, Collection } from '../../../domain/entities/collection/collection.js';
 import {

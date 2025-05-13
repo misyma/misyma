@@ -1,6 +1,6 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type BookChangeRequestRawEntity } from '../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestRawEntity.js';
-import { booksChangeRequestsTable } from '../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestTable.js';
+import { type BookChangeRequestRawEntity } from '../../../../databaseModule/infrastructure/tables/booksChangeRequestsTable/bookChangeRequestRawEntity.js';
+import { booksChangeRequestsTable } from '../../../../databaseModule/infrastructure/tables/booksChangeRequestsTable/booksChangeRequestsTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BookChangeRequestTestFactory } from '../../factories/bookChangeRequestTestFactory/bookChangeRequestTestFactory.js';
 

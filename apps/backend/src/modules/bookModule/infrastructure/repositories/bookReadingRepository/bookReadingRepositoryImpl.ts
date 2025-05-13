@@ -1,7 +1,7 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { type BookReadingRawEntity } from '../../../../databaseModule/infrastructure/tables/bookReadingTable/bookReadingRawEntity.js';
-import { booksReadingsTable } from '../../../../databaseModule/infrastructure/tables/bookReadingTable/bookReadingTable.js';
+import { type BookReadingRawEntity } from '../../../../databaseModule/infrastructure/tables/booksReadingsTable/bookReadingRawEntity.js';
+import { booksReadingsTable } from '../../../../databaseModule/infrastructure/tables/booksReadingsTable/booksReadingsTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BookReading, type BookReadingState } from '../../../domain/entities/bookReading/bookReading.js';
 import {

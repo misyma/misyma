@@ -1,14 +1,14 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { authorsTable } from '../../../../databaseModule/infrastructure/tables/authorTable/authorTable.js';
-import { type BookAuthorRawEntity } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorRawEntity.js';
-import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
-import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
-import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
-import { booksTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
-import { type BookWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookWithJoinsRawEntity.js';
+import { authorsTable } from '../../../../databaseModule/infrastructure/tables/authorsTable/authorsTable.js';
+import { type BookAuthorRawEntity } from '../../../../databaseModule/infrastructure/tables/booksAuthorsTable/bookAuthorRawEntity.js';
+import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tables/booksAuthorsTable/booksAuthorsTable.js';
+import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelvesTable/bookshelvesTable.js';
+import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/booksTable/bookRawEntity.js';
+import { booksTable } from '../../../../databaseModule/infrastructure/tables/booksTable/booksTable.js';
+import { type BookWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/booksTable/bookWithJoinsRawEntity.js';
 import { categoriesTable } from '../../../../databaseModule/infrastructure/tables/categoriesTable/categoriesTable.js';
-import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
+import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/usersBooksTable/usersBooksTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type BookState, Book } from '../../../domain/entities/book/book.js';
 import {

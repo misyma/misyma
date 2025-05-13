@@ -5,7 +5,7 @@ import { testSymbols } from '../../../../../../tests/symbols.js';
 import { TestContainer } from '../../../../../../tests/testContainer.js';
 import { type TestUtils } from '../../../../../../tests/testUtils.js';
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
-import { type CollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionRawEntity.js';
+import { type CollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/collectionsTable/collectionRawEntity.js';
 import { databaseSymbols } from '../../../../databaseModule/symbols.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';

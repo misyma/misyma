@@ -1,6 +1,6 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type BorrowingRawEntity } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingRawEntity.js';
-import { borrowingsTable } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingTable.js';
+import { type BorrowingRawEntity } from '../../../../databaseModule/infrastructure/tables/borrowingsTable/borrowingRawEntity.js';
+import { borrowingsTable } from '../../../../databaseModule/infrastructure/tables/borrowingsTable/borrowingsTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BorrowingTestFactory } from '../../factories/borrowingTestFactory/borrowingTestFactory.js';
 

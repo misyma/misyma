@@ -1,13 +1,13 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { authorsTable } from '../../../../databaseModule/infrastructure/tables/authorTable/authorTable.js';
-import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tables/bookAuthorTable/bookAuthorTable.js';
-import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
-import { booksTable } from '../../../../databaseModule/infrastructure/tables/bookTable/bookTable.js';
-import { type QuoteRawEntity } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteRawEntity.js';
-import { quotesTable } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteTable.js';
-import { type QuoteWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteWithJoinsRawEntity.js';
-import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
+import { authorsTable } from '../../../../databaseModule/infrastructure/tables/authorsTable/authorsTable.js';
+import { booksAuthorsTable } from '../../../../databaseModule/infrastructure/tables/booksAuthorsTable/booksAuthorsTable.js';
+import { bookshelvesTable } from '../../../../databaseModule/infrastructure/tables/bookshelvesTable/bookshelvesTable.js';
+import { booksTable } from '../../../../databaseModule/infrastructure/tables/booksTable/booksTable.js';
+import { type QuoteRawEntity } from '../../../../databaseModule/infrastructure/tables/quotesTable/quoteRawEntity.js';
+import { quotesTable } from '../../../../databaseModule/infrastructure/tables/quotesTable/quotesTable.js';
+import { type QuoteWithJoinsRawEntity } from '../../../../databaseModule/infrastructure/tables/quotesTable/quoteWithJoinsRawEntity.js';
+import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/usersBooksTable/usersBooksTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { Quote, type QuoteState } from '../../../domain/entities/quote/quote.js';
 import {

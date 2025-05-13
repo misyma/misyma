@@ -1,5 +1,5 @@
 import { Generator } from '../../../../../../tests/generator.js';
-import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
+import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/booksTable/bookRawEntity.js';
 import { Book, type BookDraft } from '../../../domain/entities/book/book.js';
 import { Category } from '../../../domain/entities/category/category.js';
 

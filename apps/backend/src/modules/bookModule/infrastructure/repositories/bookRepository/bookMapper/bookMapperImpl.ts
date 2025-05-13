@@ -1,5 +1,5 @@
-import { type BookRawEntity } from '../../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
-import { type BookWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/bookTable/bookWithJoinsRawEntity.js';
+import { type BookRawEntity } from '../../../../../databaseModule/infrastructure/tables/booksTable/bookRawEntity.js';
+import { type BookWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/booksTable/bookWithJoinsRawEntity.js';
 import { Author } from '../../../../domain/entities/author/author.js';
 import { Book, type BookDraft } from '../../../../domain/entities/book/book.js';
 import { Category } from '../../../../domain/entities/category/category.js';
