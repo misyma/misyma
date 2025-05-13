@@ -9,7 +9,6 @@ import { databaseSymbols } from '../../../../databaseModule/symbols.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type UserTestUtils } from '../../../../userModule/tests/utils/userTestUtils/userTestUtils.js';
 import { Author } from '../../../domain/entities/author/author.js';
-import { BookReading } from '../../../domain/entities/bookReading/bookReading.js';
 import { Category } from '../../../domain/entities/category/category.js';
 import { UserBook } from '../../../domain/entities/userBook/userBook.js';
 import { type UserBookRepository } from '../../../domain/repositories/userBookRepository/userBookRepository.js';
