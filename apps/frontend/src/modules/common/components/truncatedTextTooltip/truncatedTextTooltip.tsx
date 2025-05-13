@@ -1,6 +1,12 @@
 import React, { cloneElement, type FC, Fragment, type PropsWithChildren, useCallback, useState } from 'react';
 
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipPortal,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../common/components/tooltip/tooltip';
 import { useIsTruncated } from '../../../common/hooks/useIsTruncated';
 import { cn } from '../../../common/lib/utils';
 
@@ -9,8 +15,9 @@ export const TruncatedTextTooltip: FC<
     text: string;
     className?: string;
     tooltipClassName?: string;
+    portal?: boolean;
   }>
-> = ({ text, children, className, tooltipClassName }) => {
+> = ({ text, children, className, tooltipClassName, portal }) => {
   const [node, setNode] = useState<HTMLElement | null>(null);
 
   const setRef = useCallback((element: HTMLElement | null) => {
@@ -31,9 +38,19 @@ export const TruncatedTextTooltip: FC<
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>{elementWithRef}</TooltipTrigger>
-            <TooltipContent className={cn('max-w-xs sm:max-w-[80px] md:max-w-md lg:max-w-lg xl:max-w-xl', className)}>
-              <p className={cn('whitespace-normal sm:max-w-40 break-words', tooltipClassName)}>{text}</p>
-            </TooltipContent>
+            {portal ? (
+              <TooltipPortal>
+                <TooltipContent
+                  className={cn('max-w-xs sm:max-w-[80px] md:max-w-md lg:max-w-lg xl:max-w-xl', className)}
+                >
+                  <p className={cn('whitespace-normal sm:max-w-40 break-words', tooltipClassName)}>{text}</p>
+                </TooltipContent>
+              </TooltipPortal>
+            ) : (
+              <TooltipContent className={cn('max-w-xs sm:max-w-[80px] md:max-w-md lg:max-w-lg xl:max-w-xl', className)}>
+                <p className={cn('whitespace-normal sm:max-w-40 break-words', tooltipClassName)}>{text}</p>
+              </TooltipContent>
+            )}
           </Tooltip>
         </TooltipProvider>
       ) : (
