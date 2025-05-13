@@ -2,7 +2,6 @@ import { type BookFormat } from '@common/contracts';
 
 import { type UserBookWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/userBookTable/userBookWithJoinsRawEntity.js';
 import { Author } from '../../../../domain/entities/author/author.js';
-import { BookReading } from '../../../../domain/entities/bookReading/bookReading.js';
 import { Category } from '../../../../domain/entities/category/category.js';
 import { UserBook, type UserBookDraft } from '../../../../domain/entities/userBook/userBook.js';
 
@@ -33,11 +32,6 @@ export class UserBookMapperImpl implements UserBookMapper {
       author_ids: authorIds,
       author_names: authorNames,
       author_approvals: authorApprovals,
-      reading_ids: readingIds,
-      reading_started_at_dates: readingStartedAtDates,
-      reading_ended_at_dates: readingEndedAtDates,
-      reading_ratings: readingRatings,
-      reading_comments: readingComments,
       latest_rating: latestRating,
     } = entity;
 
@@ -79,21 +73,6 @@ export class UserBookMapperImpl implements UserBookMapper {
             : [],
         imageUrl: bookImageUrl ?? undefined,
       },
-      readings:
-        readingIds && readingStartedAtDates && readingEndedAtDates && readingRatings && readingComments
-          ? readingIds
-              .filter((readingId) => readingId !== null)
-              .map((readingId, index) => {
-                return new BookReading({
-                  id: readingId,
-                  startedAt: readingStartedAtDates[index] as Date,
-                  endedAt: readingEndedAtDates[index] as Date,
-                  rating: readingRatings[index] as number,
-                  comment: readingComments[index] ?? undefined,
-                  userBookId: id,
-                });
-              })
-          : [],
       latestRating: latestRating ?? undefined,
     };
 

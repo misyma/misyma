@@ -1,7 +1,6 @@
 import { type ReadingStatus } from '@common/contracts';
 
 import { type BookDraft } from '../book/book.js';
-import { type BookReading } from '../bookReading/bookReading.js';
 import { type Category } from '../category/category.js';
 import { type Collection } from '../collection/collection.js';
 
@@ -15,7 +14,6 @@ export interface UserBookDraft {
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
   readonly collections?: Collection[] | undefined;
-  readonly readings?: BookReading[] | undefined;
   readonly latestRating?: number | undefined;
 }
 
@@ -28,7 +26,6 @@ export interface UserBookState {
   readonly bookId: string;
   readonly book?: BookDraft | undefined;
   collections?: Collection[] | undefined;
-  readonly readings?: BookReading[] | undefined;
   readonly latestRating?: number | undefined;
 }
 
@@ -70,7 +67,6 @@ export class UserBook {
       createdAt,
       bookId,
       book,
-      readings,
       collections,
       latestRating,
     } = draft;
@@ -93,13 +89,6 @@ export class UserBook {
       state = {
         ...state,
         book,
-      };
-    }
-
-    if (readings !== undefined) {
-      state = {
-        ...state,
-        readings,
       };
     }
 
@@ -158,10 +147,6 @@ export class UserBook {
 
   public get collections(): Collection[] | undefined {
     return this.state.collections ? [...this.state.collections] : undefined;
-  }
-
-  public get readings(): BookReading[] | undefined {
-    return this.state.readings ? [...this.state.readings] : undefined;
   }
 
   public get latestReading(): number | undefined {

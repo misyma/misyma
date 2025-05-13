@@ -104,7 +104,6 @@ export class CreateUserBookCommandHandlerImpl implements CreateUserBookCommandHa
         createdAt: new Date(),
         imageUrl,
         collections,
-        readings: [],
       },
     });
 

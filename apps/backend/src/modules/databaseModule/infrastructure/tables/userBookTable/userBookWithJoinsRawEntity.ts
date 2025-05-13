@@ -26,11 +26,5 @@ export interface UserBookWithJoinsRawEntity {
   readonly author_names?: (string | null)[];
   readonly author_approvals?: (boolean | null)[];
 
-  readonly reading_ids?: (string | null)[];
-  readonly reading_started_at_dates?: (Date | null)[];
-  readonly reading_ended_at_dates?: (Date | null)[];
-  readonly reading_ratings?: (number | null)[];
-  readonly reading_comments?: (string | null)[];
-
   readonly latest_rating?: number | null;
 }
