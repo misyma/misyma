@@ -5,7 +5,6 @@ import { Loader2 } from 'lucide-react';
 import { motion, AnimatePresence, Variant } from 'framer-motion';
 import { Skeleton } from '../../../common/components/skeleton/skeleton';
 import { Book } from '@common/contracts';
-import { BookImageMiniature } from '../molecules/bookImageMiniature/bookImageMiniature';
 import { ReversedLanguages } from '../../../common/constants/languages';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { SearchResultSearch } from './schemas/searchResultPageSchema';
@@ -17,6 +16,7 @@ import { determineSearchBy } from '../../utils/determineSearchBy';
 import { useInfiniteBookSearch } from '../../hooks/useInfiniteBookSearch/useInfiniteBookSearch';
 import { BookNavigationFromEnum } from '../../constants';
 import { useSearchBookContextDispatch } from '../../../bookshelf/context/searchCreateBookContext/searchCreateBookContext';
+import { TruncatedTextTooltip } from '../../../common/components/truncatedTextTooltip/truncatedTextTooltip';
 
 interface BookRowProps {
   book: Book;
@@ -27,25 +27,31 @@ const BookRow: FC<BookRowProps> = ({ book, onSelect, isSelected }) => {
   return (
     <div
       className={cn(
-        'grid grid-cols-9 gap-x-4 p-4 rounded-lg transition-colors duration-200 cursor-pointer',
+        'pl-2 min-h-20  grid grid-cols-9 gap-x-4 p-4 rounded-lg transition-colors duration-200 cursor-pointer',
         isSelected ? 'bg-secondary/60 shadow-md' : 'hover:bg-secondary/40',
       )}
       onClick={() => {
         onSelect();
       }}
     >
-      <BookImageMiniature
-        bookImageSrc={book.imageUrl ?? ''}
-        key={`${book.id}-image`}
-        className="w-20 h-28 object-cover rounded shadow-sm"
-      />
-      <div className="col-span-2 font-medium line-clamp-3">{book.title}</div>
+      <TruncatedTextTooltip
+        portal
+        text={book.title}
+      >
+        <p className="col-span-2 font-medium line-clamp-2">{book.title}</p>
+      </TruncatedTextTooltip>
+      <div className="line-clamp-2 text-muted-foreground">{book.isbn ?? '‐'}</div>
+      <div className="line-clamp-2 text-muted-foreground">{book.translator ?? '‐'}</div>
       <div className="line-clamp-2 text-muted-foreground">{book.authors?.[0]?.name}</div>
-      <div className="text-sm">{book.format}</div>
-      <div className="text-sm">{book.releaseYear}</div>
-      <div className="line-clamp-2 text-sm text-muted-foreground">{book.publisher}</div>
-      <div className="text-sm capitalize">{ReversedLanguages[book.language].toLowerCase()}</div>
-      <div className="line-clamp-2 text-sm text-muted-foreground">{book.translator ?? '‐'}</div>
+      <div>{book.format ?? '‐'}</div>
+      <div>{book.releaseYear}</div>
+      <TruncatedTextTooltip
+        portal
+        text={book.publisher ?? ""}
+      >
+        <p className="line-clamp-2 text-muted-foreground">{book.publisher}</p>
+      </TruncatedTextTooltip>
+      <div className="capitalize">{ReversedLanguages[book.language].toLowerCase()}</div>
     </div>
   );
 };
@@ -77,7 +83,7 @@ const FoundBooksList: FC<FoundBooksListProps> = ({ onBookSelect }) => {
   const rowVirtualizer = useVirtualizer({
     count: data?.pages?.[0]?.metadata?.total ?? 0,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 146,
+    estimateSize: () => 80,
     overscan: 5,
   });
 
@@ -111,16 +117,16 @@ const FoundBooksList: FC<FoundBooksListProps> = ({ onBookSelect }) => {
             position: 'relative',
           }}
         >
-          <div className="sticky w-full top-0 z-10 bg-background pb-4">
+          <div className="sticky w-full top-0 z-10 bg-background pl-2  pb-4">
             <div className="grid grid-cols-9 gap-x-2">
-              Obrazek
-              <div className="col-span-2 line-clamp-3">Tytuł</div>
+              <div className="col-span-2 line-clamp-2">Tytuł</div>
+              <div className="line-clamp-2">ISBN</div>
               <div className="line-clamp-2">Autorzy</div>
+              <div className="line-clamp-2">Przekład</div>
               <div>Format</div>
               <div>Rok wydania</div>
               <div className="line-clamp-2">Wydawnictwo</div>
               <div>Język</div>
-              <div className="line-clamp-2">Przekład</div>
             </div>
           </div>
           {rowVirtualizer.getVirtualItems().map((virtualItem) => {
