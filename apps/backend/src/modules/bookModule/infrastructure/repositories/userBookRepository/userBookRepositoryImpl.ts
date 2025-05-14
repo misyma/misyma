@@ -199,8 +199,8 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       const latestRatingSelect = this.databaseClient.raw(`(
         SELECT br.rating
         FROM ${booksReadingsTable.name} br
-        WHERE br."user_book_id" = ${usersBooksTable.name}.id
-        ORDER BY br."ended_at" DESC
+        WHERE br.user_book_id = ${usersBooksTable.name}.id
+        ORDER BY br.ended_at DESC
         LIMIT 1
       ) as "latest_rating"`);
 
@@ -295,17 +295,17 @@ export class UserBookRepositoryImpl implements UserBookRepository {
       const latestRatingSelect = this.databaseClient.raw(`(
         SELECT br.rating
         FROM ${booksReadingsTable.name} br
-        WHERE br."user_book_id" = ${usersBooksTable.name}.id
-        ORDER BY br."ended_at" DESC
+        WHERE br.user_book_id = ${usersBooksTable.columns.id}
+        ORDER BY br.ended_at DESC
         LIMIT 1
-      ) as "latest_rating"`);
+      ) as latest_rating`);
       const latestReadingDateSelect = this.databaseClient.raw(`(
-        SELECT br."ended_at"
-        FROM "${booksReadingsTable.name}" br
-        WHERE br."user_book_id" = "${usersBooksTable.name}".id
-        ORDER BY br."ended_at" DESC
+        SELECT br.ended_at
+        FROM ${booksReadingsTable.name} br
+        WHERE br.user_book_id = ${usersBooksTable.columns.id}
+        ORDER BY br.ended_at DESC
         LIMIT 1
-      ) as "latest_reading_date"`);
+      ) as latest_reading_date`);
 
       const readingsCountSubquery = this.databaseClient
         .select('user_book_id')

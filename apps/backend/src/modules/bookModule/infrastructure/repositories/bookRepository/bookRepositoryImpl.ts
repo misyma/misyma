@@ -208,9 +208,9 @@ export class BookRepositoryImpl implements BookRepository {
         .select([
           booksTable.allColumns,
           `${categoriesTable.columns.name} as category_name`,
-          this.databaseClient.raw(`array_agg(${authorsTable.columns.id}) as "author_ids"`),
-          this.databaseClient.raw(`array_agg(${authorsTable.columns.name}) as "author_names"`),
-          this.databaseClient.raw(`array_agg(${authorsTable.columns.is_approved}) as "author_approvals"`),
+          this.databaseClient.raw(`array_agg(${authorsTable.columns.id}) as author_ids`),
+          this.databaseClient.raw(`array_agg(${authorsTable.columns.name}) as author_names`),
+          this.databaseClient.raw(`array_agg(${authorsTable.columns.is_approved}) as author_approvals`),
         ])
         .leftJoin(booksAuthorsTable.name, booksAuthorsTable.columns.book_id, booksTable.columns.id)
         .leftJoin(authorsTable.name, authorsTable.columns.id, booksAuthorsTable.columns.author_id)
@@ -255,9 +255,9 @@ export class BookRepositoryImpl implements BookRepository {
         .select([
           booksTable.allColumns,
           `${categoriesTable.columns.name} as category_name`,
-          this.databaseClient.raw(`array_agg(${authorsTable.columns.id}) as "author_ids"`),
-          this.databaseClient.raw(`array_agg(${authorsTable.columns.name}) as "author_names"`),
-          this.databaseClient.raw(`array_agg(${authorsTable.columns.is_approved}) as "author_approvals"`),
+          this.databaseClient.raw(`array_agg(${authorsTable.columns.id}) as author_ids`),
+          this.databaseClient.raw(`array_agg(${authorsTable.columns.name}) as author_names`),
+          this.databaseClient.raw(`array_agg(${authorsTable.columns.is_approved}) as author_approvals`),
         ])
         .leftJoin(booksAuthorsTable.name, booksAuthorsTable.columns.book_id, booksTable.columns.id)
         .leftJoin(authorsTable.name, authorsTable.columns.id, booksAuthorsTable.columns.author_id)

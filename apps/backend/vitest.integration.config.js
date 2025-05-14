@@ -7,6 +7,7 @@ export default mergeConfig(
   config,
   defineConfig({
     test: {
+      bail: true,
       name: 'integration',
       globalSetup: ['./tests/globalSetup.ts'],
       include: ['**/*.integration.test.ts'],
