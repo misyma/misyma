@@ -3,9 +3,9 @@ import {
   type CreateAndPersistBookshelfPayload,
   type BookshelfTestUtils,
 } from '../../../../bookshelfModule/tests/utils/bookshelfTestUtils/bookshelfTestUtils.js';
-import { type BookshelfRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelfTable/bookshelfRawEntity.js';
-import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/bookTable/bookRawEntity.js';
-import { type UserBookRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookRawEntity.js';
+import { type BookshelfRawEntity } from '../../../../databaseModule/infrastructure/tables/bookshelvesTable/bookshelfRawEntity.js';
+import { type BookRawEntity } from '../../../../databaseModule/infrastructure/tables/booksTable/bookRawEntity.js';
+import { type UserBookRawEntity } from '../../../../databaseModule/infrastructure/tables/usersBooksTable/userBookRawEntity.js';
 import { type AuthorTestUtils } from '../authorTestUtils/authorTestUtils.js';
 import { type CreateAndPersistBookPayload, type BookTestUtils } from '../bookTestUtils/bookTestUtils.js';
 import { type CategoryTestUtils } from '../categoryTestUtils/categoryTestUtils.js';

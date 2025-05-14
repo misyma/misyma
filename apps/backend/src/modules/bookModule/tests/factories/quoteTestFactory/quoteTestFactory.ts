@@ -1,5 +1,5 @@
 import { Generator } from '../../../../../../tests/generator.js';
-import { type QuoteRawEntity } from '../../../../databaseModule/infrastructure/tables/quoteTable/quoteRawEntity.js';
+import { type QuoteRawEntity } from '../../../../databaseModule/infrastructure/tables/quotesTable/quoteRawEntity.js';
 import { type QuoteState, Quote } from '../../../domain/entities/quote/quote.js';
 
 export class QuoteTestFactory {

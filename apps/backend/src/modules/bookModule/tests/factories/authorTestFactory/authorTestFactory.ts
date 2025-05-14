@@ -1,5 +1,5 @@
 import { Generator } from '../../../../../../tests/generator.js';
-import { type AuthorRawEntity } from '../../../../databaseModule/infrastructure/tables/authorTable/authorRawEntity.js';
+import { type AuthorRawEntity } from '../../../../databaseModule/infrastructure/tables/authorsTable/authorRawEntity.js';
 import { type AuthorDraft, Author } from '../../../domain/entities/author/author.js';
 
 export class AuthorTestFactory {

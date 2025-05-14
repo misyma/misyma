@@ -1,5 +1,5 @@
 import { Generator } from '../../../../../../tests/generator.js';
-import { type BorrowingRawEntity } from '../../../../databaseModule/infrastructure/tables/borrowingTable/borrowingRawEntity.js';
+import { type BorrowingRawEntity } from '../../../../databaseModule/infrastructure/tables/borrowingsTable/borrowingRawEntity.js';
 import { type BorrowingState, Borrowing } from '../../../domain/entities/borrowing/borrowing.js';
 
 export class BorrowingTestFactory {

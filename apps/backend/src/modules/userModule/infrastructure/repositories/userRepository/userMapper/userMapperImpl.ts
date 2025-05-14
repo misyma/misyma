@@ -1,4 +1,4 @@
-import { type UserRawEntity } from '../../../../../databaseModule/infrastructure/tables/userTable/userRawEntity.js';
+import { type UserRawEntity } from '../../../../../databaseModule/infrastructure/tables/usersTable/userRawEntity.js';
 import { User } from '../../../../domain/entities/user/user.js';
 
 import { type UserMapper } from './userMapper.js';

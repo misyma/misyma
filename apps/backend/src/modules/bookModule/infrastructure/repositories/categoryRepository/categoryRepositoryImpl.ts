@@ -30,27 +30,18 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
     let rawEntity: CategoryRawEntity | undefined;
 
-    let whereCondition: Partial<CategoryRawEntity> = {};
-
-    if (id) {
-      whereCondition = {
-        ...whereCondition,
-        id,
-      };
-    }
-
-    if (name) {
-      whereCondition = {
-        ...whereCondition,
-        name,
-      };
-    }
-
     try {
-      rawEntity = await this.databaseClient<CategoryRawEntity>(categoriesTable)
-        .select('*')
-        .where(whereCondition)
-        .first();
+      const query = this.databaseClient<CategoryRawEntity>(categoriesTable.name).select('*');
+
+      if (id) {
+        query.where(categoriesTable.columns.id, id);
+      }
+
+      if (name) {
+        query.where(categoriesTable.columns.name, name);
+      }
+
+      rawEntity = await query.first();
     } catch (error) {
       throw new RepositoryError({
         entity: 'Category',
@@ -71,13 +62,13 @@ export class CategoryRepositoryImpl implements CategoryRepository {
 
     let rawEntities: CategoryRawEntity[];
 
-    const query = this.databaseClient<CategoryRawEntity>(categoriesTable)
+    const query = this.databaseClient<CategoryRawEntity>(categoriesTable.name)
       .select('*')
       .limit(pageSize)
       .offset(pageSize * (page - 1));
 
     if (ids) {
-      query.whereIn('id', ids);
+      query.whereIn(categoriesTable.columns.id, ids);
     }
 
     try {
@@ -111,7 +102,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     let rawEntities: CategoryRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<CategoryRawEntity>(categoriesTable)
+      rawEntities = await this.databaseClient<CategoryRawEntity>(categoriesTable.name)
         .insert({
           id: this.uuidService.generateUuid(),
           name,
@@ -136,7 +127,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     let rawEntities: CategoryRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<CategoryRawEntity>(categoriesTable)
+      rawEntities = await this.databaseClient<CategoryRawEntity>(categoriesTable.name)
         .update(category.getState())
         .where({ id: category.getId() })
         .returning('*');
@@ -157,7 +148,7 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     const { id } = payload;
 
     try {
-      await this.databaseClient<CategoryRawEntity>(categoriesTable).delete().where({ id });
+      await this.databaseClient<CategoryRawEntity>(categoriesTable.name).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'Category',
@@ -171,10 +162,10 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     const { ids } = payload;
 
     try {
-      const query = this.databaseClient<CategoryRawEntity>(categoriesTable);
+      const query = this.databaseClient<CategoryRawEntity>(categoriesTable.name);
 
       if (ids) {
-        query.whereIn('id', ids);
+        query.whereIn(categoriesTable.columns.id, ids);
       }
 
       const countResult = await query.count().first();

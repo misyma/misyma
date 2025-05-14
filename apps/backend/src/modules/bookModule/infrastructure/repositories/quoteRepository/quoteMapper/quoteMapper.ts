@@ -1,5 +1,5 @@
-import { type QuoteRawEntity } from '../../../../../databaseModule/infrastructure/tables/quoteTable/quoteRawEntity.js';
-import { type QuoteWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/quoteTable/quoteWithJoinsRawEntity.js';
+import { type QuoteRawEntity } from '../../../../../databaseModule/infrastructure/tables/quotesTable/quoteRawEntity.js';
+import { type QuoteWithJoinsRawEntity } from '../../../../../databaseModule/infrastructure/tables/quotesTable/quoteWithJoinsRawEntity.js';
 import { type Quote } from '../../../../domain/entities/quote/quote.js';
 
 export interface QuoteMapper {

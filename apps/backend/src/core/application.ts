@@ -18,12 +18,12 @@ import { BookModule } from '../modules/bookModule/bookModule.js';
 import { BookshelfModule } from '../modules/bookshelfModule/bookshelfModule.js';
 import { DatabaseModule } from '../modules/databaseModule/databaseModule.js';
 import { type DatabaseManager } from '../modules/databaseModule/infrastructure/databaseManager.js';
-import { type BookshelfRawEntity } from '../modules/databaseModule/infrastructure/tables/bookshelfTable/bookshelfRawEntity.js';
-import { bookshelvesTable } from '../modules/databaseModule/infrastructure/tables/bookshelfTable/bookshelfTable.js';
+import { type BookshelfRawEntity } from '../modules/databaseModule/infrastructure/tables/bookshelvesTable/bookshelfRawEntity.js';
+import { bookshelvesTable } from '../modules/databaseModule/infrastructure/tables/bookshelvesTable/bookshelvesTable.js';
 import { categoriesTable } from '../modules/databaseModule/infrastructure/tables/categoriesTable/categoriesTable.js';
 import { type CategoryRawEntity } from '../modules/databaseModule/infrastructure/tables/categoriesTable/categoryRawEntity.js';
-import { type UserRawEntity } from '../modules/databaseModule/infrastructure/tables/userTable/userRawEntity.js';
-import { usersTable } from '../modules/databaseModule/infrastructure/tables/userTable/userTable.js';
+import { type UserRawEntity } from '../modules/databaseModule/infrastructure/tables/usersTable/userRawEntity.js';
+import { usersTable } from '../modules/databaseModule/infrastructure/tables/usersTable/usersTable.js';
 import { databaseSymbols } from '../modules/databaseModule/symbols.js';
 import { type DatabaseClient } from '../modules/databaseModule/types/databaseClient.js';
 import { type HashService } from '../modules/userModule/application/services/hashService/hashService.js';
@@ -130,7 +130,7 @@ export class Application {
 
     const { email, password } = container.get<Config>(coreSymbols.config).admin;
 
-    const userExists = await databaseClient<UserRawEntity>(usersTable).where({ email }).first();
+    const userExists = await databaseClient<UserRawEntity>(usersTable.name).where({ email }).first();
 
     if (userExists) {
       loggerService.debug({
@@ -145,7 +145,7 @@ export class Application {
 
     const userId = uuidService.generateUuid();
 
-    await databaseClient<UserRawEntity>(usersTable).insert({
+    await databaseClient<UserRawEntity>(usersTable.name).insert({
       id: userId,
       name: 'Admin',
       email,
@@ -154,14 +154,14 @@ export class Application {
       role: userRoles.admin,
     });
 
-    await databaseClient<BookshelfRawEntity>(bookshelvesTable).insert({
+    await databaseClient<BookshelfRawEntity>(bookshelvesTable.name).insert({
       id: uuidService.generateUuid(),
       name: 'Archiwum',
       user_id: userId,
       type: bookshelfTypes.archive,
     });
 
-    await databaseClient<BookshelfRawEntity>(bookshelvesTable).insert({
+    await databaseClient<BookshelfRawEntity>(bookshelvesTable.name).insert({
       id: uuidService.generateUuid(),
       name: 'Wypożyczalnia',
       user_id: userId,
@@ -183,7 +183,7 @@ export class Application {
 
     const loggerService = container.get<LoggerService>(coreSymbols.loggerService);
 
-    const existingCategories = await databaseClient<CategoryRawEntity>(categoriesTable).select('*');
+    const existingCategories = await databaseClient<CategoryRawEntity>(categoriesTable.name).select('*');
 
     if (existingCategories.length > 0) {
       loggerService.debug({ message: 'Categories already exist.' });
@@ -191,7 +191,7 @@ export class Application {
       return;
     }
 
-    await databaseClient<CategoryRawEntity>(categoriesTable).insert(
+    await databaseClient<CategoryRawEntity>(categoriesTable.name).insert(
       config.categories.map((name) => ({
         id: uuidService.generateUuid(),
         name,

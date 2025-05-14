@@ -1,7 +1,7 @@
 import { RepositoryError } from '../../../../../common/errors/repositoryError.js';
 import { type UuidService } from '../../../../../libs/uuid/uuidService.js';
-import { type CollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionRawEntity.js';
-import { collectionsTable } from '../../../../databaseModule/infrastructure/tables/collectionTable/collectionTable.js';
+import { type CollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/collectionsTable/collectionRawEntity.js';
+import { collectionsTable } from '../../../../databaseModule/infrastructure/tables/collectionsTable/collectionsTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type CollectionState, Collection } from '../../../domain/entities/collection/collection.js';
 import {
@@ -29,30 +29,19 @@ export class CollectionRepositoryImpl implements CollectionRepository {
   public async findCollection(payload: FindCollectionPayload): Promise<Collection | null> {
     let rawEntity: CollectionRawEntity | undefined;
 
-    let whereCondition: Partial<CollectionRawEntity> = {};
-
-    if ('id' in payload) {
-      whereCondition = {
-        ...whereCondition,
-        id: payload.id,
-      };
-    }
-
-    if ('name' in payload && 'userId' in payload) {
-      whereCondition = {
-        ...whereCondition,
-        name: payload.name,
-        user_id: payload.userId,
-      };
-    }
-
     try {
-      rawEntity = await this.databaseClient<CollectionRawEntity>(collectionsTable)
-        .select('*')
-        .where(whereCondition)
-        .first();
+      const query = this.databaseClient<CollectionRawEntity>(collectionsTable.name).select('*');
+
+      if ('id' in payload) {
+        query.where(collectionsTable.columns.id, payload.id);
+      } else {
+        query
+          .where(collectionsTable.columns.name, payload.name)
+          .andWhere(collectionsTable.columns.user_id, payload.userId);
+      }
+
+      rawEntity = await query.first();
     } catch (error) {
-      console.log({ error });
       throw new RepositoryError({
         entity: 'Collection',
         operation: 'find',
@@ -72,21 +61,21 @@ export class CollectionRepositoryImpl implements CollectionRepository {
 
     let rawEntities: CollectionRawEntity[];
 
-    const query = this.databaseClient<CollectionRawEntity>(collectionsTable)
+    const query = this.databaseClient<CollectionRawEntity>(collectionsTable.name)
       .select('*')
       .limit(pageSize)
       .offset(pageSize * (page - 1));
 
     if (ids) {
-      query.whereIn('id', ids);
+      query.whereIn(collectionsTable.columns.id, ids);
     }
 
     if (userId) {
-      query.where({ user_id: userId });
+      query.where(collectionsTable.columns.user_id, userId);
     }
 
     if (sortDate) {
-      query.orderBy('id', sortDate);
+      query.orderBy(collectionsTable.columns.id, sortDate);
     }
 
     try {
@@ -120,7 +109,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
     let rawEntities: CollectionRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<CollectionRawEntity>(collectionsTable)
+      rawEntities = await this.databaseClient<CollectionRawEntity>(collectionsTable.name)
         .insert({
           id: this.uuidService.generateUuid(),
           name,
@@ -148,7 +137,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
 
     try {
       const { name } = collection.getState();
-      rawEntities = await this.databaseClient<CollectionRawEntity>(collectionsTable)
+      rawEntities = await this.databaseClient<CollectionRawEntity>(collectionsTable.name)
         .update({ name })
         .where({ id: collection.getId() })
         .returning('*');
@@ -169,7 +158,7 @@ export class CollectionRepositoryImpl implements CollectionRepository {
     const { id } = payload;
 
     try {
-      await this.databaseClient<CollectionRawEntity>(collectionsTable).delete().where({ id });
+      await this.databaseClient<CollectionRawEntity>(collectionsTable.name).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'Collection',
@@ -183,14 +172,14 @@ export class CollectionRepositoryImpl implements CollectionRepository {
     const { ids, userId } = payload;
 
     try {
-      const query = this.databaseClient<CollectionRawEntity>(collectionsTable);
+      const query = this.databaseClient<CollectionRawEntity>(collectionsTable.name);
 
       if (ids) {
-        query.whereIn('id', ids);
+        query.whereIn(collectionsTable.columns.id, ids);
       }
 
       if (userId) {
-        query.where({ user_id: userId });
+        query.where(collectionsTable.columns.user_id, userId);
       }
 
       const countResult = await query.count().first();

@@ -133,6 +133,7 @@ describe('BookRepositoryImpl', () => {
         pages: createdBook.getPages(),
         is_approved: createdBook.getIsApproved(),
         image_url: createdBook.getImageUrl(),
+        category_id: category.id,
       });
     });
 

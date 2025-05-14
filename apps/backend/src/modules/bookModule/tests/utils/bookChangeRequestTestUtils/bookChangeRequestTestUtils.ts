@@ -1,6 +1,6 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type BookChangeRequestRawEntity } from '../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestRawEntity.js';
-import { booksChangeRequestsTable } from '../../../../databaseModule/infrastructure/tables/bookChangeRequestTable/bookChangeRequestTable.js';
+import { type BookChangeRequestRawEntity } from '../../../../databaseModule/infrastructure/tables/booksChangeRequestsTable/bookChangeRequestRawEntity.js';
+import { booksChangeRequestsTable } from '../../../../databaseModule/infrastructure/tables/booksChangeRequestsTable/booksChangeRequestsTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { BookChangeRequestTestFactory } from '../../factories/bookChangeRequestTestFactory/bookChangeRequestTestFactory.js';
 
@@ -14,7 +14,7 @@ interface FindByIdPayload {
 
 export class BookChangeRequestTestUtils extends TestUtils {
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, booksChangeRequestsTable);
+    super(databaseClient, booksChangeRequestsTable.name);
   }
 
   private readonly bookChangeRequestTestFactory = new BookChangeRequestTestFactory();
@@ -24,7 +24,7 @@ export class BookChangeRequestTestUtils extends TestUtils {
 
     const bookChangeRequest = this.bookChangeRequestTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable).insert(
+    const rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable.name).insert(
       bookChangeRequest,
       '*',
     );
@@ -37,7 +37,7 @@ export class BookChangeRequestTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookChangeRequestRawEntity | null> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable)
+    const rawEntity = await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable.name)
       .where({ id })
       .first();
 

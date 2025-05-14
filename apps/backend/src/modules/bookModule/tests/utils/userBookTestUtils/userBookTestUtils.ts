@@ -1,8 +1,8 @@
 import { TestUtils } from '../../../../../../tests/testUtils.js';
-import { type UserBookCollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookCollectionsTable/userBookCollectionsRawEntity.js';
-import { usersBooksCollectionsTable } from '../../../../databaseModule/infrastructure/tables/userBookCollectionsTable/userBookCollectionsTable.js';
-import { type UserBookRawEntity } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookRawEntity.js';
-import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/userBookTable/userBookTable.js';
+import { type UserBookCollectionRawEntity } from '../../../../databaseModule/infrastructure/tables/usersBooksCollectionsTable/userBookCollectionsRawEntity.js';
+import { usersBooksCollectionsTable } from '../../../../databaseModule/infrastructure/tables/usersBooksCollectionsTable/usersBooksCollectionsTable.js';
+import { type UserBookRawEntity } from '../../../../databaseModule/infrastructure/tables/usersBooksTable/userBookRawEntity.js';
+import { usersBooksTable } from '../../../../databaseModule/infrastructure/tables/usersBooksTable/usersBooksTable.js';
 import { type DatabaseClient } from '../../../../databaseModule/types/databaseClient.js';
 import { type Transaction } from '../../../../databaseModule/types/transaction.js';
 import { UserBookTestFactory } from '../../factories/userBookTestFactory/userBookTestFactory.js';
@@ -24,7 +24,7 @@ export class UserBookTestUtils extends TestUtils {
   private readonly userBookTestFactory = new UserBookTestFactory();
 
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, usersBooksTable);
+    super(databaseClient, usersBooksTable.name);
   }
 
   public async createAndPersist(payload: CreateAndPersistUserBookPayload = {}): Promise<UserBookRawEntity> {
@@ -35,11 +35,11 @@ export class UserBookTestUtils extends TestUtils {
     let rawEntities: UserBookRawEntity[] = [];
 
     await this.databaseClient.transaction(async (transaction: Transaction) => {
-      rawEntities = await transaction<UserBookRawEntity>(usersBooksTable).insert(userBook, '*');
+      rawEntities = await transaction<UserBookRawEntity>(usersBooksTable.name).insert(userBook, '*');
 
       if (collectionIds) {
         await transaction.batchInsert<UserBookCollectionRawEntity>(
-          usersBooksCollectionsTable,
+          usersBooksCollectionsTable.name,
           collectionIds.map((collectionId) => ({
             collection_id: collectionId,
             user_book_id: userBook.id,
@@ -56,7 +56,10 @@ export class UserBookTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<UserBookRawEntity | undefined> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<UserBookRawEntity>(usersBooksTable).select('*').where({ id }).first();
+    const rawEntity = await this.databaseClient<UserBookRawEntity>(usersBooksTable.name)
+      .select('*')
+      .where({ id })
+      .first();
 
     if (!rawEntity) {
       return undefined;
@@ -68,7 +71,9 @@ export class UserBookTestUtils extends TestUtils {
   public async findByIds(payload: FindByIdsPayload): Promise<UserBookRawEntity[]> {
     const { ids } = payload;
 
-    const rawEntities = await this.databaseClient<UserBookRawEntity>(usersBooksTable).select('*').whereIn('id', ids);
+    const rawEntities = await this.databaseClient<UserBookRawEntity>(usersBooksTable.name)
+      .select('*')
+      .whereIn('id', ids);
 
     return rawEntities;
   }
