@@ -14,7 +14,7 @@ interface FindByIdPayload {
 
 export class QuoteTestUtils extends TestUtils {
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, quotesTable);
+    super(databaseClient, quotesTable.name);
   }
 
   private readonly quoteTestFactory = new QuoteTestFactory();
@@ -24,7 +24,7 @@ export class QuoteTestUtils extends TestUtils {
 
     const quote = this.quoteTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<QuoteRawEntity>(quotesTable).insert(quote, '*');
+    const rawEntities = await this.databaseClient<QuoteRawEntity>(quotesTable.name).insert(quote, '*');
 
     const rawEntity = rawEntities[0] as QuoteRawEntity;
 
@@ -34,7 +34,7 @@ export class QuoteTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<QuoteRawEntity | null> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<QuoteRawEntity>(quotesTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<QuoteRawEntity>(quotesTable.name).where({ id }).first();
 
     if (!rawEntity) {
       return null;

@@ -12,7 +12,7 @@ export class CollectionTestUtils extends TestUtils {
   private readonly collectionTestFactory = new CollectionTestFactory();
 
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, collectionsTable);
+    super(databaseClient, collectionsTable.name);
   }
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<CollectionRawEntity> {
@@ -20,7 +20,7 @@ export class CollectionTestUtils extends TestUtils {
 
     const data = this.collectionTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<CollectionRawEntity>(collectionsTable).insert(data, '*');
+    const rawEntities = await this.databaseClient<CollectionRawEntity>(collectionsTable.name).insert(data, '*');
 
     const rawEntity = rawEntities[0] as CollectionRawEntity;
 
@@ -28,7 +28,7 @@ export class CollectionTestUtils extends TestUtils {
   }
 
   public async findByName(name: string): Promise<CollectionRawEntity | null> {
-    const rawEntity = await this.databaseClient<CollectionRawEntity>(collectionsTable).where({ name }).first();
+    const rawEntity = await this.databaseClient<CollectionRawEntity>(collectionsTable.name).where({ name }).first();
 
     if (!rawEntity) {
       return null;
@@ -38,7 +38,7 @@ export class CollectionTestUtils extends TestUtils {
   }
 
   public async findById(id: string): Promise<CollectionRawEntity | null> {
-    const rawEntity = await this.databaseClient<CollectionRawEntity>(collectionsTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<CollectionRawEntity>(collectionsTable.name).where({ id }).first();
 
     if (!rawEntity) {
       return null;

@@ -31,7 +31,7 @@ export class BookTestUtils extends TestUtils {
   private readonly bookTestFactory = new BookTestFactory();
 
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, booksTable);
+    super(databaseClient, booksTable.name);
   }
 
   public async createAndPersist(payload: CreateAndPersistBookPayload = {}): Promise<BookRawEntity> {
@@ -42,11 +42,11 @@ export class BookTestUtils extends TestUtils {
     let rawEntities: BookRawEntity[] = [];
 
     await this.databaseClient.transaction(async (transaction: Transaction) => {
-      rawEntities = await transaction<BookRawEntity>(booksTable).insert(book, '*');
+      rawEntities = await transaction<BookRawEntity>(booksTable.name).insert(book, '*');
 
       if (input?.authorIds) {
         await transaction.batchInsert<BookAuthorRawEntity>(
-          booksAuthorsTable,
+          booksAuthorsTable.name,
           input.authorIds.map((authorId) => ({
             book_id: book.id,
             author_id: authorId,
@@ -63,7 +63,7 @@ export class BookTestUtils extends TestUtils {
   public async findBookAuthors(payload: FindBookAuthorsPayload): Promise<BookAuthorRawEntity[]> {
     const { bookId } = payload;
 
-    const rawEntities = await this.databaseClient<BookAuthorRawEntity>(booksAuthorsTable).select('*').where({
+    const rawEntities = await this.databaseClient<BookAuthorRawEntity>(booksAuthorsTable.name).select('*').where({
       book_id: bookId,
     });
 
@@ -73,7 +73,7 @@ export class BookTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookRawEntity | undefined> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<BookRawEntity>(booksTable).select('*').where({ id }).first();
+    const rawEntity = await this.databaseClient<BookRawEntity>(booksTable.name).select('*').where({ id }).first();
 
     if (!rawEntity) {
       return undefined;
@@ -85,23 +85,11 @@ export class BookTestUtils extends TestUtils {
   public async findByTitleAndAuthor(payload: FindByTitleAndAuthorPayload): Promise<BookRawEntity | undefined> {
     const { title, authorId } = payload;
 
-    const rawEntity = await this.databaseClient<BookRawEntity>(booksTable)
-      .select([
-        `${booksTable}.id`,
-        `${booksTable}.title`,
-        `${booksTable}.isbn`,
-        `${booksTable}.publisher`,
-        `${booksTable}.release_year`,
-        `${booksTable}.language`,
-        `${booksTable}.translator`,
-        `${booksTable}.format`,
-        `${booksTable}.pages`,
-        `${booksTable}.is_approved`,
-        `${booksTable}.image_url`,
-      ])
-      .join(booksAuthorsTable, (join) => {
+    const rawEntity = await this.databaseClient<BookRawEntity>(booksTable.name)
+      .select([booksTable.allColumns])
+      .join(booksAuthorsTable.name, (join) => {
         if (authorId) {
-          join.onIn(`${booksAuthorsTable}.author_id`, this.databaseClient.raw('?', [authorId]));
+          join.onIn(booksAuthorsTable.columns.author_id, this.databaseClient.raw('?', [authorId]));
         }
       })
       .where({ title })

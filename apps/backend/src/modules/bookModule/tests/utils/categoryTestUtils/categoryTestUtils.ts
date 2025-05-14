@@ -12,7 +12,7 @@ export class CategoryTestUtils extends TestUtils {
   private readonly categoryTestFactory = new CategoryTestFactory();
 
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, categoriesTable);
+    super(databaseClient, categoriesTable.name);
   }
 
   public async createAndPersist(payload: CreateAndPersistPayload = {}): Promise<CategoryRawEntity> {
@@ -20,7 +20,7 @@ export class CategoryTestUtils extends TestUtils {
 
     const data = this.categoryTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<CategoryRawEntity>(categoriesTable).insert(data, '*');
+    const rawEntities = await this.databaseClient<CategoryRawEntity>(categoriesTable.name).insert(data, '*');
 
     const rawEntity = rawEntities[0] as CategoryRawEntity;
 
@@ -28,13 +28,13 @@ export class CategoryTestUtils extends TestUtils {
   }
 
   public async findByName(name: string): Promise<CategoryRawEntity | null> {
-    const category = await this.databaseClient<CategoryRawEntity>(categoriesTable).where({ name }).first();
+    const category = await this.databaseClient<CategoryRawEntity>(categoriesTable.name).where({ name }).first();
 
     return category || null;
   }
 
   public async findById(id: string): Promise<CategoryRawEntity | null> {
-    const category = await this.databaseClient<CategoryRawEntity>(categoriesTable).where({ id }).first();
+    const category = await this.databaseClient<CategoryRawEntity>(categoriesTable.name).where({ id }).first();
 
     return category || null;
   }

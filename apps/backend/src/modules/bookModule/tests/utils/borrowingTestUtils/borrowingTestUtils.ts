@@ -14,7 +14,7 @@ interface FindByIdPayload {
 
 export class BorrowingTestUtils extends TestUtils {
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, borrowingsTable);
+    super(databaseClient, borrowingsTable.name);
   }
 
   private readonly borrowingTestFactory = new BorrowingTestFactory();
@@ -24,7 +24,7 @@ export class BorrowingTestUtils extends TestUtils {
 
     const borrowing = this.borrowingTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<BorrowingRawEntity>(borrowingsTable).insert(borrowing, '*');
+    const rawEntities = await this.databaseClient<BorrowingRawEntity>(borrowingsTable.name).insert(borrowing, '*');
 
     const rawEntity = rawEntities[0] as BorrowingRawEntity;
 
@@ -34,7 +34,7 @@ export class BorrowingTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<BorrowingRawEntity | null> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<BorrowingRawEntity>(borrowingsTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<BorrowingRawEntity>(borrowingsTable.name).where({ id }).first();
 
     if (!rawEntity) {
       return null;

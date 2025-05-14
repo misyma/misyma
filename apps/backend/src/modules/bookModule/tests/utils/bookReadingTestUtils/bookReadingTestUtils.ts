@@ -14,7 +14,7 @@ interface FindByIdPayload {
 
 export class BookReadingTestUtils extends TestUtils {
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, booksReadingsTable);
+    super(databaseClient, booksReadingsTable.name);
   }
 
   private readonly bookReadingTestFactory = new BookReadingTestFactory();
@@ -24,7 +24,10 @@ export class BookReadingTestUtils extends TestUtils {
 
     const bookReading = this.bookReadingTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<BookReadingRawEntity>(booksReadingsTable).insert(bookReading, '*');
+    const rawEntities = await this.databaseClient<BookReadingRawEntity>(booksReadingsTable.name).insert(
+      bookReading,
+      '*',
+    );
 
     const rawEntity = rawEntities[0] as BookReadingRawEntity;
 
@@ -34,7 +37,7 @@ export class BookReadingTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookReadingRawEntity | null> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<BookReadingRawEntity>(booksReadingsTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<BookReadingRawEntity>(booksReadingsTable.name).where({ id }).first();
 
     if (!rawEntity) {
       return null;

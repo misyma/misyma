@@ -18,7 +18,7 @@ interface FindByUserIdPayload {
 
 export class BookshelfTestUtils extends TestUtils {
   public constructor(databaseClient: DatabaseClient) {
-    super(databaseClient, bookshelvesTable);
+    super(databaseClient, bookshelvesTable.name);
   }
 
   private readonly bookshelfTestFactory = new BookshelfTestFactory();
@@ -28,7 +28,7 @@ export class BookshelfTestUtils extends TestUtils {
 
     const bookshelf = this.bookshelfTestFactory.createRaw(input);
 
-    const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable).insert(bookshelf, '*');
+    const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable.name).insert(bookshelf, '*');
 
     const rawEntity = rawEntities[0] as BookshelfRawEntity;
 
@@ -38,7 +38,7 @@ export class BookshelfTestUtils extends TestUtils {
   public async findById(payload: FindByIdPayload): Promise<BookshelfRawEntity | null> {
     const { id } = payload;
 
-    const rawEntity = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable).where({ id }).first();
+    const rawEntity = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable.name).where({ id }).first();
 
     if (!rawEntity) {
       return null;
@@ -50,7 +50,7 @@ export class BookshelfTestUtils extends TestUtils {
   public async findByUserId(payload: FindByUserIdPayload): Promise<BookshelfRawEntity[]> {
     const { userId } = payload;
 
-    const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable).where({ user_id: userId });
+    const rawEntities = await this.databaseClient<BookshelfRawEntity>(bookshelvesTable.name).where({ user_id: userId });
 
     return rawEntities;
   }

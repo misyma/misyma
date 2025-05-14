@@ -130,7 +130,7 @@ export class Application {
 
     const { email, password } = container.get<Config>(coreSymbols.config).admin;
 
-    const userExists = await databaseClient<UserRawEntity>(usersTable).where({ email }).first();
+    const userExists = await databaseClient<UserRawEntity>(usersTable.name).where({ email }).first();
 
     if (userExists) {
       loggerService.debug({
@@ -145,7 +145,7 @@ export class Application {
 
     const userId = uuidService.generateUuid();
 
-    await databaseClient<UserRawEntity>(usersTable).insert({
+    await databaseClient<UserRawEntity>(usersTable.name).insert({
       id: userId,
       name: 'Admin',
       email,
@@ -154,14 +154,14 @@ export class Application {
       role: userRoles.admin,
     });
 
-    await databaseClient<BookshelfRawEntity>(bookshelvesTable).insert({
+    await databaseClient<BookshelfRawEntity>(bookshelvesTable.name).insert({
       id: uuidService.generateUuid(),
       name: 'Archiwum',
       user_id: userId,
       type: bookshelfTypes.archive,
     });
 
-    await databaseClient<BookshelfRawEntity>(bookshelvesTable).insert({
+    await databaseClient<BookshelfRawEntity>(bookshelvesTable.name).insert({
       id: uuidService.generateUuid(),
       name: 'Wypożyczalnia',
       user_id: userId,
@@ -183,7 +183,7 @@ export class Application {
 
     const loggerService = container.get<LoggerService>(coreSymbols.loggerService);
 
-    const existingCategories = await databaseClient<CategoryRawEntity>(categoriesTable).select('*');
+    const existingCategories = await databaseClient<CategoryRawEntity>(categoriesTable.name).select('*');
 
     if (existingCategories.length > 0) {
       loggerService.debug({ message: 'Categories already exist.' });
@@ -191,7 +191,7 @@ export class Application {
       return;
     }
 
-    await databaseClient<CategoryRawEntity>(categoriesTable).insert(
+    await databaseClient<CategoryRawEntity>(categoriesTable.name).insert(
       config.categories.map((name) => ({
         id: uuidService.generateUuid(),
         name,

@@ -46,7 +46,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
     const id = this.uuidService.generateUuid();
 
     try {
-      await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable).insert({
+      await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable.name).insert({
         id,
         title,
         isbn,
@@ -80,31 +80,10 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
     let rawEntities: BookChangeRequestWithJoinsRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable)
-        .select([
-          `${booksChangeRequestsTable}.id`,
-          `${booksChangeRequestsTable}.title`,
-          `${booksChangeRequestsTable}.isbn`,
-          `${booksChangeRequestsTable}.publisher`,
-          `${booksChangeRequestsTable}.release_year`,
-          `${booksChangeRequestsTable}.language`,
-          `${booksChangeRequestsTable}.translator`,
-          `${booksChangeRequestsTable}.format`,
-          `${booksChangeRequestsTable}.pages`,
-          `${booksChangeRequestsTable}.image_url`,
-          `${booksChangeRequestsTable}.author_ids`,
-          `${booksChangeRequestsTable}.book_id`,
-          `${booksChangeRequestsTable}.user_email`,
-          `${booksChangeRequestsTable}.created_at`,
-          `${booksChangeRequestsTable}.changed_fields`,
-          `${booksTable}.title as book_title`,
-        ])
-        .leftJoin(booksTable, (join) => {
-          join.on(`${booksTable}.id`, `=`, `${booksChangeRequestsTable}.book_id`);
-        })
-        .where((builder) => {
-          builder.where(`${booksChangeRequestsTable}.id`, id);
-        });
+      rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable.name)
+        .select([booksChangeRequestsTable.allColumns, `${booksTable.columns.title} as book_title`])
+        .leftJoin(booksTable.name, booksTable.columns.id, booksChangeRequestsTable.columns.book_id)
+        .where(booksChangeRequestsTable.columns.id, id);
     } catch (error) {
       throw new RepositoryError({
         entity: 'BookChangeRequest',
@@ -128,38 +107,19 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
     let rawEntities: BookChangeRequestWithJoinsRawEntity[];
 
     try {
-      rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable)
-        .select([
-          `${booksChangeRequestsTable}.id`,
-          `${booksChangeRequestsTable}.title`,
-          `${booksChangeRequestsTable}.isbn`,
-          `${booksChangeRequestsTable}.publisher`,
-          `${booksChangeRequestsTable}.release_year`,
-          `${booksChangeRequestsTable}.language`,
-          `${booksChangeRequestsTable}.translator`,
-          `${booksChangeRequestsTable}.format`,
-          `${booksChangeRequestsTable}.pages`,
-          `${booksChangeRequestsTable}.image_url`,
-          `${booksChangeRequestsTable}.author_ids`,
-          `${booksChangeRequestsTable}.book_id`,
-          `${booksChangeRequestsTable}.user_email`,
-          `${booksChangeRequestsTable}.created_at`,
-          `${booksChangeRequestsTable}.changed_fields`,
-          `${booksTable}.title as book_title`,
-        ])
-        .leftJoin(booksTable, (join) => {
-          join.on(`${booksTable}.id`, `=`, `${booksChangeRequestsTable}.book_id`);
-        })
+      rawEntities = await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable.name)
+        .select([booksChangeRequestsTable.allColumns, `${booksTable.columns.title} as book_title`])
+        .leftJoin(booksTable.name, booksTable.columns.id, booksChangeRequestsTable.columns.book_id)
         .where((builder) => {
           if (id) {
-            builder.where(`${booksChangeRequestsTable}.id`, id);
+            builder.where(booksChangeRequestsTable.columns.id, id);
           }
 
           if (userEmail) {
-            builder.where(`${booksChangeRequestsTable}.user_email`, userEmail);
+            builder.where(booksChangeRequestsTable.columns.user_email, userEmail);
           }
         })
-        .orderBy('id', sortDate ?? 'desc')
+        .orderBy(booksChangeRequestsTable.columns.id, sortDate ?? 'desc')
         .limit(pageSize)
         .offset(pageSize * (page - 1));
     } catch (error) {
@@ -177,7 +137,7 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
     const { id } = payload;
 
     try {
-      await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable).delete().where({ id });
+      await this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable.name).delete().where({ id });
     } catch (error) {
       throw new RepositoryError({
         entity: 'BookChangeRequest',
@@ -191,10 +151,10 @@ export class BookChangeRequestRepositoryImpl implements BookChangeRequestReposit
     const { userEmail } = payload;
 
     try {
-      const query = this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable).count().first();
+      const query = this.databaseClient<BookChangeRequestRawEntity>(booksChangeRequestsTable.name).count().first();
 
       if (userEmail) {
-        query.where({ user_email: userEmail });
+        query.where(booksChangeRequestsTable.columns.user_email, userEmail);
       }
 
       const countResult = await query;
