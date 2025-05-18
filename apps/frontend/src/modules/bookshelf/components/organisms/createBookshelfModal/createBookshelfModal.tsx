@@ -13,7 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from '../../../../common/components/form/form';
-import { FileInput, Input } from '../../../../common/components/input/input';
+import { ImageFileInput, Input } from '../../../../common/components/input/input';
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
 import {
   Tooltip,
@@ -24,7 +24,11 @@ import {
 import useDebounce from '../../../../common/hooks/useDebounce';
 import { useFileUpload } from '../../../../common/hooks/useFileUpload';
 import { cn } from '../../../../common/lib/utils';
-import { CreateBookshelfWithImageSchema, createBookshelfWithImageSchema, useCreateBookshelf } from '../../../hooks/useCreateBookshelf';
+import {
+  CreateBookshelfWithImageSchema,
+  createBookshelfWithImageSchema,
+  useCreateBookshelf,
+} from '../../../hooks/useCreateBookshelf';
 
 export const CreateBookshelfModal: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -124,17 +128,14 @@ export const CreateBookshelfModal: FC = () => {
                     <span>Obrazek</span> <span className="text-gray-500">(opcjonalne)</span>
                   </FormLabel>
                   <FormControl>
-                    <FileInput
+                    <ImageFileInput
                       {...fieldProps}
                       type="file"
-                      accept="image/jpeg"
                       fileName={(value as unknown as File)?.name}
-                      onChange={(event) => {
-                        onChange(event.target.files && event.target.files[0]);
-
-                        setFile(event.target.files ? (event.target?.files[0] ?? undefined) : undefined);
+                      onFileInput={(file) => {
+                        onChange(file);
+                        setFile(file ?? undefined);
                       }}
-                      ref={fileInputRef}
                     />
                   </FormControl>
                   <FormMessage />
