@@ -14,7 +14,7 @@ import {
   FormLabel,
   FormMessage,
 } from '../../../../common/components/form/form.js';
-import { FileInput } from '../../../../common/components/input/input.js';
+import { ImageFileInput } from '../../../../common/components/input/input.js';
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner.js';
 import { useToast } from '../../../../common/components/toast/use-toast.js';
 import useDebounce from '../../../../common/hooks/useDebounce.js';
@@ -116,17 +116,14 @@ export const UpdateNonStandardBookshelfModal: FC<Props> = ({
                     <span>Obrazek</span>
                   </FormLabel>
                   <FormControl>
-                    <FileInput
+                    <ImageFileInput
                       {...fieldProps}
                       type="file"
-                      accept="image/jpeg"
                       fileName={(value as unknown as File)?.name}
-                      onChange={(event) => {
-                        onChange(event.target.files && event.target.files[0]);
-
-                        setFile(event.target.files ? (event.target?.files[0] ?? undefined) : undefined);
+                      onFileInput={(file) => {
+                        onChange(file);
+                        setFile(file ?? undefined);
                       }}
-                      ref={fileInputRef}
                     />
                   </FormControl>
                   <FormMessage />

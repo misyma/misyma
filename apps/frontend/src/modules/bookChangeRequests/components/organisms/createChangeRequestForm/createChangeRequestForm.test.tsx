@@ -125,7 +125,7 @@ const server = setupServer(
       ] as Category[],
     }),
   ),
-);
+); 
 
 Element.prototype.scrollIntoView = vi.fn();
 

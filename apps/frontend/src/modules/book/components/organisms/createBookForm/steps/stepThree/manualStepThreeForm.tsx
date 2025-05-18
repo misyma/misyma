@@ -24,7 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from '../../../../../../common/components/form/form';
-import { FileInput } from '../../../../../../common/components/input/input';
+import { ImageFileInput } from '../../../../../../common/components/input/input';
 import { Select } from '../../../../../../common/components/select/select';
 import { LoadingSpinner } from '../../../../../../common/components/spinner/loading-spinner';
 import { useErrorHandledQuery } from '../../../../../../common/hooks/useErrorHandledQuery';
@@ -201,17 +201,14 @@ export const ManualStepThreeForm = ({ bookshelfId, navigateTo }: Props): JSX.Ele
                 <span>Obrazek</span> <span className="text-gray-500">(opcjonalne)</span>
               </FormLabel>
               <FormControl>
-                <FileInput
+                <ImageFileInput
                   {...fieldProps}
                   type="file"
-                  accept="image/jpeg"
                   fileName={(value as unknown as File)?.name}
-                  onChange={(event) => {
-                    onChange(event.target.files && event.target.files[0]);
-
-                    setFile(event.target.files ? (event.target?.files[0] ?? undefined) : undefined);
+                  onFileInput={(file) => {
+                    onChange(file);
+                    setFile(file ?? undefined);
                   }}
-                  ref={fileInputRef}
                 />
               </FormControl>
               <FormMessage />

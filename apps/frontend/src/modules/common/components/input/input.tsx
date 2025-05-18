@@ -4,6 +4,7 @@ import { ImQuill } from 'react-icons/im';
 
 import styles from './index.module.css';
 import { cn } from '../../lib/utils';
+import { toast, useToast } from '../toast/use-toast';
 
 export type InputSize = 'sm' | 'base' | 'lg' | 'xl' | 'custom';
 
@@ -179,5 +180,87 @@ const FileInput = React.forwardRef<HTMLInputElement, FileInputProps>(
 );
 
 FileInput.displayName = 'FileInput';
+
+export const allowedImageTypes = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'image/svg+xml',
+  'image/bmp',
+  'image/tiff',
+  'image/x-icon',
+  'image/vnd.microsoft.icon',
+  'image/x-tga',
+  'image/x-pcx',
+  'image/x-portable-pixmap',
+  'image/x-portable-bitmap',
+  'image/x-portable-graymap',
+  'image/x-xbitmap',
+  'image/x-xpixmap',
+  'image/heic',
+  'image/heif',
+  'image/avif',
+];
+
+export const ImageFileInput = React.forwardRef<
+  HTMLInputElement,
+  Omit<FileInputProps, 'onChange' | 'accept'> & {
+    onFileInput: (file: File | null) => void;
+  }
+>(({ onFileInput, ...props }, ref) => {
+  const { toast } = useToast();
+
+  return (
+    <FileInput
+      ref={ref}
+      {...props}
+      onChange={(event) => {
+        const file = event.target.files?.[0];
+
+        if (!file) {
+          return;
+        }
+
+        if (!allowedImageTypes.includes(file.type)) {
+          toast({
+            variant: 'default',
+            title: 'Niepoprawny typ pliku.',
+            description: 'Nie można dodać pliku nie będącego obrazkiem.',
+          });
+          event.target.value = '';
+        }
+
+        onFileInput(event.target.files && event.target.files[0]);
+      }}
+    />
+  );
+});
+
+ImageFileInput.displayName = 'ImageFileInput';
+
+interface OnFileInputProps {
+  event: React.ChangeEvent<HTMLInputElement>;
+  onInput: (file: File | null) => void;
+}
+export const onFileInput = (props: OnFileInputProps) => {
+  const { event, onInput } = props;
+  const file = event.target.files?.[0];
+
+  if (!file) {
+    return;
+  }
+
+  if (!allowedImageTypes.includes(file.type)) {
+    toast({
+      variant: 'default',
+      title: 'Niepoprawny typ pliku.',
+      description: 'Nie można dodać pliku nie będącego obrazkiem.',
+    });
+    event.target.value = '';
+  }
+
+  onInput(event.target.files && event.target.files[0]);
+};
 
 export { Input, FileInput };

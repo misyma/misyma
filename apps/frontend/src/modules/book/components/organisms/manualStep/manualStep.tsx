@@ -17,7 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from '../../../../common/components/form/form';
-import { FileInput } from '../../../../common/components/input/input';
+import { ImageFileInput } from '../../../../common/components/input/input';
 import {
   Select,
   SelectContent,
@@ -216,15 +216,13 @@ export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
                 <span className="text-gray-500"> (opcjonalne)</span>
               </FormLabel>
               <FormControl>
-                <FileInput
+                <ImageFileInput
                   {...fieldProps}
                   type="file"
-                  accept="image/jpeg"
                   fileName={(value as unknown as File)?.name}
-                  onChange={(event) => {
-                    onChange(event.target.files && event.target.files[0]);
-
-                    setFile(event.target.files ? (event.target?.files[0] ?? undefined) : undefined);
+                  onFileInput={(file) => {
+                    onChange(file);
+                    setFile(file ?? undefined);
                   }}
                 />
               </FormControl>
