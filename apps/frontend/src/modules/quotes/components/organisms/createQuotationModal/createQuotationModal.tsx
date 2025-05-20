@@ -153,7 +153,7 @@ export const CreateQuotationModal = ({ userBookId, onMutated, trigger }: Props):
                       <FormLabel>Cytat</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Komentarz"
+                          placeholder="Cytat..."
                           maxLength={1000}
                           className="resize-none h-44"
                           {...field}

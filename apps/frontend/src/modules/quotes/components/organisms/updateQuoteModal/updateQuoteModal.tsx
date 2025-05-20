@@ -160,7 +160,7 @@ const UpdateQuoteModal = ({ quote, open, onClose }: Props & { onClose: () => voi
                       <FormControl>
                         <Textarea
                           placeholder="Cytat..."
-                          maxLength={256}
+                          maxLength={1000}
                           className="resize-none h-44"
                           {...field}
                         />

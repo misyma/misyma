@@ -15,7 +15,7 @@ export const quoteTableColumns: ColumnDef<Quote>[] = [
       const foundRow = table.getRowModel().rows.find((row) => row.index === row.index);
 
       return (
-        <div className="flex flex-wrap flex-col py-4 gap-4">
+        <div className="flex flex-wrap flex-col pt-4 gap-4">
           <Blockquote
             key={row.original.id}
             variant="minimalist"
