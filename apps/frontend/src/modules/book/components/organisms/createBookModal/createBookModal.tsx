@@ -1,6 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useState } from 'react';
-import { HiPlus } from 'react-icons/hi2';
 
 import {
   BookCreationActionType,
@@ -8,12 +7,6 @@ import {
 } from '../../../../bookshelf/context/bookCreationContext/bookCreationContext';
 import { Button } from '../../../../common/components/button/button';
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '../../../../common/components/dialog/dialog';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../../common/components/tooltip/tooltip';
 import { BookApiQueryKeys } from '../../../api/user/queries/bookApiQueryKeys';
 import { AdminCreateBookForm } from '../adminCreateBookForm/adminCreateBookForm';
 
@@ -53,21 +46,12 @@ export const CreateBookModal: FC = () => {
       }}
     >
       <DialogTrigger asChild>
-        <TooltipProvider delayDuration={300}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={() => setIsOpen(true)}
-                size="big-icon"
-              >
-                <HiPlus className="w-8 h-8"></HiPlus>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Stwórz książkę</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Button
+          onClick={() => setIsOpen(true)}
+          size="lg"
+        >
+          Stwórz książkę
+        </Button>
       </DialogTrigger>
       <DialogContent
         style={{

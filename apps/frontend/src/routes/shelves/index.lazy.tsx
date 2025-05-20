@@ -33,7 +33,7 @@ const SearchBookshelfField = () => {
 
   return (
     <Input
-      iSize="lg"
+      iSize="xl"
       value={searchedName}
       placeholder="Wyszukaj półkę..."
       onChange={(e) => {
@@ -42,7 +42,7 @@ const SearchBookshelfField = () => {
         setCurrentPage(1);
       }}
       includeQuill={false}
-      otherIcon={<HiMagnifyingGlass className="text-primary h-8 w-8" />}
+      otherIcon={<HiMagnifyingGlass className="text-primary h-6 w-6" />}
     />
   );
 };
@@ -65,7 +65,7 @@ export const ShelvesPage: FC = () => {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.3 }}
-        className={'flex flex-col w-[80vw] sm:w-[90vw] sm:px-48 items-center justify-center gap-4'}
+        className={'flex flex-col w-[80vw] sm:w-[95vw] sm:px-48 items-center justify-center gap-6'}
       >
         <div className={'w-full flex items-end justify-between max-w-screen-2xl'}>
           <SearchBookshelfField />

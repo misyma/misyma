@@ -68,7 +68,7 @@ const BooksPage: FC = () => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      className="w-full px-8"
+      className="w-full px-8 mt-4"
     >
       <BookPageFiltersBar />
       <MyBooksVirtualizedBooksList />
@@ -79,7 +79,7 @@ const BooksPage: FC = () => {
 const View: FC = () => {
   return (
     <ContentLayout>
-      <div className="w-full px-8 flex justify-between items-center gap-4 pb-4">
+      <div className="w-full px-8 flex justify-between items-center gap-4 pb-4 py-1 sm:py-2">
         <TitleSearchField />
         <BooksPageTopBar />
       </div>

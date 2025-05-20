@@ -6,6 +6,7 @@ import { Button } from '../../../../common/components/button/button';
 import { Input } from '../../../../common/components/input/input';
 import useDebounce from '../../../../common/hooks/useDebounce';
 import { type MyBookSearchParams } from '../../organisms/bookPageFiltersBar/bookPageFiltersBar';
+import { HiMagnifyingGlass } from 'react-icons/hi2';
 
 export const TitleSearchField = () => {
   const search = useSearch({
@@ -43,8 +44,9 @@ export const TitleSearchField = () => {
           setSearchedName(e.target.value);
         }}
         value={searchedName ?? ''}
-        className=""
+        iSize="xl"
         placeholder="Wyszukaj po tytule..."
+        otherIcon={<HiMagnifyingGlass className="text-primary h-6 w-6" />}
       />
       {debouncedSearchedName && (
         <Button

@@ -3,7 +3,6 @@ import { DialogTitle } from '@radix-ui/react-dialog';
 import { useQueryClient } from '@tanstack/react-query';
 import { type FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { HiPlus } from 'react-icons/hi2';
 import { z } from 'zod';
 
 import { AuthorFieldTooltip } from './authorFieldTooltip';
@@ -19,7 +18,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '../../../common/components/input/input';
 import { LoadingSpinner } from '../../../common/components/spinner/loading-spinner';
 import { useToast } from '../../../common/components/toast/use-toast';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../common/components/tooltip/tooltip';
 import { ApiError } from '../../../common/errors/apiError';
 import { useCreateAuthorMutation } from '../../api/admin/mutations/createAuthorMutation/createAuthorMutation';
 import { AuthorsApiQueryKeys } from '../../api/user/queries/authorsApiQueryKeys';
@@ -109,21 +107,12 @@ export const CreateAuthorModal: FC<Props> = ({ onMutated }: Props) => {
     >
       <DialogTrigger asChild>
         <DialogTrigger asChild>
-          <TooltipProvider delayDuration={300}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  onClick={() => setIsOpen(true)}
-                  size="big-icon"
-                >
-                  <HiPlus className="w-8 h-8"></HiPlus>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Stwórz autora</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Button
+            onClick={() => setIsOpen(true)}
+            size="lg"
+          >
+            Stwórz autora
+          </Button>
         </DialogTrigger>
       </DialogTrigger>
       <DialogContent
