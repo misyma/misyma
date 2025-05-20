@@ -35,7 +35,7 @@ const Blockquote = ({
   };
 
   return (
-    <div className={cn(variants[variant], 'mb-6', 'w-full h-[180px] relative', className)}>
+    <div className={cn(variants[variant], 'mb-3', 'w-full h-[180px] relative', className)}>
       {variant === 'modern' && <Quote className="absolute left-1 top-0 h-6 w-6 text-primary opacity-20" />}
       {variant === 'minimalist' && (
         <Quote className="absolute -top-0 left-0 h-6 w-6 text-primary dark:bg-gray-900 p-1" />
@@ -44,8 +44,8 @@ const Blockquote = ({
         <div className="absolute -top-2 -right-2 h-0 w-0 border-t-[20px] border-r-[20px] border-t-primary/20 border-r-white dark:border-r-gray-800"></div>
       )}
       <div className="z-50 absolute top-2 right-2 flex space-x-1">{rightButtons}</div>
-      <div className={cn('relative z-10 w-[90%] line-clamp-3', variant === 'minimalist' && 'pl-4')}>{children}</div>
-      <div className={cn('pt-4 text-sm font-light', variant === 'minimalist' && 'pl-4')}>
+      <div className={cn('relative z-10 w-[90%] line-clamp-4', variant === 'minimalist' && 'pl-4')}>{children}</div>
+      <div className={cn('pt-4 text-sm font-light absolute bottom-3 left-6', variant === 'minimalist' && 'pl-4')}>
         {new Date(date).toLocaleDateString('pl-PL')}
         {page ? `, strona: ${page}` : ''}
       </div>
