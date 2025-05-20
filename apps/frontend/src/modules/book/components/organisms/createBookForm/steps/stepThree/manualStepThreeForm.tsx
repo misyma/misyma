@@ -198,7 +198,7 @@ export const ManualStepThreeForm = ({ bookshelfId, navigateTo }: Props): JSX.Ele
           render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
               <FormLabel>
-                <span>Obrazek</span> <span className="text-gray-500">(opcjonalne)</span>
+                <span>Okładka książki</span> <span className="text-gray-500">(opcjonalne)</span>
               </FormLabel>
               <FormControl>
                 <ImageFileInput
