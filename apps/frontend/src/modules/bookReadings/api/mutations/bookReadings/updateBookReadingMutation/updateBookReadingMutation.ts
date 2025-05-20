@@ -23,7 +23,7 @@ const updateBookReading = async (payload: UpdateBookReadingMutationPayload) => {
   const { userBookId, readingId, ...body } = payload;
 
   let path: string = ApiPaths.userBooks.$userBookId.readings.$readingId.path;
-  path = path.replace('{{userBookId}', userBookId);
+  path = path.replace('{{userBookId}}', userBookId);
   path = path.replace('{{readingId}}', readingId);
 
   const response = await api.patch<CreateBookReadingResponseBody>(path, body, {
