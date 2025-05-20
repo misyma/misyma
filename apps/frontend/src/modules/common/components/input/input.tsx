@@ -193,6 +193,7 @@ export const allowedImageTypes = [
   'image/vnd.microsoft.icon',
   'image/x-tga',
   'image/x-pcx',
+  'image/x-png',
   'image/x-portable-pixmap',
   'image/x-portable-bitmap',
   'image/x-portable-graymap',
