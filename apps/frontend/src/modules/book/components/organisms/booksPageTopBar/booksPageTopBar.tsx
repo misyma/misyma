@@ -1,7 +1,6 @@
 import { useNavigate, useRouter, useSearch } from '@tanstack/react-router';
 import { type FC, useMemo } from 'react';
 import { HiOutlineFilter } from 'react-icons/hi';
-import { HiPlus } from 'react-icons/hi2';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { useFindUserBookshelfsQuery } from '../../../../bookshelf/api/queries/findUserBookshelfsQuery/findUserBookshelfsQuery';
@@ -47,35 +46,25 @@ const CreateBookButton = () => {
   const cannotCreateBook = isLoading || usableBookshelves?.length === 0;
 
   return (
-    <TooltipProvider delayDuration={300}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            size="big-icon"
-            className="disabled:!pointer-events-auto cursor-pointer"
-            disabled={cannotCreateBook}
-            onClick={() => {
-              if (cannotCreateBook) {
-                return;
-              }
-              navigate({
-                to: url,
-                search: {
-                  type: 'isbn',
-                  next: 0,
-                },
-              });
-            }}
-          >
-            <HiPlus className="w-8 h-8" />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>
-          {!cannotCreateBook && <p>Stwórz książkę</p>}
-          {cannotCreateBook && <p>Stwórz półkę, aby dodać książkę</p>}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Button
+      size="lg"
+      className="disabled:!pointer-events-auto cursor-pointer"
+      disabled={cannotCreateBook}
+      onClick={() => {
+        if (cannotCreateBook) {
+          return;
+        }
+        navigate({
+          to: url,
+          search: {
+            type: 'isbn',
+            next: 0,
+          },
+        });
+      }}
+    >
+      Stwórz książkę
+    </Button>
   );
 };
 

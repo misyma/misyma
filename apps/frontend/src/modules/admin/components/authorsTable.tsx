@@ -96,7 +96,7 @@ export const AuthorsTable: FC<AdminAuthorsTableProps> = ({
               label: 'Do zaakceptowania',
               type: 'checkbox',
             }}
-            size="xxl"
+            size="xl"
             horizontalLayout
           />
         </div>

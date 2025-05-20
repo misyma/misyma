@@ -1,7 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRef, useState, type FC } from 'react';
 import { useForm } from 'react-hook-form';
-import { HiPlus } from 'react-icons/hi2';
 
 import { Button } from '../../../../common/components/button/button';
 import { Dialog, DialogContent, DialogTrigger } from '../../../../common/components/dialog/dialog';
@@ -15,15 +14,8 @@ import {
 } from '../../../../common/components/form/form';
 import { ImageFileInput, Input } from '../../../../common/components/input/input';
 import { LoadingSpinner } from '../../../../common/components/spinner/loading-spinner';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../../common/components/tooltip/tooltip';
 import useDebounce from '../../../../common/hooks/useDebounce';
 import { useFileUpload } from '../../../../common/hooks/useFileUpload';
-import { cn } from '../../../../common/lib/utils';
 import {
   CreateBookshelfWithImageSchema,
   createBookshelfWithImageSchema,
@@ -74,21 +66,12 @@ export const CreateBookshelfModal: FC = () => {
       }}
     >
       <DialogTrigger asChild>
-        <TooltipProvider delayDuration={200}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={() => setIsOpen(true)}
-                size="big-icon"
-              >
-                <HiPlus className={cn('h-8 w-8 cursor-pointer')} />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Stwórz półkę</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Button
+          onClick={() => setIsOpen(true)}
+          size="lg"
+        >
+          Stwórz półkę
+        </Button>
       </DialogTrigger>
       <DialogContent
         style={{

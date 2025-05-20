@@ -1,7 +1,6 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useMemo, type FC } from 'react';
 import { HiOutlineFilter } from 'react-icons/hi';
-import { HiPlus } from 'react-icons/hi2';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { type FindBookshelfResponseBody } from '@common/contracts';
@@ -88,34 +87,26 @@ export const BookshelfTopBar: FC<BookshelfTopBarProps> = ({ bookshelfResponse, b
       </div>
       <div className="flex items-center gap-4">
         <BookshelfSearchButtonInput />
+
+        {(!isArchiveOrBorrowingBookshelf || !bookshelfResponse) && (
+          <Button
+            size="lg"
+            onClick={() => {
+              navigate({
+                to: `/shelves/bookshelf/search`,
+                search: {
+                  type: 'isbn',
+                  next: 0,
+                  bookshelfId,
+                },
+              });
+            }}
+          >
+            Stwórz książkę
+          </Button>
+        )}
         <BooksFiltersVisibilityButton />
         <BooksSortButton navigationPath={`/shelves/bookshelf/${bookshelfId}`} />
-        {(!isArchiveOrBorrowingBookshelf || !bookshelfResponse) && (
-          <TooltipProvider delayDuration={300}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="big-icon"
-                  onClick={() => {
-                    navigate({
-                      to: `/shelves/bookshelf/search`,
-                      search: {
-                        type: 'isbn',
-                        next: 0,
-                        bookshelfId,
-                      },
-                    });
-                  }}
-                >
-                  <HiPlus className="w-8 h-8" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Stwórz książkę</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        )}
       </div>
     </div>
   );

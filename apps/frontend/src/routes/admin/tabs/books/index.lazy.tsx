@@ -151,7 +151,7 @@ export const BooksAdminPage: FC = () => {
           />
         }
         columnsClassName="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-y-2 gap-x-2"
-        tabsSlotClassName="flex justify-between gap-4 col-span-6"
+        tabsSlotClassName="flex justify-between gap-4 col-span-6 mb-5"
         additionalColumnClassName="col-span-6"
       />
     </AuthenticatedLayout>
