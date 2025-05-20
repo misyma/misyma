@@ -125,7 +125,7 @@ export const CreateBookshelfModal: FC = () => {
               render={({ field: { value, onChange, ...fieldProps } }) => (
                 <FormItem>
                   <FormLabel>
-                    <span>Obrazek</span> <span className="text-gray-500">(opcjonalne)</span>
+                    <span>Zdjęcie półki</span> <span className="text-gray-500">(opcjonalne)</span>
                   </FormLabel>
                   <FormControl>
                     <ImageFileInput

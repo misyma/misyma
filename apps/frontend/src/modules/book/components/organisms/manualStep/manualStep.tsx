@@ -212,7 +212,7 @@ export const ManualStep = ({ bookshelfId, navigateTo }: Props): JSX.Element => {
           render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
               <FormLabel>
-                <span>Obrazek</span>
+                <span>Okładka książki</span>
                 <span className="text-gray-500"> (opcjonalne)</span>
               </FormLabel>
               <FormControl>

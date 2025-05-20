@@ -87,7 +87,7 @@ export const UpdateUserBookForm: FC<Props> = ({ bookId, onSubmit, onCancel }) =>
           control={changeUserBookDataForm.control}
           render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
-              <FormLabel>Obrazek</FormLabel>
+              <FormLabel>Okładka książki</FormLabel>
               <FormControl>
                 <ImageFileInput
                   {...fieldProps}

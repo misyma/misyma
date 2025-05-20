@@ -102,7 +102,7 @@ export const UpdateBookshelfModal: FC<Props> = ({ bookshelfId, bookshelfName, op
               render={({ field: { value, onChange, ...fieldProps } }) => (
                 <FormItem>
                   <FormLabel>
-                    <span>Obrazek</span>
+                    <span>Zdjęcie półki</span>
                   </FormLabel>
                   <FormControl>
                     <ImageFileInput
