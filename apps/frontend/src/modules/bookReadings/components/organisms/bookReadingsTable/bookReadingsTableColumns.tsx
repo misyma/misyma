@@ -13,7 +13,7 @@ export const bookReadingsTableColumns: ColumnDef<BookReading>[] = [
     accessorKey: 'updatedAt',
     cell: ({ row }): JSX.Element => {
       return (
-        <div className="flex flex-col py-4 gap-2">
+        <div className="flex flex-col py-4 px-2 gap-3">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-1">
               <p className="font-semibold text-2xl">{row.original.rating}</p>
@@ -27,11 +27,11 @@ export const bookReadingsTableColumns: ColumnDef<BookReading>[] = [
               />
             </div>
           </div>
-          <p className="font-semibold text-lg">{row.original.comment}</p>
+          <p className="font-medium text-lg">{row.original.comment}</p>
           <div className="font-light inline-flex items-center gap-2">
             rozpoczęcie czytania: {new Date(row.original.startedAt).toLocaleDateString('pl-PL')}
             <Separator className="w-[10%]" /> zakończenie czytania:{' '}
-            {row.original.endedAt ? new Date(row.original.endedAt).toLocaleDateString('pl-PL') : ''}
+            {new Date(row.original.endedAt).toLocaleDateString('pl-PL')}
           </div>
         </div>
       );
