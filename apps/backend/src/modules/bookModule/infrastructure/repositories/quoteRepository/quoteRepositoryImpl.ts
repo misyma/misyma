@@ -63,7 +63,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
       const query = this.databaseClient<QuoteWithJoinsRawEntity>(quotesTable.name)
         .select([
           quotesTable.allColumns,
-          this.databaseClient.raw(`array_agg(DISTINCT ${authorsTable.columns.name}) as "authors"`),
+          this.databaseClient.raw(`array_agg(${authorsTable.columns.name}) as "authors"`),
           `${booksTable.columns.title} as book_title`,
         ])
         .leftJoin(usersBooksTable.name, usersBooksTable.columns.id, quotesTable.columns.user_book_id)
