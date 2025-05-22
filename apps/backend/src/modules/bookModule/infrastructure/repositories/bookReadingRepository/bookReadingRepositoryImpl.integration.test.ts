@@ -209,14 +209,14 @@ describe('BookReadingRepositoryImpl', () => {
       const bookReading1 = await bookReadingTestUtils.createAndPersist({
         input: {
           user_book_id: userBook.id,
-          started_at: Generator.pastDate(),
+          ended_at: Generator.pastDate(),
         },
       });
 
       const bookReading2 = await bookReadingTestUtils.createAndPersist({
         input: {
           user_book_id: userBook.id,
-          started_at: new Date(),
+          ended_at: new Date(),
         },
       });
 
@@ -240,14 +240,14 @@ describe('BookReadingRepositoryImpl', () => {
       const bookReading1 = await bookReadingTestUtils.createAndPersist({
         input: {
           user_book_id: userBook.id,
-          started_at: Generator.pastDate(),
+          ended_at: Generator.pastDate(),
         },
       });
 
       const bookReading2 = await bookReadingTestUtils.createAndPersist({
         input: {
           user_book_id: userBook.id,
-          started_at: new Date(),
+          ended_at: new Date(),
         },
       });
 

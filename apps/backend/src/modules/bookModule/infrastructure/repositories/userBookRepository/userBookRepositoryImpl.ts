@@ -220,15 +220,14 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           booksTable.columns.is_approved,
           `${booksTable.columns.image_url} as book_image_url`,
           `${categoriesTable.columns.name} as category_name`,
-          this.databaseClient.raw(`array_agg(DISTINCT ${authorsTable.columns.id}) as author_ids`),
-          this.databaseClient.raw(`array_agg(DISTINCT ${authorsTable.columns.name}) as author_names`),
-          this.databaseClient.raw(`array_agg(DISTINCT ${authorsTable.columns.is_approved}) as author_approvals`),
+          this.databaseClient.raw(`array_agg(${authorsTable.columns.id}) as author_ids`),
+          this.databaseClient.raw(`array_agg(${authorsTable.columns.name}) as author_names`),
+          this.databaseClient.raw(`array_agg(${authorsTable.columns.is_approved}) as author_approvals`),
           latestRatingSelect,
         ])
         .leftJoin(booksAuthorsTable.name, booksAuthorsTable.columns.book_id, usersBooksTable.columns.book_id)
         .leftJoin(authorsTable.name, authorsTable.columns.id, booksAuthorsTable.columns.author_id)
         .leftJoin(booksTable.name, booksTable.columns.id, usersBooksTable.columns.book_id)
-        .leftJoin(booksReadingsTable.name, booksReadingsTable.columns.user_book_id, usersBooksTable.columns.id)
         .leftJoin(categoriesTable.name, categoriesTable.columns.id, booksTable.columns.category_id)
         .where((builder) => {
           if (id) {
@@ -299,6 +298,7 @@ export class UserBookRepositoryImpl implements UserBookRepository {
         ORDER BY br.ended_at DESC
         LIMIT 1
       ) as latest_rating`);
+
       const latestReadingDateSelect = this.databaseClient.raw(`(
         SELECT br.ended_at
         FROM ${booksReadingsTable.name} br
@@ -330,9 +330,9 @@ export class UserBookRepositoryImpl implements UserBookRepository {
           booksTable.columns.is_approved,
           `${booksTable.columns.image_url} as book_image_url`,
           `${categoriesTable.columns.name} as category_name`,
-          this.databaseClient.raw(`array_agg(DISTINCT ${authorsTable.columns.id}) as author_ids`),
-          this.databaseClient.raw(`array_agg(DISTINCT ${authorsTable.columns.name}) as author_names`),
-          this.databaseClient.raw(`array_agg(DISTINCT ${authorsTable.columns.is_approved}) as author_approvals`),
+          this.databaseClient.raw(`array_agg(${authorsTable.columns.id}) as author_ids`),
+          this.databaseClient.raw(`array_agg(${authorsTable.columns.name}) as author_names`),
+          this.databaseClient.raw(`array_agg(${authorsTable.columns.is_approved}) as author_approvals`),
           latestRatingSelect,
           ...(sortField === 'readingDate' ? [latestReadingDateSelect] : []),
         ])
