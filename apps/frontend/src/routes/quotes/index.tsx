@@ -8,6 +8,7 @@ const querySchema = z.object({
   authorId: z.string().uuid().optional(),
   userBookId: z.string().uuid().optional(),
   isFavorite: z.boolean().optional(),
+  content: z.string().optional(),
 });
 
 export type QuotePageSearch = z.infer<typeof querySchema>;

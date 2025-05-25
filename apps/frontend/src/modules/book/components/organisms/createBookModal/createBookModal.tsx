@@ -50,7 +50,7 @@ export const CreateBookModal: FC = () => {
           onClick={() => setIsOpen(true)}
           size="lg"
         >
-          Stwórz książkę
+          Dodaj książkę
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -59,7 +59,7 @@ export const CreateBookModal: FC = () => {
         }}
         omitCloseButton={true}
       >
-        <DialogTitle className="text-center py-2">Stwórz książkę</DialogTitle>
+        <DialogTitle className="text-center py-2">Dodaj książkę</DialogTitle>
         <AdminCreateBookForm onSubmit={onSubmit}></AdminCreateBookForm>
       </DialogContent>
     </Dialog>

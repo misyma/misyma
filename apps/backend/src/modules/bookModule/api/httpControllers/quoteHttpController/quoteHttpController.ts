@@ -137,13 +137,14 @@ export class QuoteHttpController implements HttpController {
       requestHeaders: request.headers,
     });
 
-    const { page = 1, pageSize = 10, sortDate, userBookId, authorId, isFavorite } = request.queryParams;
+    const { page = 1, pageSize = 10, sortDate, userBookId, authorId, isFavorite, content } = request.queryParams;
 
     const { quotes, total } = await this.findQuotesQueryHandler.execute({
       userId,
       userBookId,
       authorId,
       isFavorite,
+      content,
       page,
       pageSize,
       sortDate,

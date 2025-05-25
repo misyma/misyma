@@ -7,6 +7,7 @@ export interface FindQuotesQueryParams {
   readonly authorId?: string;
   readonly userBookId?: string;
   readonly isFavorite?: boolean;
+  readonly content?: string;
   readonly page?: number;
   readonly pageSize?: number;
   readonly sortDate?: SortOrder;

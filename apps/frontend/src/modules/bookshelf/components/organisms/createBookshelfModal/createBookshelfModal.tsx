@@ -70,7 +70,7 @@ export const CreateBookshelfModal: FC = () => {
           onClick={() => setIsOpen(true)}
           size="lg"
         >
-          Stwórz półkę
+          Dodaj półkę
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -80,7 +80,7 @@ export const CreateBookshelfModal: FC = () => {
         className="max-w-sm sm:max-w-xl py-16 flex flex-col items-center gap-8"
         omitCloseButton={true}
       >
-        <p className="font-bold text-lg">Stwórz półkę</p>
+        <p className="font-bold text-lg">Dodaj półkę</p>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField

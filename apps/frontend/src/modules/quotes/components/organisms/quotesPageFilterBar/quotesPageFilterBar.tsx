@@ -31,14 +31,17 @@ export const QuotesPageFilterBar = () => {
   const onClearAll = () => {
     navigate({
       to: '',
-      search: ({ sortDate }) => ({
+      search: ({ sortDate, content }) => ({
         sortDate,
+        content,
       }),
     });
   };
 
   const hasAnyFilter = useMemo(
-    () => Object.entries(search).filter(([key, val]) => val !== undefined && key !== 'sortDate').length > 0,
+    () =>
+      Object.entries(search).filter(([key, val]) => val !== undefined && !['sortDate', 'content'].includes(key))
+        .length > 0,
     [search],
   );
 

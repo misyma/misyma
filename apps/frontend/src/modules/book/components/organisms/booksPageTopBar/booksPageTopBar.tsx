@@ -63,7 +63,7 @@ const CreateBookButton = () => {
         });
       }}
     >
-      Stwórz książkę
+      Dodaj książkę
     </Button>
   );
 };

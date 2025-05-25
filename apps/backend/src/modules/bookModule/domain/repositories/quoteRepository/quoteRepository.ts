@@ -9,6 +9,7 @@ export interface FindQuotesPayload {
   readonly userBookId?: string;
   readonly authorId?: string;
   readonly isFavorite?: boolean;
+  readonly content?: string;
   readonly page: number;
   readonly pageSize: number;
   readonly sortDate?: 'asc' | 'desc';
@@ -19,6 +20,7 @@ export interface CountQuotesPayload {
   readonly userBookId?: string;
   readonly authorId?: string;
   readonly isFavorite?: boolean;
+  readonly content?: string;
 }
 
 export interface SavePayload {
