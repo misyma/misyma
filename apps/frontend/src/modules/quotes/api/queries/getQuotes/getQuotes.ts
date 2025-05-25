@@ -43,6 +43,10 @@ export const getQuotes = async (payload: FindQuotesQueryParams) => {
     queryParams.isFavorite = 'true';
   }
 
+  if (payload.content) {
+    queryParams.content = payload.content;
+  }
+
   if (payload.sortDate) {
     queryParams.sortDate = payload.sortDate;
   } else {
@@ -102,6 +106,7 @@ export const getQuotesOptionsQueryKey = (payload: FindQuotesQueryParams): string
   QuotesApiQueryKeys.findQuotes,
   payload?.userBookId ?? '',
   payload.authorId ?? '',
+  payload.content ?? '',
   `${payload.isFavorite}`,
   `${payload.sortDate}`,
 ];

@@ -13,7 +13,7 @@ export class FindQuotesQueryHandlerImpl implements FindQuotesQueryHandler {
   public constructor(private readonly quoteRepository: QuoteRepository) {}
 
   public async execute(payload: FindQuotesQueryHandlerPayload): Promise<FindQuotesQueryHandlerResult> {
-    const { userId, userBookId, authorId, isFavorite, page, pageSize, sortDate } = payload;
+    const { userId, userBookId, authorId, isFavorite, content, page, pageSize, sortDate } = payload;
 
     let findQuotesPayload: FindQuotesPayload = {
       userId,
@@ -39,6 +39,13 @@ export class FindQuotesQueryHandlerImpl implements FindQuotesQueryHandler {
       findQuotesPayload = {
         ...findQuotesPayload,
         isFavorite,
+      };
+    }
+
+    if (content) {
+      findQuotesPayload = {
+        ...findQuotesPayload,
+        content,
       };
     }
 

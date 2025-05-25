@@ -55,7 +55,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
   }
 
   public async findQuotes(payload: FindQuotesPayload): Promise<Quote[]> {
-    const { userId, userBookId, authorId, isFavorite, page, pageSize, sortDate } = payload;
+    const { userId, userBookId, authorId, isFavorite, content, page, pageSize, sortDate } = payload;
 
     let rawEntities: QuoteWithJoinsRawEntity[];
 
@@ -84,6 +84,10 @@ export class QuoteRepositoryImpl implements QuoteRepository {
 
       if (isFavorite !== undefined) {
         query.where(quotesTable.columns.is_favorite, isFavorite);
+      }
+
+      if (content) {
+        query.whereRaw(`${quotesTable.columns.content} ILIKE ?`, `%${content}%`);
       }
 
       query.groupBy([quotesTable.columns.id, booksTable.columns.id]);
@@ -180,7 +184,7 @@ export class QuoteRepositoryImpl implements QuoteRepository {
   }
 
   public async countQuotes(payload: CountQuotesPayload): Promise<number> {
-    const { userId, userBookId, authorId, isFavorite } = payload;
+    const { userId, userBookId, authorId, isFavorite, content } = payload;
 
     try {
       const query = this.databaseClient<QuoteRawEntity>(quotesTable.name)
@@ -202,6 +206,10 @@ export class QuoteRepositoryImpl implements QuoteRepository {
 
       if (isFavorite !== undefined) {
         query.where(quotesTable.columns.is_favorite, isFavorite);
+      }
+
+      if (content) {
+        query.whereRaw(`${quotesTable.columns.content} ILIKE ?`, `%${content}%`);
       }
 
       const countResult = await query.count().first();

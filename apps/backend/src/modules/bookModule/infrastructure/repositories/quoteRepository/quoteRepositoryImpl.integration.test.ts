@@ -361,6 +361,42 @@ describe('QuoteRepositoryImpl', () => {
 
       expect(result[0]?.getId()).toEqual(quote1.id);
     });
+
+    it('returns an array of Quotes by Content', async () => {
+      const userBook = await createUserBook();
+
+      const quote1 = await quoteTestUtils.createAndPersist({
+        input: {
+          user_book_id: userBook.id,
+          content: 'This is a Test quote',
+        },
+      });
+
+      await quoteTestUtils.createAndPersist({
+        input: {
+          user_book_id: userBook.id,
+          content: 'Another quote',
+        },
+      });
+
+      await quoteTestUtils.createAndPersist({
+        input: {
+          user_book_id: userBook.id,
+          content: 'Yet another quote',
+        },
+      });
+
+      const result = await repository.findQuotes({
+        userId: testUserId,
+        content: 'test',
+        page: 1,
+        pageSize: 10,
+      });
+
+      expect(result).toHaveLength(1);
+
+      expect(result[0]?.getId()).toEqual(quote1.id);
+    });
   });
 
   describe('save', () => {

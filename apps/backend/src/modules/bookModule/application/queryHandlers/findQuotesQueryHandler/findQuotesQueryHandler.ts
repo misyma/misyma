@@ -5,6 +5,7 @@ import { type Quote } from '../../../domain/entities/quote/quote.js';
 
 export interface FindQuotesQueryHandlerPayload {
   readonly userId: string;
+  readonly content?: string | undefined;
   readonly userBookId?: string | undefined;
   readonly authorId?: string | undefined;
   readonly isFavorite?: boolean | undefined;

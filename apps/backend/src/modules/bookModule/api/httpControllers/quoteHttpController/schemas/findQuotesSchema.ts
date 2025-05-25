@@ -12,6 +12,7 @@ export const findQuotesQueryParamsDtoSchema = Type.Object({
   authorId: Type.Optional(Type.String({ format: 'uuid' })),
   userBookId: Type.Optional(Type.String({ format: 'uuid' })),
   isFavorite: Type.Optional(Type.Boolean()),
+  content: Type.Optional(Type.String()),
 });
 
 export type FindQuotesQueryParamsDto = TypeExtends<

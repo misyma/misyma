@@ -11,6 +11,7 @@ import { M7CreateBorrowingsTableMigration } from './m7CreateBorrowingsTableMigra
 import { M8CreateCollectionsTableMigration } from './m8CreateCollectionsMigration.js';
 import { M9CreateUsersBooksCollectionsTableMigration } from './m9CreateUsersBooksCollectionsTableMigration.js';
 import { M10CreateBooksChangeRequestsTableMigration } from './m10CreateBooksChangeRequestsTableMigration.js';
+import { M11AddIndexToQuotesTableMigration } from './m11AddIndexToQuotesTableMigration.js';
 
 export class BookMigrationSource implements MigrationSource {
   public async getMigrations(): Promise<Migration[]> {
@@ -25,6 +26,7 @@ export class BookMigrationSource implements MigrationSource {
       new M8CreateCollectionsTableMigration(),
       new M9CreateUsersBooksCollectionsTableMigration(),
       new M10CreateBooksChangeRequestsTableMigration(),
+      new M11AddIndexToQuotesTableMigration(),
     ];
   }
 

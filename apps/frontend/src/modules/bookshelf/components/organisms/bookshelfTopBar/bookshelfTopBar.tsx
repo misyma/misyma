@@ -102,7 +102,7 @@ export const BookshelfTopBar: FC<BookshelfTopBarProps> = ({ bookshelfResponse, b
               });
             }}
           >
-            Stwórz książkę
+            Dodaj książkę
           </Button>
         )}
         <BooksFiltersVisibilityButton />

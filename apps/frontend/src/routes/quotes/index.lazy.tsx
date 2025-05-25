@@ -1,5 +1,5 @@
-import { createLazyFileRoute, useSearch } from '@tanstack/react-router';
-import { useMemo } from 'react';
+import { createLazyFileRoute, useNavigate, useSearch } from '@tanstack/react-router';
+import { useEffect, useMemo, useState } from 'react';
 import { HiOutlineFilter } from 'react-icons/hi';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,6 +18,42 @@ import {
 import { QuotationsTabSortingButton } from '../../modules/quotes/components/organisms/quotationTabTable/quotationsTabSortingButton';
 import { QuotesPageFilterBar } from '../../modules/quotes/components/organisms/quotesPageFilterBar/quotesPageFilterBar';
 import { VirtualizedQuotesList } from '../../modules/quotes/components/organisms/virtualizedQuotesList/virtualizedQuotesList';
+import useDebounce from '../../modules/common/hooks/useDebounce';
+import { Input } from '../../modules/common/components/input/input';
+import { HiMagnifyingGlass } from 'react-icons/hi2';
+import { QuotePageSearch } from '.';
+
+const SearchContentField = () => {
+  const navigate = useNavigate();
+
+  const search = useSearch({
+    from: '/quotes/',
+  }) as QuotePageSearch;
+
+  const [searchedContent, setSearchedContent] = useState(search.content);
+
+  const debouncedSearchedContent = useDebounce(searchedContent, 300);
+
+  useEffect(() => {
+    navigate({
+      to: '',
+      search: (prev: Record<string, string>) => ({ ...prev, content: debouncedSearchedContent }),
+    });
+  }, [debouncedSearchedContent, navigate]);
+
+  return (
+    <Input
+      iSize="xl"
+      value={searchedContent}
+      placeholder="Wyszukaj słowo kluczowe..."
+      onChange={(e) => {
+        setSearchedContent(e.currentTarget.value);
+      }}
+      includeQuill={false}
+      otherIcon={<HiMagnifyingGlass className="text-primary h-6 w-6" />}
+    />
+  );
+};
 
 const BooksFiltersVisibilityButton = () => {
   const isFilterVisible = useSelector(quoteStateSelectors.getFilterVisibility);
@@ -29,7 +65,9 @@ const BooksFiltersVisibilityButton = () => {
   const filtersApplied = useMemo(() => {
     return (
       Object.entries(search)
-        .filter(([key]) => !['page', 'pageSize', 'sortField', 'sortOrder', 'sortDate', 'title'].includes(key))
+        .filter(
+          ([key]) => !['page', 'pageSize', 'sortField', 'sortOrder', 'sortDate', 'title', 'content'].includes(key),
+        )
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .filter(([_, value]) => {
           return value !== undefined || value !== '';
@@ -69,9 +107,14 @@ const QuotesPage = () => {
   const search = Route.useSearch();
   return (
     <div className="w-full flex flex-col">
-      <div className="h-10 w-full flex justify-end items-center px-3 pb-2 gap-2">
-        <BooksFiltersVisibilityButton />
-        <QuotationsTabSortingButton from="/quotes" />
+      <div className="h-10 w-full flex px-3 pb-2 mt-4">
+        <div className="flex items-center">
+          <SearchContentField />
+        </div>
+        <div className="flex items-center gap-2 ml-auto">
+          <BooksFiltersVisibilityButton />
+          <QuotationsTabSortingButton from="/quotes" />
+        </div>
       </div>
       <QuotesPageFilterBar />
       <VirtualizedQuotesList queryArgs={search} />
